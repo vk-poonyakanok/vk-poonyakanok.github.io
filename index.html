@@ -18,6 +18,7 @@
             --border: #30363d;
             --code-bg: #010409;
             --table-header: #21262d;
+            --muted: #8b949e;
         }
 
         [data-theme="light"] {
@@ -29,6 +30,7 @@
             --border: #d0d7de;
             --code-bg: #f6f8fa;
             --table-header: #f6f8fa;
+            --muted: #57606a;
         }
 
         body {
@@ -187,6 +189,12 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
+        .item-description {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+
         a {
             color: var(--heading);
             text-decoration: none;
@@ -232,12 +240,12 @@
             <div class="project-item">
                 <span class="item-title">AI-Assisted Altitude Extraction System for Travel Medicine</span>
                 <span class="item-meta">Aug 2025 – Present | Chulalongkorn University</span>
-                <p>Developing an AI-driven system to automate the extraction of sleeping altitude data from unstructured travel itineraries (Text, PDF, and Images) using NLP and Computer Vision.</p>
+                <p class="item-description">Developing an AI-driven system to automate the extraction of sleeping altitude data from unstructured travel itineraries (Text, PDF, and Images) using NLP and Computer Vision.</p>
             </div>
             <div class="project-item">
                 <span class="item-title">Menstruation Suppression Study among Thai Female Pilgrims</span>
                 <span class="item-meta">Mar 2025 – Present | Principal Investigator</span>
-                <p>Large-scale study for Hajj 2026 season investigating knowledge and experiences regarding menstrual suppression methods.</p>
+                <p class="item-description">Large-scale study for Hajj 2026 season investigating knowledge and experiences regarding menstrual suppression methods.</p>
             </div>
         </div>
 
@@ -245,11 +253,11 @@
             <h2>Publications</h2>
             <div class="publication-item">
                 <span class="item-title">Investigation of MMR‐Related Mumps Cluster Following Immunization</span>
-                <span class="item-meta">Journal of Tropical Medicine | 2025 | DOI: 10.1155/jotm/9974081</span>
+                <span class="item-meta">Journal of Tropical Medicine | 2025 | DOI: <a href="https://doi.org/10.1155/jotm/9974081" target="_blank">10.1155/jotm/9974081</a></span>
             </div>
             <div class="publication-item">
                 <span class="item-title">Rapid Response to Methanol Intoxication Outbreak in Bangkok</span>
-                <span class="item-meta">Weekly Epidemiological Surveillance Report | 2024 | DOI: 10.59096/wesr.v55i9.3248</span>
+                <span class="item-meta">Weekly Epidemiological Surveillance Report | 2024 | DOI: <a href="https://doi.org/10.59096/wesr.v55i9.3248" target="_blank">10.59096/wesr.v55i9.3248</a></span>
             </div>
         </div>
 
