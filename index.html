@@ -725,10 +725,21 @@
     </div>
 
     <footer>
-        <p>Vitchakorn Poonyakanok, MD | Travel Medicine & DigiHealth</p>
+        <p id="footer-text">Vitchakorn Poonyakanok, MD | Travel Medicine & DigiHealth</p>
     </footer>
 
     <script>
+        function updateFooterDate() {
+            const footerText = document.getElementById('footer-text');
+            const lastModified = new Date(document.lastModified);
+            const formattedDate = lastModified.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            footerText.innerHTML += `<br><span style="font-size: 0.75rem; opacity: 0.8;">Last Updated: ${formattedDate}</span>`;
+        }
+
         function updateToggleIcon(theme) {
             const toggleBtn = document.getElementById('theme-toggle');
             if (theme === 'light') {
@@ -776,6 +787,7 @@
         const savedTheme = localStorage.getItem('theme') || 'dark';
         if (savedTheme === 'light') document.body.setAttribute('data-theme', 'light');
         updateToggleIcon(savedTheme);
+        updateFooterDate();
     </script>
 </body>
 </html>
