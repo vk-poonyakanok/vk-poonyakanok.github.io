@@ -54,6 +54,7 @@
             cursor: pointer;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
+            z-index: 1000;
         }
 
         header {
@@ -105,6 +106,12 @@
             opacity: 0.5;
         }
 
+        h3 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            margin-top: 1.5rem;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -152,6 +159,22 @@
             color: var(--heading);
         }
 
+        .project-item, .publication-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .item-title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .item-meta {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
         a {
             color: var(--heading);
             text-decoration: none;
@@ -181,8 +204,34 @@
     <div class="container">
         <div class="card">
             <h2>About_Me</h2>
-            <p>I am a <span class="badge">Travel Medicine Resident</span> at the Institute of Preventive Medicine, Thailand. Currently bridging the gap between clinical practice and deep technical architecture.</p>
+            <p>I am a <span class="badge">Travel Medicine Resident</span> at the Institute of Preventive Medicine, Thailand. I specialize in preventive medicine, outbreak investigation, and travel health, bridging the gap between clinical practice and deep technical architecture.</p>
             <p class="mono">Current_Focus: "National Vaccine Registry & Public Health Data Initiatives"</p>
+        </div>
+
+        <div class="card">
+            <h2>Projects</h2>
+            <div class="project-item">
+                <span class="item-title">AI-Assisted Altitude Extraction System for Travel Medicine</span>
+                <span class="item-meta">Aug 2025 – Present | Chulalongkorn University</span>
+                <p>Developing an AI-driven system to automate the extraction of sleeping altitude data from unstructured travel itineraries (Text, PDF, and Images) using NLP and Computer Vision.</p>
+            </div>
+            <div class="project-item">
+                <span class="item-title">Menstruation Suppression Study among Thai Female Pilgrims</span>
+                <span class="item-meta">Mar 2025 – Present | Principal Investigator</span>
+                <p>Large-scale study for Hajj 2026 season investigating knowledge and experiences regarding menstrual suppression methods.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Publications</h2>
+            <div class="publication-item">
+                <span class="item-title">Investigation of MMR‐Related Mumps Cluster Following Immunization</span>
+                <span class="item-meta">Journal of Tropical Medicine | 2025 | DOI: 10.1155/jotm/9974081</span>
+            </div>
+            <div class="publication-item">
+                <span class="item-title">Rapid Response to Methanol Intoxication Outbreak in Bangkok</span>
+                <span class="item-meta">Weekly Epidemiological Surveillance Report | 2024 | DOI: 10.59096/wesr.v55i9.3248</span>
+            </div>
         </div>
 
         <div class="card">
@@ -201,11 +250,11 @@
                     </tr>
                     <tr>
                         <td class="mono">Data_AI</td>
-                        <td>XGBoost, LightGBM, YOLO, NLP</td>
+                        <td>XGBoost, LightGBM, YOLO, NLP, Computer Vision</td>
                     </tr>
                     <tr>
                         <td class="mono">Health_Informatics</td>
-                        <td>HL7/FHIR, Data Governance, Vaccinology</td>
+                        <td>HL7/FHIR, Data Governance, Vaccinology, Epidemiology</td>
                     </tr>
                     <tr>
                         <td class="mono">Viz_Design</td>
@@ -226,6 +275,8 @@
         <div class="card">
             <h2>Connect</h2>
             <p class="mono">Email: <a href="mailto:vk.poonyakanok@gmail.com">vk.poonyakanok@gmail.com</a></p>
+            <p class="mono">ORCID: <a href="https://orcid.org/0009-0007-9945-0376" target="_blank">0009-0007-9945-0376</a></p>
+            <p class="mono">LinkedIn: <a href="https://www.linkedin.com/in/vitchakorn" target="_blank">linkedin.com/in/vitchakorn</a></p>
             <p class="mono">GitHub: <a href="https://github.com/vk-poonyakanok">github.com/vk-poonyakanok</a></p>
         </div>
     </div>
