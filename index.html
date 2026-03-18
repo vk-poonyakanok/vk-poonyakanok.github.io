@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitchakorn.init("Blue")</title>
+    <title>Vitchakorn Poonyakanok</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
     <!-- Using JetBrains Mono for a professional programmer feel -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for social icons -->
@@ -19,6 +20,8 @@
             --code-bg: #010409;
             --table-header: #21262d;
             --muted: #8b949e;
+            --tab-active: #2f81f7;
+            --tab-hover: #30363d;
         }
 
         [data-theme="light"] {
@@ -31,6 +34,8 @@
             --code-bg: #f6f8fa;
             --table-header: #f6f8fa;
             --muted: #57606a;
+            --tab-active: #0969da;
+            --tab-hover: #ebf0f4;
         }
 
         body {
@@ -64,13 +69,98 @@
         header {
             max-width: 900px;
             margin: 0 auto;
-            padding: 4rem 2rem 2rem;
+            padding: 4rem 2rem 1rem;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
             padding: 0 2rem 4rem;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+            position: sticky;
+            top: 0;
+            background-color: var(--bg);
+            z-index: 100;
+            padding-top: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-bar::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--muted);
+            padding: 12px 18px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+            background-color: var(--tab-hover);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .tab-btn.active {
+            color: var(--heading);
+            border-bottom-color: var(--tab-active);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 3rem 1.5rem 1rem;
+            }
+            .container {
+                padding: 0 1rem 2rem;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .tab-btn {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+            .social-icons {
+                gap: 15px;
+            }
+            .social-icons a {
+                font-size: 1.2rem;
+            }
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card {
@@ -114,6 +204,7 @@
             margin-top: 1.5rem;
             display: flex;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
         .social-icons a {
@@ -124,6 +215,14 @@
 
         .social-icons a:hover {
             color: var(--heading);
+        }
+
+        .email-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 1rem;
+            word-break: break-all;
         }
 
         table {
@@ -154,6 +253,12 @@
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+            table {
+                font-size: 0.8rem;
+            }
+            th, td {
+                padding: 8px;
             }
         }
 
@@ -196,18 +301,20 @@
         }
 
         details {
-            margin-top: 1rem;
+            margin-top: 0.5rem;
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 1rem;
+            padding: 0.8rem;
         }
 
         summary {
             cursor: pointer;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: var(--heading);
+            font-size: 0.8rem;
+            color: var(--accent);
             list-style: none;
+            display: flex;
+            align-items: center;
         }
 
         summary::-webkit-details-marker {
@@ -221,6 +328,87 @@
 
         details[open] summary::before {
             content: "⊖ ";
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            border-left: 2px solid var(--border);
+            padding-left: 20px;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -27px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--heading);
+        }
+
+        .timeline-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--heading);
+            font-weight: bold;
+        }
+
+        .timeline-content {
+            font-size: 0.9rem;
+        }
+
+        /* Applications Grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .app-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .app-logo {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            object-fit: contain;
+            background: var(--container-bg);
+            padding: 8px;
+        }
+
+        .app-name {
+            display: block;
+            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--heading);
+            font-size: 0.9rem;
         }
 
         a {
@@ -242,165 +430,289 @@
     </style>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()">Toggle_Theme()</button>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">Toggle_Theme()</button>
 
     <header>
-        <h1>Vitchakorn.init("Blue")</h1>
+        <h1>Vitchakorn Poonyakanok</h1>
         <div class="tagline">MD & Travel Medicine Resident | M.Sc. Digital & AI Tech for Health Systems</div>
     </header>
 
     <div class="container">
-        <div class="card">
-            <h2>About_Me</h2>
-            <p>I am a <span class="badge">Travel Medicine Resident</span> at the Institute of Preventive Medicine, Thailand. I specialize in preventive medicine, outbreak investigation, and travel health, bridging the gap between clinical practice and deep technical architecture.</p>
-            <p class="mono">Current_Focus: "National Vaccine Registry & Public Health Data Initiatives"</p>
-            
-            <div class="social-icons">
-                <a href="mailto:vk.poonyakanok@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
-                <a href="https://www.linkedin.com/in/vitchakorn" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="https://github.com/vk-poonyakanok" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
-                <a href="https://orcid.org/0009-0007-9945-0376" target="_blank" title="ORCID"><i class="fa-brands fa-orcid"></i></a>
-            </div>
-        </div>
+        <nav class="tab-bar">
+            <button class="tab-btn active" onclick="openTab(event, 'about')">About</button>
+            <button class="tab-btn" onclick="openTab(event, 'experience')">Experience</button>
+            <button class="tab-btn" onclick="openTab(event, 'projects')">Projects</button>
+            <button class="tab-btn" onclick="openTab(event, 'publications')">Publications</button>
+            <button class="tab-btn" onclick="openTab(event, 'skills')">Skills</button>
+            <button class="tab-btn" onclick="openTab(event, 'apps')">Apps</button>
+            <button class="tab-btn" onclick="openTab(event, 'languages')">Languages</button>
+        </nav>
 
-        <div class="card">
-            <h2>Projects</h2>
-            <div class="project-item">
-                <span class="item-title">AI-Assisted Altitude Extraction System for Travel Medicine</span>
-                <span class="item-meta">Aug 2025 – Present | Chulalongkorn University</span>
-                <p class="item-description">Developing an AI-driven system to automate the extraction of sleeping altitude data from unstructured travel itineraries (Text, PDF, and Images) using NLP and Computer Vision.</p>
-            </div>
-            <div class="project-item">
-                <span class="item-title">Menstruation Suppression Study among Thai Female Pilgrims</span>
-                <span class="item-meta">Mar 2025 – Present | Principal Investigator</span>
-                <p class="item-description">Large-scale study for Hajj 2026 season investigating knowledge and experiences regarding menstrual suppression methods.</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Publications</h2>
-            <div class="publication-item">
-                <span class="item-title">Investigation of MMR‐Related Mumps Cluster Following Immunization</span>
-                <span class="item-meta">Journal of Tropical Medicine | 2025 | DOI: <a href="https://doi.org/10.1155/jotm/9974081" target="_blank">10.1155/jotm/9974081</a></span>
-            </div>
-            <div class="publication-item">
-                <span class="item-title">Rapid Response to Methanol Intoxication Outbreak in Bangkok</span>
-                <span class="item-meta">Weekly Epidemiological Surveillance Report | 2024 | DOI: <a href="https://doi.org/10.59096/wesr.v55i9.3248" target="_blank">10.59096/wesr.v55i9.3248</a></span>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Tech_Stack</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Technologies</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="mono">Core_Langs</td>
-                        <td>Python, R, SQL, STATA</td>
-                    </tr>
-                    <tr>
-                        <td class="mono">Data_AI</td>
-                        <td>XGBoost, LightGBM, YOLO, NLP, Computer Vision</td>
-                    </tr>
-                    <tr>
-                        <td class="mono">Health_Informatics</td>
-                        <td>HL7/FHIR, Data Governance, Vaccinology, Epidemiology</td>
-                    </tr>
-                    <tr>
-                        <td class="mono">Viz_Design</td>
-                        <td>Tableau, Power BI, QGIS, Photoshop, Lightroom</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="card">
-            <h2>Certifications</h2>
-            <div class="cert-item">
-                <span class="item-title">Google Cybersecurity Professional</span>
-                <span class="item-meta">Jul 2024 | Google</span>
-            </div>
-            <div class="cert-item">
-                <span class="item-title">Google Advanced Data Analytics</span>
-                <span class="item-meta">Sep 2023 | Google</span>
-            </div>
-            <div class="cert-item">
-                <span class="item-title">Certified Professional Data Analyst</span>
-                <span class="item-meta">Mar 2024 | DataRockie | The School of Generalist</span>
-            </div>
-            <div class="cert-item">
-                <span class="item-title">ISTM - 2024 International Society of Travel Medicine Review</span>
-                <span class="item-meta">Feb 2024 | ISTM</span>
-            </div>
-
-            <details>
-                <summary>More Licenses & Certifications</summary>
-                <div class="cert-item" style="margin-top: 1rem;">
-                    <span class="item-title">Tour Leader License</span>
-                    <span class="item-meta">Dec 2025 | Department of Tourism - Thailand</span>
+        <!-- About Tab -->
+        <div id="about" class="tab-content active">
+            <div class="card">
+                <h2>About_Me</h2>
+                <p>I am a <span class="badge">Travel Medicine Resident</span> (known to my peers as <strong>Blue</strong>) at the Institute of Preventive Medicine, Thailand. I specialize in preventive medicine, outbreak investigation, and travel health, bridging the gap between clinical practice and deep technical architecture.</p>
+                <p class="mono">Current_Focus: "National Vaccine Registry & Public Health Data Initiatives"</p>
+                
+                <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span class="mono" style="font-size: 0.9rem; color: var(--heading);">Contact_Me:</span>
+                    <a href="mailto:vk.poonyakanok@gmail.com" class="email-link" style="margin-bottom: 0;">vk.poonyakanok@gmail.com</a>
                 </div>
+
+                <div class="social-icons" style="margin-top: 1rem;">
+                    <a href="https://github.com/vk-poonyakanok" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/vitchakorn" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="https://www.researchgate.net/profile/Vitchakorn-Poonyakanok" target="_blank" title="ResearchGate"><i class="fa-brands fa-researchgate"></i></a>
+                    <a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok" target="_blank" title="Tableau"><i class="fa-solid fa-chart-column"></i></a>
+                    <a href="https://www.kaggle.com/vitchakorn" target="_blank" title="Kaggle"><i class="fa-brands fa-kaggle"></i></a>
+                    <a href="https://orcid.org/0009-0007-9945-0376" target="_blank" title="ORCID"><i class="fa-brands fa-orcid"></i></a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>GitHub_Metrics</h2>
+                <div class="stats-grid">
+                    <img src="https://github-readme-stats.vercel.app/api?username=vk-poonyakanok&show_icons=true&theme=tokyonight" alt="GitHub Stats">
+                    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=vk-poonyakanok&layout=compact&theme=tokyonight" alt="Top Languages">
+                </div>
+            </div>
+        </div>
+
+        <!-- Experience Tab -->
+        <div id="experience" class="tab-content">
+            <div class="card">
+                <h2>The_Path</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">2025 - Present</div>
+                        <div class="timeline-content"><strong>M.Sc. Digital & AI Tech in Health Systems</strong> | Chulalongkorn University</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2024 - Present</div>
+                        <div class="timeline-content"><strong>Travel Medicine Residency</strong> | Institute of Preventive Medicine, DDC, MOPH</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">Nov 2024 - Present</div>
+                        <div class="timeline-content"><strong>General Practitioner</strong> | ODPC 6 (Pattaya), Chon Buri</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2022 - 2024</div>
+                        <div class="timeline-content"><strong>General Practitioner</strong> | Bamrasnaradura Infectious Diseases Institute</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2020 - 2022</div>
+                        <div class="timeline-content"><strong>General Practitioner (Intern)</strong> | Si Songkhram Hospital, Nakhon Phanom</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2019 - 2020</div>
+                        <div class="timeline-content"><strong>General Practitioner (Intern)</strong> | Nong Khai Hospital, Nong Khai</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2013 - 2019</div>
+                        <div class="timeline-content"><strong>Doctor of Medicine (MD)</strong> | Mahidol University (Ramathibodi Hospital)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Tab -->
+        <div id="projects" class="tab-content">
+            <div class="card">
+                <h2>Featured_Projects</h2>
+                <div class="project-item">
+                    <span class="item-title">Altitude Itinerary Analyzer (AI Clinical Decision Support)</span>
+                    <p class="item-description">Full-stack web application to autonomously extract & analyze multi-modal travel itineraries for high-altitude risk assessment.</p>
+                </div>
+                <div class="project-item">
+                    <span class="item-title">Thai HospSearch</span>
+                    <p class="item-description">Interactive navigator for Thai healthcare administrative hierarchy (Region to Subdistrict) with direct code lookup.</p>
+                </div>
+                <div class="project-item">
+                    <span class="item-title">Hajj Menstrual Delay Planner</span>
+                    <p class="item-description">Web utility for calculating and visualizing menstrual cycles and planning for menstrual delay/suppression for pilgrims.</p>
+                </div>
+                <div class="project-item">
+                    <span class="item-title">PM2.5 & Mental Health Dynamics (Tableau Story)</span>
+                    <p class="item-description">Visualized spatial-temporal correlations between air pollution and psychiatric disorders using Interrupted Time Series (ITS) models.</p>
+                </div>
+                <div class="project-item">
+                    <span class="item-title">Cirrhosis Survival Prediction</span>
+                    <p class="item-description">Multi-class prediction model using Ensemble Learning (XGBoost/LightGBM) with engineered clinical features.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Publications Tab -->
+        <div id="publications" class="tab-content">
+            <div class="card">
+                <h2>Publications</h2>
+                <div class="publication-item">
+                    <span class="item-title">An Investigation of MMR‐Related Mumps Cluster Following Immunization Among Practical Nursing Students, Bangkok, Thailand, 2024</span>
+                    <span class="item-meta">Journal of Tropical Medicine (Wiley) · Aug 1, 2025</span>
+                    <span class="item-meta">DOI: <a href="https://doi.org/10.1155/jotm/9974081" target="_blank">10.1155/jotm/9974081</a></span>
+                    <details>
+                        <summary>Show publication detail</summary>
+                        <p class="item-description"><strong>Contributors:</strong> Sethapong Lertsakulbunlue, Drunphob Srithammavong, Kamonchanok Tepsittha, Hataya Kanjanasombut, Vitchakorn Poonyakanok, Viravarn Luvira, Phimphan Pisutsan, Rachata Charoenwisedsil, Pathomthep Leowattana, Peeriya Watakulsin et al.</p>
+                        <p class="item-description">This study investigated a cluster of mumps-like cases among practical nursing students following MMR vaccination, identifying operational risk factors and confirming vaccine-related mumps infections through molecular analysis. Recommendations were made to improve vaccination campaign processes.</p>
+                    </details>
+                </div>
+                <div class="publication-item">
+                    <span class="item-title">Preliminary investigation and rapid response to methanol intoxication outbreak linked to illegal herbal liquor in Bangkok, August 2024</span>
+                    <span class="item-meta">Weekly Epidemiological Surveillance Report (WESR) · Sep 6, 2024</span>
+                    <span class="item-meta">DOI: <a href="https://doi.org/10.59096/wesr.v55i9.3248" target="_blank">10.59096/wesr.v55i9.3248</a></span>
+                    <details>
+                        <summary>Show publication detail</summary>
+                        <div class="item-description">
+                            <ul>
+                                <li>As of September 3, 2024, 44 individuals were investigated under methanol intoxication outbreak related to illegal herbal liquor in Bangkok, August 2024, including 20 confirmed cases, 10 probable cases, and 8 suspected cases. Eight deaths were reported, with a gender ratio of 9.25 males per 1 female, and the median age of patients was 39 years.</li>
+                                <li>The investigation found that there may have been methanol contamination in the production process of the illegal herbal liquor, resulting in the spread at 18 illegal herbal liquor booths.</li>
+                                <li>Immediate actions included closing herbal liquor booths and launching a public awareness campaign through various media channels, including multilingual TikTok videos. The authorities also monitored the situation closely, ensuring no new cases were reported over a 7-day period.</li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills Tab -->
+        <div id="skills" class="tab-content">
+            <div class="card">
+                <h2>Tech_Stack</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Technologies</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="mono">Programming_Stats</td>
+                            <td>R, Python, STATA, SQL</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Software_AI</td>
+                            <td>QGIS, Computer Vision (YOLO), Firebase, UML, NLP</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Viz_Design</td>
+                            <td>Tableau, Looker, Power BI, Photoshop, Inkscape</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Health_Informatics</td>
+                            <td>HL7/FHIR, Data Governance, Vaccinology, Epidemiology</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Certifications</h2>
                 <div class="cert-item">
                     <span class="item-title">Biomedical Researchers</span>
                     <span class="item-meta">Jan 2025 | CITI Program</span>
                 </div>
                 <div class="cert-item">
-                    <span class="item-title">Cybersecurity Foundation Course</span>
-                    <span class="item-meta">Aug 2024 | Thailand National Cyber Academy</span>
+                    <span class="item-title">Google Cybersecurity Professional</span>
+                    <span class="item-meta">Jul 2024 | Google</span>
                 </div>
                 <div class="cert-item">
-                    <span class="item-title">Introductory Course in Epidemiology and Biostatistics</span>
-                    <span class="item-meta">Jun 2024 | DDC, MOPH, Thailand</span>
+                    <span class="item-title">Certified Professional Data Analyst</span>
+                    <span class="item-meta">Mar 2024 | DataRockie | The School of Generalist</span>
                 </div>
                 <div class="cert-item">
-                    <span class="item-title">Introduction to Data Studio</span>
-                    <span class="item-meta">Jan 2024 | Google Analytics by Liontech</span>
+                    <span class="item-title">Google Advanced Data Analytics</span>
+                    <span class="item-meta">Sep 2023 | Google</span>
                 </div>
                 <div class="cert-item">
-                    <span class="item-title">Data Visualization with Tableau</span>
-                    <span class="item-meta">Aug 2023 | UC Davis</span>
-                </div>
-                <div class="cert-item">
-                    <span class="item-title">Excel Level Up Update 2021</span>
-                    <span class="item-meta">Jul 2023 | SkillLane</span>
-                </div>
-                <div class="cert-item">
-                    <span class="item-title">Google Data Analytics</span>
-                    <span class="item-meta">Apr 2023 | Google</span>
-                </div>
-                <div class="cert-item">
-                    <span class="item-title">Diploma in Clinical Epidemiology</span>
+                    <span class="item-title">Diploma in Clinical Epidemiology & Statistics</span>
                     <span class="item-meta">Dec 2022 | Chiang Mai University</span>
                 </div>
-                <div class="cert-item">
-                    <span class="item-title">Diploma in Clinical Statistics</span>
-                    <span class="item-meta">May 2022 | Chiang Mai University</span>
+
+                <details>
+                    <summary>More Licenses & Certifications</summary>
+                    <div class="cert-item" style="margin-top: 1rem;">
+                        <span class="item-title">Tour Leader License</span>
+                        <span class="item-meta">Dec 2025 | Department of Tourism - Thailand</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="item-title">ISTM - 2024 International Society of Travel Medicine Review</span>
+                        <span class="item-meta">Feb 2024 | ISTM</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="item-title">Cybersecurity Foundation Course</span>
+                        <span class="item-meta">Aug 2024 | Thailand National Cyber Academy</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="item-title">Introductory Course in Epidemiology and Biostatistics</span>
+                        <span class="item-meta">Jun 2024 | DDC, MOPH, Thailand</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="item-title">Introduction to Data Studio</span>
+                        <span class="item-meta">Jan 2024 | Google Analytics by Liontech</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="item-title">Data Visualization with Tableau</span>
+                        <span class="item-meta">Aug 2023 | UC Davis</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="item-title">Excel Level Up Update 2021</span>
+                        <span class="item-meta">Jul 2023 | SkillLane</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="item-title">Google Data Analytics</span>
+                        <span class="item-meta">Apr 2023 | Google</span>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <!-- Apps Tab -->
+        <div id="apps" class="tab-content">
+            <div class="card">
+                <h2>Applications</h2>
+                <div class="apps-grid">
+                    <a href="https://altit.app/" target="_blank" class="app-card">
+                        <img src="logo/altit.webp" alt="Altitude Itinerary Analyzer" class="app-logo">
+                        <span class="app-name">Altitude Itinerary Analyzer</span>
+                    </a>
+                    <a href="https://hajj-period-planner.vercel.app/" target="_blank" class="app-card">
+                        <img src="logo/hajjmens.webp" alt="Hajj Menstrual Delay Planner" class="app-logo">
+                        <span class="app-name">Hajj Menstrual Delay Planner</span>
+                    </a>
+                    <a href="https://menstrual.netlify.app/" target="_blank" class="app-card">
+                        <img src="logo/mens.webp" alt="Menstrual Cycle Predictor" class="app-logo">
+                        <span class="app-name">Menstrual Cycle Predictor</span>
+                    </a>
+                    <a href="https://hoscode.vercel.app/" target="_blank" class="app-card">
+                        <img src="logo/hospsearch.webp" alt="Thai HospSearch" class="app-logo">
+                        <span class="app-name">Thai HospSearch</span>
+                    </a>
+                    <a href="https://thaicda2558.vercel.app/" target="_blank" class="app-card">
+                        <img src="logo/thaicda2558.webp" alt="CDA 2558 App" class="app-logo">
+                        <span class="app-name">CDA 2558 App</span>
+                    </a>
                 </div>
-            </details>
-        </div>
-
-        <div class="card">
-            <h2>Language_Competency</h2>
-            <div class="cert-item">
-                <span class="item-title">English</span>
-                <span class="item-meta">Professional Working Proficiency</span>
-                <p class="item-description mono">TOEFL_iBT: 91 | Duolingo_Score: 120</p>
-            </div>
-            <div class="cert-item">
-                <span class="item-title">Thai</span>
-                <span class="item-meta">Native Proficiency</span>
             </div>
         </div>
 
-        <div class="card">
-            <h2>GitHub_Metrics</h2>
-            <div class="stats-grid">
-                <img src="https://github-readme-stats.vercel.app/api?username=vk-poonyakanok&show_icons=true&theme=tokyonight" alt="GitHub Stats">
-                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=vk-poonyakanok&layout=compact&theme=tokyonight" alt="Top Languages">
+        <!-- Languages Tab -->
+        <div id="languages" class="tab-content">
+            <div class="card">
+                <h2>Language_Competency</h2>
+                <div class="cert-item">
+                    <span class="item-title">English</span>
+                    <span class="item-meta">Professional Working Proficiency</span>
+                    <p class="item-description mono">
+                        TOEFL_iBT: 91/120 (June 2025)<br>
+                        Duolingo_English_Test: 120/160 (MAR 2026)
+                    </p>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Thai</span>
+                    <span class="item-meta">Native Proficiency</span>
+                </div>
             </div>
         </div>
     </div>
@@ -410,23 +722,53 @@
     </footer>
 
     <script>
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                body.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'dark');
+        function updateToggleIcon(theme) {
+            const toggleBtn = document.getElementById('theme-toggle');
+            if (theme === 'light') {
+                toggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
             } else {
-                body.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
+                toggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
             }
         }
 
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.body.setAttribute('data-theme', 'light');
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            if (newTheme === 'light') {
+                body.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateToggleIcon(newTheme);
         }
+
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            const tabBtns = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            
+            // Scroll to top of container when switching tabs on mobile
+            const tabBar = document.querySelector('.tab-bar');
+            if (window.innerWidth < 768) {
+                window.scrollTo({ top: tabBar.offsetTop - 10, behavior: 'smooth' });
+            }
+        }
+
+        // Initialize
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') document.body.setAttribute('data-theme', 'light');
+        updateToggleIcon(savedTheme);
     </script>
 </body>
 </html>
