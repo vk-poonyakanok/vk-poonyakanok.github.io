@@ -492,15 +492,18 @@
     </header>
 
     <div class="container">
-        <nav class="tab-bar">
-            <button class="tab-btn active" onclick="openTab(event, 'about')">About</button>
-            <button class="tab-btn" onclick="openTab(event, 'experience')">Experience</button>
-            <button class="tab-btn" onclick="openTab(event, 'projects')">Projects</button>
-            <button class="tab-btn" onclick="openTab(event, 'publications')">Publications</button>
-            <button class="tab-btn" onclick="openTab(event, 'skills')">Skills</button>
-            <button class="tab-btn" onclick="openTab(event, 'apps')">Apps</button>
-            <button class="tab-btn" onclick="openTab(event, 'languages')">Languages</button>
-        </nav>
+        <div class="tab-bar-container">
+            <nav class="tab-bar">
+                <div class="sliding-underline" id="tab-underline"></div>
+                <button class="tab-btn active" onclick="openTab(event, 'about')">About</button>
+                <button class="tab-btn" onclick="openTab(event, 'experience')">Experience</button>
+                <button class="tab-btn" onclick="openTab(event, 'projects')">Projects</button>
+                <button class="tab-btn" onclick="openTab(event, 'publications')">Publications</button>
+                <button class="tab-btn" onclick="openTab(event, 'skills')">Skills</button>
+                <button class="tab-btn" onclick="openTab(event, 'apps')">Apps</button>
+                <button class="tab-btn" onclick="openTab(event, 'languages')">Languages</button>
+            </nav>
+        </div>
 
         <!-- About Tab -->
         <div id="about" class="tab-content active">
@@ -812,6 +815,15 @@
             updateToggleIcon(newTheme);
         }
 
+        function updateUnderline() {
+            const activeBtn = document.querySelector('.tab-btn.active');
+            const underline = document.getElementById('tab-underline');
+            if (activeBtn && underline) {
+                underline.style.width = activeBtn.offsetWidth + 'px';
+                underline.style.left = activeBtn.offsetLeft + 'px';
+            }
+        }
+
         function openTab(evt, tabName) {
             const tabContents = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabContents.length; i++) {
@@ -824,10 +836,19 @@
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
             
-            // Scroll to top of container when switching tabs on mobile
+            // 1. Update sliding underline
+            updateUnderline();
+
+            // 2. Auto-center the active tab in the scroll view
             const tabBar = document.querySelector('.tab-bar');
+            const activeBtn = evt.currentTarget;
+            const scrollLeft = activeBtn.offsetLeft - (tabBar.offsetWidth / 2) + (activeBtn.offsetWidth / 2);
+            tabBar.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+
+            // Scroll to top of container when switching tabs on mobile
             if (window.innerWidth < 768) {
-                window.scrollTo({ top: tabBar.offsetTop - 10, behavior: 'smooth' });
+                const headerHeight = document.querySelector('header').offsetHeight;
+                window.scrollTo({ top: headerHeight, behavior: 'smooth' });
             }
         }
 
@@ -836,6 +857,8 @@
         if (savedTheme === 'light') document.body.setAttribute('data-theme', 'light');
         updateToggleIcon(savedTheme);
         updateFooterDate();
+        window.addEventListener('resize', updateUnderline);
+        updateUnderline();
     </script>
 </body>
 </html>
