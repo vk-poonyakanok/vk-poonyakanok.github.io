@@ -82,7 +82,6 @@
             display: flex;
             gap: 10px;
             margin-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
             padding-bottom: 0;
             overflow-x: auto;
             scrollbar-width: none; /* Firefox */
@@ -92,6 +91,55 @@
             z-index: 100;
             padding-top: 10px;
             -webkit-overflow-scrolling: touch;
+            border-bottom: none; /* Removed fixed border to use underline container */
+        }
+
+        /* Container for the underline to live behind the tabs but above the border */
+        .tab-bar::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--border);
+            z-index: 1;
+        }
+
+        .sliding-underline {
+            position: absolute;
+            bottom: 0;
+            height: 2px;
+            background: var(--tab-active);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+        }
+
+        .tab-bar-container {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .tab-bar-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 40px;
+            background: linear-gradient(to right, transparent, var(--bg));
+            pointer-events: none;
+            z-index: 101;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Show hint only on mobile/small screens when scrolling is likely */
+        @media (max-width: 768px) {
+            .tab-bar-container::after {
+                opacity: 1;
+            }
         }
 
         .tab-bar::-webkit-scrollbar {
