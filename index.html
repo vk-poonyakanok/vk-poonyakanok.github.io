@@ -173,7 +173,7 @@
             color: var(--heading);
         }
 
-        .project-item, .publication-item {
+        .project-item, .publication-item, .cert-item {
             margin-bottom: 1.5rem;
         }
 
@@ -193,6 +193,34 @@
             font-size: 0.85rem;
             color: var(--muted);
             margin-top: 0.5rem;
+        }
+
+        details {
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        summary {
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--heading);
+            list-style: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::before {
+            content: "⊕ ";
+            margin-right: 5px;
+        }
+
+        details[open] summary::before {
+            content: "⊖ ";
         }
 
         a {
@@ -233,6 +261,70 @@
                 <a href="https://github.com/vk-poonyakanok" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
                 <a href="https://orcid.org/0009-0007-9945-0376" target="_blank" title="ORCID"><i class="fa-brands fa-orcid"></i></a>
             </div>
+        </div>
+
+        <div class="card">
+            <h2>Certifications</h2>
+            <div class="cert-item">
+                <span class="item-title">Google Cybersecurity Professional</span>
+                <span class="item-meta">Jul 2024 | Google</span>
+            </div>
+            <div class="cert-item">
+                <span class="item-title">Google Advanced Data Analytics</span>
+                <span class="item-meta">Sep 2023 | Google</span>
+            </div>
+            <div class="cert-item">
+                <span class="item-title">Certified Professional Data Analyst</span>
+                <span class="item-meta">Mar 2024 | DataRockie | The School of Generalist</span>
+            </div>
+            <div class="cert-item">
+                <span class="item-title">ISTM - 2024 International Society of Travel Medicine Review</span>
+                <span class="item-meta">Feb 2024 | ISTM</span>
+            </div>
+
+            <details>
+                <summary>More Licenses & Certifications</summary>
+                <div class="cert-item" style="margin-top: 1rem;">
+                    <span class="item-title">Tour Leader License</span>
+                    <span class="item-meta">Dec 2025 | Department of Tourism - Thailand</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Biomedical Researchers</span>
+                    <span class="item-meta">Jan 2025 | CITI Program</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Cybersecurity Foundation Course</span>
+                    <span class="item-meta">Aug 2024 | Thailand National Cyber Academy</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Introductory Course in Epidemiology and Biostatistics</span>
+                    <span class="item-meta">Jun 2024 | DDC, MOPH, Thailand</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Introduction to Data Studio</span>
+                    <span class="item-meta">Jan 2024 | Google Analytics by Liontech</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Data Visualization with Tableau</span>
+                    <span class="item-meta">Aug 2023 | UC Davis</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Excel Level Up Update 2021</span>
+                    <span class="item-meta">Jul 2023 | SkillLane</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Google Data Analytics</span>
+                    <span class="item-meta">Apr 2023 | Google</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Diploma in Clinical Epidemiology</span>
+                    <span class="item-meta">Dec 2022 | Chiang Mai University</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Diploma in Clinical Statistics</span>
+                    <span class="item-meta">May 2022 | Chiang Mai University</span>
+                </div>
+            </details>
         </div>
 
         <div class="card">
@@ -301,7 +393,7 @@
     </div>
 
     <footer>
-        <p>Built with JetBrains Mono & GitHub Dark Theme | 2026</p>
+        <p>Vitchakorn Poonyakanok, MD | Travel Medicine & DigiHealth</p>
     </footer>
 
     <script>
