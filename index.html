@@ -135,13 +135,6 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Show hint only on mobile/small screens when scrolling is likely */
-        @media (max-width: 768px) {
-            .tab-bar-container::after {
-                opacity: 1;
-            }
-        }
-
         .tab-bar::-webkit-scrollbar {
             display: none; /* Chrome/Safari */
         }
@@ -178,6 +171,14 @@
             }
             .container {
                 padding: 0 1.25rem 2rem; /* Adjusted for better spacing */
+            }
+            .tab-bar {
+                flex-wrap: wrap; /* Allow tabs to wrap to multiple lines */
+                justify-content: center; /* Center tabs when wrapped */
+            }
+            /* Hide the fading hint since all tabs are now visible */
+            .tab-bar-container::after {
+                display: none;
             }
             .tab-btn {
                 padding: 8px 10px; /* More compact tabs */
@@ -500,6 +501,7 @@
                 <button class="tab-btn" onclick="openTab(event, 'projects')">Projects</button>
                 <button class="tab-btn" onclick="openTab(event, 'publications')">Publications</button>
                 <button class="tab-btn" onclick="openTab(event, 'skills')">Skills</button>
+                <button class="tab-btn" onclick="openTab(event, 'certifications')">Certifications</button>
                 <button class="tab-btn" onclick="openTab(event, 'apps')">Apps</button>
                 <button class="tab-btn" onclick="openTab(event, 'languages')">Languages</button>
             </nav>
