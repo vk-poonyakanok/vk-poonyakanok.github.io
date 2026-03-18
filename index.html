@@ -6,6 +6,8 @@
     <title>Vitchakorn.init("Blue")</title>
     <!-- Using JetBrains Mono for a professional programmer feel -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg: #0d1117;
@@ -106,10 +108,20 @@
             opacity: 0.5;
         }
 
-        h3 {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--accent);
+        .social-icons {
             margin-top: 1.5rem;
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--heading);
         }
 
         table {
@@ -206,6 +218,13 @@
             <h2>About_Me</h2>
             <p>I am a <span class="badge">Travel Medicine Resident</span> at the Institute of Preventive Medicine, Thailand. I specialize in preventive medicine, outbreak investigation, and travel health, bridging the gap between clinical practice and deep technical architecture.</p>
             <p class="mono">Current_Focus: "National Vaccine Registry & Public Health Data Initiatives"</p>
+            
+            <div class="social-icons">
+                <a href="mailto:vk.poonyakanok@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                <a href="https://www.linkedin.com/in/vitchakorn" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="https://github.com/vk-poonyakanok" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="https://orcid.org/0009-0007-9945-0376" target="_blank" title="ORCID"><i class="fa-brands fa-orcid"></i></a>
+            </div>
         </div>
 
         <div class="card">
@@ -270,14 +289,6 @@
                 <img src="https://github-readme-stats.vercel.app/api?username=vk-poonyakanok&show_icons=true&theme=tokyonight" alt="GitHub Stats">
                 <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=vk-poonyakanok&layout=compact&theme=tokyonight" alt="Top Languages">
             </div>
-        </div>
-
-        <div class="card">
-            <h2>Connect</h2>
-            <p class="mono">Email: <a href="mailto:vk.poonyakanok@gmail.com">vk.poonyakanok@gmail.com</a></p>
-            <p class="mono">ORCID: <a href="https://orcid.org/0009-0007-9945-0376" target="_blank">0009-0007-9945-0376</a></p>
-            <p class="mono">LinkedIn: <a href="https://www.linkedin.com/in/vitchakorn" target="_blank">linkedin.com/in/vitchakorn</a></p>
-            <p class="mono">GitHub: <a href="https://github.com/vk-poonyakanok">github.com/vk-poonyakanok</a></p>
         </div>
     </div>
 
