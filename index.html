@@ -254,6 +254,22 @@
             opacity: 0.5;
         }
 
+        h3 {
+            color: var(--heading);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        h3::before {
+            content: ":: ";
+            margin-right: 10px;
+            opacity: 0.5;
+        }
+
         .social-icons {
             margin-top: 1.5rem;
             display: flex;
@@ -334,6 +350,25 @@
 
         .project-item, .publication-item, .cert-item {
             margin-bottom: 1.5rem;
+        }
+
+        .cert-item-with-badge {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cert-badge {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .cert-badge:hover {
+            transform: scale(1.1);
         }
 
         .item-title {
@@ -698,21 +733,88 @@
         <div id="certifications" class="tab-content">
             <div class="card">
                 <h2>Certifications</h2>
+
+                <h3>Data Science & AI</h3>
+                <div class="cert-item-with-badge">
+                    <a href="https://www.credly.com/badges/8899f832-5090-4806-aa56-a70c73aac982/public_url" target="_blank">
+                        <img src="badge/google-ai-essentials-v1.png" alt="Google AI Essentials Badge" class="cert-badge">
+                    </a>
+                    <div>
+                        <span class="item-title">Google AI Essentials V1</span>
+                        <span class="item-meta">May 19, 2024 | Google | Coursera</span>
+                    </div>
+                </div>
+
+                <div class="cert-item-with-badge">
+                    <a href="https://badges.parchment.com/public/assertions/TZjRyAo3Qa-jSuuQoizKZA" target="_blank">
+                        <img src="badge/DataRockie School - Certified Professional Data Analyst - 2024-03-12.png" alt="DataRockie Badge" class="cert-badge">
+                    </a>
+                    <div>
+                        <span class="item-title">Certified Professional Data Analyst</span>
+                        <span class="item-meta">Mar 12, 2024 | DataRockie | The School of Generalist</span>
+                    </div>
+                </div>
+
+                <div class="cert-item-with-badge">
+                    <a href="https://www.credly.com/badges/a47520a4-8a19-405a-8d40-3ce21294b821/public_url" target="_blank">
+                        <img src="badge/google-advanced-data-analytics-certificate.png" alt="Google Advanced Data Analytics Badge" class="cert-badge">
+                    </a>
+                    <div>
+                        <span class="item-title">Google Advanced Data Analytics</span>
+                        <span class="item-meta">Sep 26, 2023 | Google | Coursera</span>
+                    </div>
+                </div>
+
+                <div class="cert-item-with-badge">
+                    <a href="https://www.credly.com/badges/b13ad3c0-40ab-4fbf-80b4-96761a30c10e/public_url" target="_blank">
+                        <img src="badge/google-data-analytics-professional-certificate.2.png" alt="Google Data Analytics Badge" class="cert-badge">
+                    </a>
+                    <div>
+                        <span class="item-title">Google Data Analytics Professional Certificate</span>
+                        <span class="item-meta">Apr 24, 2023 | Google | Coursera</span>
+                    </div>
+                </div>
+
+                <div class="cert-item">
+                    <span class="item-title">Introduction to Data Studio</span>
+                    <span class="item-meta">Jan 2024 | Google Analytics by Liontech</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Data Visualization with Tableau</span>
+                    <span class="item-meta">Aug 2023 | UC Davis</span>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Excel Level Up Update 2021</span>
+                    <span class="item-meta">Jul 2023 | SkillLane</span>
+                </div>
+
+                <h3>Cybersecurity</h3>
+                <div class="cert-item-with-badge">
+                    <a href="https://www.credly.com/badges/b0ae0526-84e7-4cd7-b0d3-298549abf88b/public_url" target="_blank">
+                        <img src="badge/google-cybersecurity-professional-certificate-v2.png" alt="Google Cybersecurity Badge" class="cert-badge">
+                    </a>
+                    <div>
+                        <span class="item-title">Google Cybersecurity Professional Certificate V2</span>
+                        <span class="item-meta">Jul 24, 2024 | Google | Coursera</span>
+                    </div>
+                </div>
+                <div class="cert-item">
+                    <span class="item-title">Cybersecurity Foundation Course</span>
+                    <span class="item-meta">Aug 2024 | Thailand National Cyber Academy</span>
+                </div>
+
+                <h3>Medical & Public Health</h3>
                 <div class="cert-item">
                     <span class="item-title">Biomedical Researchers</span>
                     <span class="item-meta">Jan 2025 | CITI Program</span>
                 </div>
                 <div class="cert-item">
-                    <span class="item-title">Google Cybersecurity Professional</span>
-                    <span class="item-meta">Jul 2024 | Google</span>
+                    <span class="item-title">Introductory Course in Epidemiology and Biostatistics</span>
+                    <span class="item-meta">Jun 2024 | DDC, MOPH, Thailand</span>
                 </div>
                 <div class="cert-item">
-                    <span class="item-title">Certified Professional Data Analyst</span>
-                    <span class="item-meta">Mar 2024 | DataRockie | The School of Generalist</span>
-                </div>
-                <div class="cert-item">
-                    <span class="item-title">Google Advanced Data Analytics</span>
-                    <span class="item-meta">Sep 2023 | Google</span>
+                    <span class="item-title">ISTM - 2024 International Society of Travel Medicine Review</span>
+                    <span class="item-meta">Feb 2024 | ISTM</span>
                 </div>
                 <div class="cert-item">
                     <span class="item-title">Diploma in Clinical Epidemiology & Statistics</span>
@@ -724,34 +826,6 @@
                     <div class="cert-item" style="margin-top: 1rem;">
                         <span class="item-title">Tour Leader License</span>
                         <span class="item-meta">Dec 2025 | Department of Tourism - Thailand</span>
-                    </div>
-                    <div class="cert-item">
-                        <span class="item-title">ISTM - 2024 International Society of Travel Medicine Review</span>
-                        <span class="item-meta">Feb 2024 | ISTM</span>
-                    </div>
-                    <div class="cert-item">
-                        <span class="item-title">Cybersecurity Foundation Course</span>
-                        <span class="item-meta">Aug 2024 | Thailand National Cyber Academy</span>
-                    </div>
-                    <div class="cert-item">
-                        <span class="item-title">Introductory Course in Epidemiology and Biostatistics</span>
-                        <span class="item-meta">Jun 2024 | DDC, MOPH, Thailand</span>
-                    </div>
-                    <div class="cert-item">
-                        <span class="item-title">Introduction to Data Studio</span>
-                        <span class="item-meta">Jan 2024 | Google Analytics by Liontech</span>
-                    </div>
-                    <div class="cert-item">
-                        <span class="item-title">Data Visualization with Tableau</span>
-                        <span class="item-meta">Aug 2023 | UC Davis</span>
-                    </div>
-                    <div class="cert-item">
-                        <span class="item-title">Excel Level Up Update 2021</span>
-                        <span class="item-meta">Jul 2023 | SkillLane</span>
-                    </div>
-                    <div class="cert-item">
-                        <span class="item-title">Google Data Analytics</span>
-                        <span class="item-meta">Apr 2023 | Google</span>
                     </div>
                 </details>
             </div>
