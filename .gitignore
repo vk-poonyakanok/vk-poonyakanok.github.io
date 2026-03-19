@@ -1,3 +1,6 @@
 /.superpowers
 gemini.md
-firebase-debug.log.DS_Store
+firebase-debug.log
+docs/superpowers/
+.gitignore
+.DS_Store
