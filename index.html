@@ -1,1224 +1,2172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitchakorn Poonyakanok</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f81f7%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-family=%22'JetBrains Mono', monospace%22 font-size=%2260%22 font-weight=%22bold%22 fill=%22white%22>VP</text></svg>">
-    <!-- Using JetBrains Mono for a professional programmer feel -->
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for social icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg: #0d1117;
-            --container-bg: #161b22;
-            --text: #c9d1d9;
-            --heading: #58a6ff;
-            --accent: #2f81f7;
-            --border: #30363d;
-            --code-bg: #010409;
-            --table-header: #21262d;
-            --muted: #8b949e;
-            --tab-active: #2f81f7;
-            --tab-hover: #30363d;
-        }
-
-        [data-theme="light"] {
-            --bg: #f6f8fa;
-            --container-bg: #ffffff;
-            --text: #24292f;
-            --heading: #0969da;
-            --accent: #0550ae;
-            --border: #d0d7de;
-            --code-bg: #f6f8fa;
-            --table-header: #f6f8fa;
-            --muted: #57606a;
-            --tab-active: #0969da;
-            --tab-hover: #ebf0f4;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            line-height: 1.6;
-            transition: all 0.3s ease;
-        }
-
-        code, pre, .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--container-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            z-index: 1000;
-        }
-
-        header {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 4rem 2rem 1rem;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 2rem 4rem;
-        }
-
-        .tab-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 2rem;
-            padding-bottom: 0;
-            overflow-x: auto;
-            scrollbar-width: none; /* Firefox */
-            position: sticky;
-            top: 0;
-            background-color: var(--bg);
-            z-index: 100;
-            padding-top: 10px;
-            -webkit-overflow-scrolling: touch;
-            border-bottom: none; /* Removed fixed border to use underline container */
-        }
-
-        /* Container for the underline to live behind the tabs but above the border */
-        .tab-bar::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--border);
-            z-index: 1;
-        }
-
-        .sliding-underline {
-            position: absolute;
-            height: 2px;
-            background: var(--tab-active);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 2;
-        }
-
-        .tab-bar-container {
-            position: relative;
-            max-width: 100%;
-            overflow: hidden;
-        }
-
-        .tab-bar-container::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 40px;
-            background: linear-gradient(to right, transparent, var(--bg));
-            pointer-events: none;
-            z-index: 101;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .tab-bar::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            color: var(--muted);
-            padding: 12px 18px;
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-            outline: none;
-        }
-
-        .tab-btn:hover {
-            color: var(--text);
-            background-color: var(--tab-hover);
-            border-radius: 6px 6px 0 0;
-        }
-
-        .tab-btn.active {
-            color: var(--heading);
-            border-bottom-color: var(--tab-active);
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 3rem 1.5rem 1rem;
-            }
-            .container {
-                padding: 0 1.25rem 2rem; /* Adjusted for better spacing */
-            }
-            .tab-bar {
-                flex-wrap: wrap; /* Allow tabs to wrap to multiple lines */
-                justify-content: center; /* Center tabs when wrapped */
-            }
-            /* Hide the fading hint since all tabs are now visible */
-            .tab-bar-container::after {
-                display: none;
-            }
-            .tab-btn {
-                padding: 8px 10px; /* More compact tabs */
-                font-size: 0.8rem;
-            }
-            .apps-grid {
-                grid-template-columns: 1fr; /* Single column on very small screens */
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .tab-bar {
-                padding-top: 5px;
-            }
-            .tab-btn {
-                padding: 6px 8px;
-                font-size: 0.75rem;
-            }
-            .card {
-                padding: 1rem; /* More compact cards */
-            }
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card {
-            background: var(--container-bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        h1 {
-            color: var(--heading);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: clamp(1.8rem, 8vw, 2.5rem); /* Updated from 2.5rem */
-            margin: 0;
-        }
-
-        .tagline {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--accent);
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        h2 {
-            color: var(--heading);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            display: flex;
-            align-items: center;
-            font-size: clamp(1.2rem, 5vw, 1.5rem); /* Fluid font size */
-        }
-
-        h2::before {
-            content: "> ";
-            margin-right: 10px;
-            opacity: 0.5;
-        }
-
-        h3 {
-            color: var(--heading);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-        }
-
-        h3::before {
-            content: ":: ";
-            margin-right: 10px;
-            opacity: 0.5;
-        }
-
-        .social-icons {
-            margin-top: 1.5rem;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .social-icons a {
-            color: var(--text);
-            font-size: 1.5rem;
-            transition: color 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .social-icons svg, .social-icons img {
-            width: 1.5rem;
-            height: 1.5rem;
-            fill: currentColor;
-        }
-
-        .social-icons a:hover {
-            color: var(--heading);
-        }
-
-        .email-link {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            display: block;
-            margin-bottom: 1rem;
-            word-break: break-all;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-        }
-
-        th, td {
-            border: 1px solid var(--border);
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: var(--table-header);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            table {
-                font-size: 0.8rem;
-            }
-            th, td {
-                padding: 8px;
-            }
-        }
-
-        .stats-grid img {
-            width: 100%;
-            border-radius: 6px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            background: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin: 2px;
-            color: var(--heading);
-        }
-
-        .project-item, .publication-item, .cert-item {
-            margin-bottom: 1.5rem;
-        }
-
-        .cert-item-with-badge {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .cert-badge {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-
-        .cert-badge:hover {
-            transform: scale(1.1);
-        }
-
-        .item-title {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-
-        .item-meta {
-            font-size: 0.85rem;
-            opacity: 0.7;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .item-description {
-            font-size: 0.85rem;
-            color: var(--muted);
-            margin-top: 0.5rem;
-        }
-
-        details {
-            margin-top: 0.5rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 0.8rem;
-        }
-
-        summary {
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--accent);
-            list-style: none;
-            display: flex;
-            align-items: center;
-        }
-
-        summary::-webkit-details-marker {
-            display: none;
-        }
-
-        summary::before {
-            content: "⊕ ";
-            margin-right: 5px;
-        }
-
-        details[open] summary::before {
-            content: "⊖ ";
-        }
-
-        /* Timeline Styles */
-        .timeline {
-            border-left: 2px solid var(--border);
-            padding-left: 20px;
-            margin-left: 10px;
-            position: relative;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .timeline-item::before {
-            content: "";
-            position: absolute;
-            left: -27px;
-            top: 5px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--bg);
-            border: 2px solid var(--heading);
-        }
-
-        .timeline-year {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--heading);
-            font-weight: bold;
-        }
-
-        .timeline-content {
-            font-size: 0.9rem;
-        }
-
-        /* Applications Grid */
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .app-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .app-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-        }
-
-        .app-logo {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 1rem;
-            border-radius: 12px;
-            object-fit: contain;
-            background: var(--container-bg);
-            padding: 8px;
-        }
-
-        .app-name {
-            display: block;
-            font-weight: bold;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--heading);
-            font-size: 0.9rem;
-        }
-
-        a {
-            color: var(--heading);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitchakorn Poonyakanok — Physician</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f81f7%22/><path d=%22M50 20 C33.4 20 20 33.4 20 50 C20 66.6 33.4 80 50 80 C66.6 80 80 66.6 80 50 C80 33.4 66.6 20 50 20 M50 25 C63.8 25 75 36.2 75 50 C75 63.8 63.8 75 50 75 C36.2 75 25 63.8 25 50 C25 36.2 36.2 25 50 25 M48 25 L48 75 M25 50 L75 50 M50 25 A30 45 0 0 0 50 75 A30 45 0 0 0 50 25%22 stroke=%22white%22 stroke-width=%224%22 fill=%22none%22/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ═══════════════════════════════════════════════
+       BRAND COLORS — from original site
+       ═══════════════════════════════════════════════ */
+
+    /* ── DARK THEME (Default) ── */
+    :root, [data-theme="dark"] {
+      --bg: #0d1117;
+      --bg-elevated: #0d1117;
+      --bg-card: #161b22;
+      --bg-card-hover: #1c2129;
+      --bg-code: #010409;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-tertiary: #6e7681;
+      --text-quaternary: #484f58;
+      --accent: #2f81f7;
+      --accent-rgb: 47, 129, 247;
+      --accent-heading: #58a6ff;
+      --accent-hover: #58a6ff;
+      --accent-muted: rgba(47, 129, 247, 0.12);
+      --accent-muted-strong: rgba(47, 129, 247, 0.22);
+      --accent-border: rgba(47, 129, 247, 0.4);
+      --border: #30363d;
+      --border-light: #21262d;
+      --rule: #30363d;
+      --dot-color: rgba(230, 237, 243, 0.025);
+      --nav-bg: rgba(13, 17, 23, 0.9);
+      --selection-bg: rgba(47, 129, 247, 0.35);
+      --success: #3fb950;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* ── LIGHT THEME ── */
+    [data-theme="light"] {
+      --bg: #f6f8fa;
+      --bg-elevated: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f3f4f6;
+      --bg-code: #f6f8fa;
+      --text-primary: #24292f;
+      --text-secondary: #57606a;
+      --text-tertiary: #8b949e;
+      --text-quaternary: #d0d7de;
+      --accent: #0550ae;
+      --accent-rgb: 5, 80, 174;
+      --accent-heading: #0969da;
+      --accent-hover: #0969da;
+      --accent-muted: rgba(5, 80, 174, 0.08);
+      --accent-muted-strong: rgba(5, 80, 174, 0.15);
+      --accent-border: rgba(5, 80, 174, 0.4);
+      --border: #d0d7de;
+      --border-light: #e8ecf0;
+      --rule: #d0d7de;
+      --dot-color: rgba(0, 0, 0, 0.03);
+      --nav-bg: rgba(246, 248, 250, 0.92);
+      --selection-bg: rgba(5, 80, 174, 0.2);
+      --success: #1a7f37;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    /* ═══════════════════════════════════════════════
+       BASE
+       ═══════════════════════════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection { background: var(--selection-bg); color: var(--text-primary); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--text-quaternary); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+    a { color: var(--accent-heading); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .font-mono { font-family: 'JetBrains Mono', monospace !important; }
+
+    /* ═══════════════════════════════════════════════
+       DOT GRID
+       ═══════════════════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ═══════════════════════════════════════════════
+       TYPOGRAPHY
+       ═══════════════════════════════════════════════ */
+    .t-hero {
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: clamp(2rem, 7vw, 7rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .t-section-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 0.85;
+      letter-spacing: -0.05em;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--text-quaternary);
+      transition: -webkit-text-stroke-color 0.4s ease;
+    }
+
+    .t-body-large {
+      font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
+      font-weight: 400;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }
+
+    .t-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+
+    /* ═══════════════════════════════════════════════
+       LAYOUT
+       ═══════════════════════════════════════════════ */
+    .container-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 1024px) { .container-grid { padding: 0 32px; } }
+    @media (max-width: 768px) { .container-grid { padding: 0 20px; } }
+
+    /* Scroll offset for fixed nav */
+    section[id], .hero {
+      scroll-margin-top: 72px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       NAVIGATION
+       ═══════════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.35s ease, border-color 0.35s ease;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 768px) { .nav-inner { padding: 0 20px; } }
+
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo-dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: background 0.35s ease;
+    }
+
+    .nav-logo:hover { color: var(--accent-heading); text-decoration: none; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+      background: var(--accent-muted);
+      text-decoration: none;
+    }
+
+    .nav-links a.active { color: var(--accent-heading); }
+
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+    .theme-toggle {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent-heading);
+      background: var(--accent-muted);
+    }
+
+    .theme-toggle svg { width: 16px; height: 16px; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .theme-toggle:hover svg { transform: rotate(90deg); }
+
+    [data-theme="dark"] .icon-sun { display: block; }
+    [data-theme="dark"] .icon-moon { display: none; }
+    [data-theme="light"] .icon-sun { display: none; }
+    [data-theme="light"] .icon-moon { display: block; }
+
+    .menu-toggle {
+      display: none;
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-card);
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .menu-toggle span {
+      display: block; width: 16px; height: 1.5px;
+      background: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .menu-toggle { display: flex; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 56px; left: 0; right: 0;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 20px;
+        gap: 2px;
+        box-shadow: var(--shadow-card);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════ */
+    .hero {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-top: 120px;
+      padding-bottom: 40px;
+      position: relative;
+    }
+
+    @media (max-width: 768px) { .hero { padding-top: 100px; min-height: 60vh; } }
+
+    .hero-name { margin-bottom: 1.5rem; }
+
+    .hero-name .t-hero {
+      display: block;
+      color: var(--text-primary);
+      transition: color 0.35s ease;
+    }
+
+    .hero-name .t-hero .accent-char {
+      color: var(--accent);
+      transition: color 0.35s ease;
+    }
+
+    .hero-rule {
+      width: 100%; height: 1px;
+      background: var(--rule);
+      margin: 1.5rem 0;
+      position: relative;
+      transition: background 0.35s ease;
+    }
+
+    .hero-rule::before {
+      content: '';
+      position: absolute;
+      left: 0; top: -0.5px;
+      width: 96px; height: 2px;
+      background: var(--accent);
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero:hover .hero-rule::before { width: 200px; }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) { .hero-meta { grid-template-columns: 1fr; gap: 1.25rem; } }
+
+    .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
+
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 20px; right: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media (max-width: 768px) { .hero-scroll-indicator { display: none; } }
+
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       SECTIONS
+       ═══════════════════════════════════════════════ */
+    .section {
+      padding: 100px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) { .section { padding: 64px 0; } }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 1.5rem;
+      align-items: end;
+      margin-bottom: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .section-header { grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 2rem; }
+      .t-section-number { font-size: 3rem !important; }
+    }
+
+    .section-header-rule {
+      width: 100%; height: 1px;
+      background: var(--rule);
+      transition: background 0.35s ease;
+    }
+
+    .section-alt-bg {
+      background-color: var(--bg-elevated);
+      transition: background-color 0.35s ease;
+    }
+
+    /* ═══════════════════════════════════════════════
+       ABOUT
+       ═══════════════════════════════════════════════ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) { .about-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .about-text p + p { margin-top: 1rem; }
+
+    .about-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--accent-muted);
+      border: 1px solid var(--accent-border);
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-heading);
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .stat-item {
+      background: var(--bg-card);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .stat-item:hover { background: var(--bg-card-hover); }
+
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+    }
+
+    .stat-item:hover .stat-number { color: var(--accent-heading); }
+
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+
+    .about-contact {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .about-contact-email {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8125rem;
+      color: var(--accent-heading);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s ease;
+    }
+
+    .about-contact-email:hover { opacity: 0.8; text-decoration: none; }
+
+    .about-socials {
+      display: flex;
+      gap: 16px;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .about-socials a {
+      color: var(--text-secondary);
+      font-size: 1.25rem;
+      transition: color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .about-socials a:hover { color: var(--accent-heading); text-decoration: none; }
+    .about-socials a svg { width: 1.125rem; height: 1.125rem; fill: currentColor; }
+    .about-socials a img { width: 1.125rem; height: 1.125rem; object-fit: contain; vertical-align: middle; }
+
+    /* ═══════════════════════════════════════════════
+       EXPERIENCE TIMELINE
+       ═══════════════════════════════════════════════ */
+    .exp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    @media (max-width: 768px) { .exp-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .exp-category-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-heading);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline {
+      border-left: 2px solid var(--border);
+      padding-left: 24px;
+      margin-left: 8px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .timeline-item:last-child { margin-bottom: 0; }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -31px; top: 6px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--accent-heading);
+      transition: background 0.3s ease, border-color 0.3s ease;
+      z-index: 2;
+    }
+
+    .timeline-item:hover::before { background: var(--accent-heading); }
+
+    .timeline-year {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--accent-heading);
+    }
+
+    .timeline-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-top: 4px;
+    }
+
+    .timeline-logo-wrap {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .timeline-logo {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        border-radius: 4px;
+        background: var(--bg-card);
+        padding: 2px;
+        border: 1px solid var(--border-light);
+    }
+
+    .timeline-role {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .timeline-org {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .timeline-location {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       EXPERTISE CARDS
+       ═══════════════════════════════════════════════ */
+    .expertise-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) { .expertise-grid { grid-template-columns: 1fr; } }
+
+    .expertise-card {
+      background: var(--bg-card);
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: background 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .expertise-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .expertise-card:hover::after { transform: scaleX(1); }
+    .expertise-card:hover { background: var(--bg-card-hover); }
+
+    .expertise-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-heading);
+      background: var(--bg);
+      transition: border-color 0.3s ease;
+    }
+
+    .expertise-card:hover .expertise-icon { border-color: var(--accent-border); }
+
+    .expertise-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--accent-heading);
+    }
+
+    .expertise-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .expertise-list li {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    .expertise-list li::before {
+      content: '—';
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PROJECTS
+       ═══════════════════════════════════════════════ */
+    .project-list { display: flex; flex-direction: column; }
+
+    .project-item {
+      display: block;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border-light);
+      transition: padding 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .project-item:first-child { border-top: 1px solid var(--border-light); }
+    .project-item:hover { padding-left: 8px; text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .project-item { padding: 1rem 0; }
+    }
+
+    .project-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      transition: color 0.2s ease;
+    }
+
+    .project-item:hover .project-title { color: var(--accent-heading); }
+
+    /* ═══════════════════════════════════════════════
+       CONTACT FORM
+       ═══════════════════════════════════════════════ */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-input, .form-textarea {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent-border);
+      box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .submit-btn {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      border: 1px solid var(--accent-border);
+      background: var(--accent-muted);
+      color: var(--accent-heading);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .submit-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* ═══════════════════════════════════════════════
+       MOBILE FIXES
+       ═══════════════════════════════════════════════ */
+    @media (max-width: 480px) {
+        .t-hero { font-size: 1.7rem; line-height: 1.1; }
+        .hero-meta { gap: 1rem; }
+        .hero { min-height: 60vh; padding-top: 140px; padding-bottom: 20px; }
+        .container-grid { padding-left: 16px; padding-right: 16px; }
+        .nav-inner { padding: 0 16px; height: 48px; }
+        .expertise-card { padding: 1.5rem; }
+        .stat-item { padding: 1.25rem; }
+    }
+
+    .project-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    .project-desc {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.55;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .project-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      background: var(--accent-muted);
+      border-radius: 3px;
+      color: var(--accent-heading);
+    }
+
+    /* ═══════════════════════════════════════════════
+       PUBLICATIONS
+       ═══════════════════════════════════════════════ */
+    .pub-item {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .pub-item:first-child { border-top: 1px solid var(--border-light); }
+
+    .pub-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--text-quaternary);
+    }
+
+    .pub-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+
+    .pub-journal {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+    }
+
+    .pub-doi {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      margin-top: 4px;
+    }
+
+    .pub-doi a { color: var(--accent-heading); }
+
+    details {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+    }
+
+    summary {
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent-heading);
+      list-style: none;
+      display: flex;
+      align-items: center;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "⊕ "; margin-right: 4px; }
+    details[open] summary::before { content: "⊖ "; }
+
+    .pub-contributors {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .pub-abstract {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SKILLS & CERTS
+       ═══════════════════════════════════════════════ */
+    .skills-certs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) { .skills-certs-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .skills-category {
+      margin-bottom: 1.75rem;
+    }
+
+    .skills-category:last-child { margin-bottom: 0; }
+
+    .skills-category-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-heading);
+      margin-bottom: 0.625rem;
+    }
+
+    .skills-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skills-badges img { height: 26px; border-radius: 4px; }
+
+    .cert-category {
+      margin-bottom: 1.75rem;
+    }
+
+    .cert-category:last-child { margin-bottom: 0; }
+
+    .cert-category-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-heading);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .cert-item:last-child { border-bottom: none; }
+
+    .cert-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-heading);
+      background: var(--bg-card);
+      flex-shrink: 0;
+      overflow: hidden;
+      padding: 4px;
+    }
+
+    .cert-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 4px;
+    }
+
+    /* Fix for white logos in light mode */
+    [data-theme="light"] .app-icon-box,
+    [data-theme="light"] .timeline-logo,
+    [data-theme="light"] .cert-icon {
+      background: #161b22;
+      border-color: #30363d;
+    }
+
+    .cert-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .cert-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.625rem;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    .cert-verify {
+      display: inline-block;
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.5625rem;
+      font-weight: 600;
+      padding: 1px 7px;
+      background: var(--accent-muted);
+      border-radius: 3px;
+      color: var(--accent-heading);
+      text-decoration: none;
+    }
+
+    .cert-verify:hover { background: var(--accent-muted-strong); text-decoration: none; }
+
+    /* ═══════════════════════════════════════════════
+       APPS GRID
+       ═══════════════════════════════════════════════ */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 768px) { .apps-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .apps-grid { grid-template-columns: 1fr; } }
+
+    .app-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-card:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .app-icon-box {
+      width: 48px; height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-heading);
+      background: var(--bg);
+      overflow: hidden;
+      padding: 6px;
+    }
+
+    .app-icon-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 6px;
+    }
+
+    .app-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--accent-heading);
+    }
+
+    /* ═══════════════════════════════════════════════
+       LANGUAGES
+       ═══════════════════════════════════════════════ */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 600px;
+    }
+
+    @media (max-width: 768px) { .lang-grid { max-width: 100%; } }
+
+    .lang-item {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: background 0.3s ease;
+    }
+
+    .lang-item:hover { background: var(--bg-card-hover); }
+
+    .lang-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+
+    .lang-level {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      color: var(--accent-heading);
+      font-weight: 600;
+    }
+
+    .lang-detail {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.625rem;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════════
+       CONTACT
+       ═══════════════════════════════════════════════ */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; gap: 2rem; } }
+
+    .contact-cta {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.375rem, 2.5vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      color: var(--text-primary);
+    }
+
+    .contact-cta .accent-word { color: var(--accent-heading); }
+
+    .contact-email-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 1.5rem;
+      padding: 12px 24px;
+      border: 1px solid var(--accent-border);
+      background: var(--accent-muted);
+      color: var(--accent-heading);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .contact-email-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      text-decoration: none;
+    }
+
+    .contact-links { display: flex; flex-direction: column; }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--border-light);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .contact-link:first-child { border-top: 1px solid var(--border-light); }
+    .contact-link:hover { padding-left: 8px; color: var(--accent-heading); text-decoration: none; }
+
+    .contact-link-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+
+    .contact-link-icon {
+      width: 32px;
+      text-align: center;
+      color: var(--text-tertiary);
+      transition: color 0.2s ease;
+    }
+
+    .contact-link:hover .contact-link-icon { color: var(--accent-heading); }
+
+    /* ═══════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════ */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      position: relative;
+      z-index: 1;
+      transition: border-color 0.35s ease;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      color: var(--text-quaternary);
+    }
+
+    .footer-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      color: var(--text-quaternary);
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      display: inline-block;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       ANIMATIONS — Simple & Reliable
+       ═══════════════════════════════════════════════ */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-1 { transition-delay: 80ms; }
+    .delay-2 { transition-delay: 160ms; }
+    .delay-3 { transition-delay: 240ms; }
+
+    /* Hero entrance */
+    .hero-name .name-line {
+      opacity: 0;
+      transform: translateY(28px);
+      animation: heroIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-name .name-line:nth-child(1) { animation-delay: 0.15s; }
+    .hero-name .name-line:nth-child(2) { animation-delay: 0.3s; }
+
+    @keyframes heroIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero .hero-rule {
+      opacity: 0;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: ruleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+    }
+
+    @keyframes ruleIn {
+      to { opacity: 1; transform: scaleX(1); }
+    }
+
+    .hero-meta-item {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: metaIn 0.5s ease-out forwards;
+    }
+    .hero-meta-item:nth-child(1) { animation-delay: 0.65s; }
+    .hero-meta-item:nth-child(2) { animation-delay: 0.75s; }
+    .hero-meta-item:nth-child(3) { animation-delay: 0.85s; }
+
+    @keyframes metaIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
-<body>
-    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">Toggle_Theme()</button>
+<body data-theme="dark">
 
-    <header>
-        <h1>Vitchakorn Poonyakanok</h1>
-        <div class="tagline">MD & Travel Medicine Resident | M.Sc. Digital & AI Tech for Health Systems</div>
-    </header>
-
-    <div class="container">
-        <div class="tab-bar-container">
-            <nav class="tab-bar">
-                <div class="sliding-underline" id="tab-underline"></div>
-                <button class="tab-btn active" onclick="openTab(event, 'about')">About</button>
-                <button class="tab-btn" onclick="openTab(event, 'experience')">Experience</button>
-                <button class="tab-btn" onclick="openTab(event, 'projects')">Projects</button>
-                <button class="tab-btn" onclick="openTab(event, 'publications')">Publications</button>
-                <button class="tab-btn" onclick="openTab(event, 'skills')">Skills</button>
-                <button class="tab-btn" onclick="openTab(event, 'certifications')">Certifications</button>
-                <button class="tab-btn" onclick="openTab(event, 'apps')">Apps</button>
-                <button class="tab-btn" onclick="openTab(event, 'languages')">Languages</button>
-            </nav>
-        </div>
-
-        <!-- About Tab -->
-        <div id="about" class="tab-content active">
-            <div class="card">
-                <h2>About_Me</h2>
-                <p>I am a <span class="badge">Physician & Clinical Data Analyst</span> (known as <strong>Blue</strong>) and a Travel Medicine Resident at the Institute of Preventive Medicine, Thailand. I specialize in bridging clinical practice with data architecture, currently pursuing an M.Sc. in Digital & AI Tech at Chulalongkorn University, with an upcoming M.Sc. in Health Care Analytics at Carnegie Mellon University (2026).</p>
-                <p class="mono">Current_Focus: "National Vaccine Registry & Public Health Data Initiatives"</p>
-                
-                <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <span class="mono" style="font-size: 0.9rem; color: var(--heading);">Contact_Me:</span>
-                    <a href="mailto:vk.poonyakanok@gmail.com" class="email-link" style="margin-bottom: 0;">vk.poonyakanok@gmail.com</a>
-                </div>
-
-                <div class="social-icons" style="margin-top: 1rem;">
-                    <a href="https://github.com/vk-poonyakanok" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
-                    <a href="https://www.linkedin.com/in/vitchakorn" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-                    <a href="https://www.researchgate.net/profile/Vitchakorn-Poonyakanok" target="_blank" title="ResearchGate"><i class="fa-brands fa-researchgate"></i></a>
-                    <a href="https://scholar.google.com/citations?user=r9uxNqQAAAAJ&hl=en" target="_blank" title="Google Scholar">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: currentColor; width: 1.5rem; height: 1.5rem;">
-                            <path d="M5.242 13.769L0.5 9.5 12 0l11.5 9.5-4.742 4.269C17.547 12.593 14.896 12 12 12s-5.547.593-6.758 1.769zM12 14c3.866 0 7 1.94 7 4.333V24l-7-3.333L5 24v-5.667C5 15.94 8.134 14 12 14z"/>
-                        </svg>
-                    </a>
-                    <a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok" target="_blank" title="Tableau"><i class="fa-solid fa-chart-column"></i></a>
-                    <a href="https://www.kaggle.com/vitchakorn" target="_blank" title="Kaggle"><i class="fa-brands fa-kaggle"></i></a>
-                    <a href="https://orcid.org/0009-0007-9945-0376" target="_blank" title="ORCID"><i class="fa-brands fa-orcid"></i></a>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>GitHub_Metrics</h2>
-                <div class="stats-grid">
-                    <img src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=vk-poonyakanok&theme=tokyonight" alt="GitHub Stats">
-                    <img src="https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=vk-poonyakanok&theme=tokyonight" alt="Top Languages">
-                </div>
-            </div>
-        </div>
-
-        <!-- Experience Tab -->
-        <div id="experience" class="tab-content">
-            <div class="card">
-                <h2>The_Path</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-year">Aug 2026 - (Incoming)</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <img src="experience/cmu.png" alt="CMU Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain; flex-shrink: 0;">
-                                <div>
-                                    <strong>M.Sc. Health Care Analytics & IT (MSHCA)</strong> | Carnegie Mellon University
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Pittsburgh, PA, USA</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">2025 - Present</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap;">
-                                    <img src="experience/chula.jpg" alt="Chulalongkorn University Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                    <img src="experience/digihealth.png" alt="DigiHealth Logo" style="height: 25px; width: auto; border-radius: 4px; object-fit: contain;">
-                                </div>
-                                <div>
-                                    <strong>M.Sc. Digital and AI Technologies in Health Systems</strong> | Chulalongkorn University
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Bangkok, Thailand</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">2024 - Present</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap;">
-                                    <img src="experience/ipm.png" alt="IPM Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                    <img src="experience/moph.png" alt="MOPH Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                </div>
-                                <div>
-                                    <strong>Travel Medicine Residency</strong> | Institute of Preventive Medicine, DDC, MOPH
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Nonthaburi, Thailand</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">Nov 2024 - Present</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap;">
-                                    <img src="experience/pty.png" alt="Pattayarak Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                    <img src="experience/moph.png" alt="MOPH Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                </div>
-                                <div>
-                                    <strong>General Practitioner</strong> | Pattayarak Health Unit (ศูนย์พัทยารักษ์)
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">
-                                        Chonburi, Thailand | Officially known as the Chonburi Preventive Medicine Center under the Office of Disease Prevention and Control Region 6 (ODPC 6), DDC, MOPH
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">2022 - 2024</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap;">
-                                    <img src="experience/bidi.png" alt="BIDI Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                    <img src="experience/moph.png" alt="MOPH Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                </div>
-                                <div>
-                                    <strong>General Practitioner</strong> | Bamrasnaradura Infectious Diseases Institute
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Nonthaburi, Thailand</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">2020 - 2022</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap;">
-                                    <img src="experience/sskh.png" alt="SSKH Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                    <img src="experience/moph.png" alt="MOPH Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                </div>
-                                <div>
-                                    <strong>General Practitioner (Intern)</strong> | Si Songkhram Hospital
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Nakhon Phanom, Thailand</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">2019 - 2020</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap;">
-                                    <img src="experience/nkh.jpg" alt="NKH Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                    <img src="experience/moph.png" alt="MOPH Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain;">
-                                </div>
-                                <div>
-                                    <strong>General Practitioner (Intern)</strong> | Nong Khai Hospital
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Nong Khai, Thailand</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">2013 - 2019</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <img src="experience/rama.png" alt="Rama Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain; flex-shrink: 0;">
-                                <div>
-                                    <strong>Doctor of Medicine (MD)</strong> | Mahidol University (Ramathibodi Hospital)
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Bangkok, Thailand</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">2010 - 2013</div>
-                        <div class="timeline-content">
-                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <img src="experience/tu.png" alt="TU Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: contain; flex-shrink: 0;">
-                                <div>
-                                    <strong>High School</strong> | Triam Udom Suksa School
-                                    <div style="font-size: 0.8rem; margin-top: 3px; opacity: 0.8;">Bangkok, Thailand</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Projects Tab -->
-        <div id="projects" class="tab-content">
-            <div class="card">
-                <h2>Featured_Projects</h2>
-                <div class="project-item">
-                    <span class="item-title"><a href="https://altit.app/" target="_blank">Altitude Itinerary Analyzer (AI Clinical Decision Support)</a></span>
-                    <p class="item-description">Full-stack web application to autonomously extract & analyze multi-modal travel itineraries for high-altitude risk assessment.</p>
-                </div>
-                <div class="project-item">
-                    <span class="item-title"><a href="https://hoscode.vercel.app/" target="_blank">Thai HospSearch</a></span>
-                    <p class="item-description">Interactive navigator for Thai healthcare administrative hierarchy (Region to Subdistrict) with direct code lookup.</p>
-                </div>
-                <div class="project-item">
-                    <span class="item-title"><a href="https://hajj-period-planner.vercel.app/" target="_blank">Hajj Menstrual Delay Planner</a></span>
-                    <p class="item-description">Web utility for calculating and visualizing menstrual cycles and planning for menstrual delay/suppression for pilgrims.</p>
-                </div>
-                <div class="project-item">
-                    <span class="item-title"><a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok" target="_blank">PM2.5 & Mental Health Dynamics (Tableau Story)</a></span>
-                    <p class="item-description">Visualized spatial-temporal correlations between air pollution and psychiatric disorders using Interrupted Time Series (ITS) models.</p>
-                </div>
-                <div class="project-item">
-                    <span class="item-title"><a href="https://www.kaggle.com/code/vitchakorn/cirrhosis-survival-transplant-outcomes-ml" target="_blank">Cirrhosis Survival Prediction</a></span>
-                    <p class="item-description">Multi-class prediction model using Ensemble Learning (XGBoost/LightGBM) with engineered clinical features.</p>
-                </div>
-                <div class="project-item">
-                    <span class="item-title"><a href="https://vk-poonyakanok.github.io/thai-numeral-converter/" target="_blank">Thai Numeral Converter</a></span>
-                    <p class="item-description">Automated utility to address Thai government documentation requirements, seamlessly converting Arabic to Thai numerals while preserving critical exceptions like email addresses and URLs.</p>
-                </div>
-                <div class="project-item">
-                    <span class="item-title"><a href="https://www.kaggle.com/code/vitchakorn/bnk-cgm48-4th-general-election-predictive-analysis" target="_blank">BNK/CGM48 4th General Election Predictive Analysis</a></span>
-                    <p class="item-description">A technical case study using end-to-end ML (Scraping to Prediction) to forecast election outcomes in the entertainment industry.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Publications Tab -->
-        <div id="publications" class="tab-content">
-            <div class="card">
-                <h2>Publications</h2>
-                <div class="publication-item">
-                    <span class="item-title">An Investigation of MMR‐Related Mumps Cluster Following Immunization Among Practical Nursing Students, Bangkok, Thailand, 2024</span>
-                    <span class="item-meta">Journal of Tropical Medicine (Wiley) · Aug 1, 2025</span>
-                    <span class="item-meta">DOI: <a href="https://doi.org/10.1155/jotm/9974081" target="_blank">10.1155/jotm/9974081</a></span>
-                    <details>
-                        <summary>Show publication detail</summary>
-                        <p class="item-description"><strong>Contributors:</strong> Sethapong Lertsakulbunlue, Drunphob Srithammavong, Kamonchanok Tepsittha, Hataya Kanjanasombut, Vitchakorn Poonyakanok, Viravarn Luvira, Phimphan Pisutsan, Rachata Charoenwisedsil, Pathomthep Leowattana, Peeriya Watakulsin et al.</p>
-                        <p class="item-description">This study investigated a cluster of mumps-like cases among practical nursing students following MMR vaccination, identifying operational risk factors and confirming vaccine-related mumps infections through molecular analysis. Recommendations were made to improve vaccination campaign processes.</p>
-                    </details>
-                </div>
-                <div class="publication-item">
-                    <span class="item-title">Preliminary investigation and rapid response to methanol intoxication outbreak linked to illegal herbal liquor in Bangkok, August 2024</span>
-                    <span class="item-meta">Weekly Epidemiological Surveillance Report (WESR) · Sep 6, 2024</span>
-                    <span class="item-meta">DOI: <a href="https://doi.org/10.59096/wesr.v55i9.3248" target="_blank">10.59096/wesr.v55i9.3248</a></span>
-                    <details>
-                        <summary>Show publication detail</summary>
-                        <p class="item-description"><strong>Contributors:</strong> Charuttaporn Jitpeera, Watcharapol Rongdech, Kogkawee Raruenroeng, Vitchakorn Poonyakanok, Panita Kumphon, Kawinna Kerdsalung, Rittichai Jaipong, Tatcha Manta, Thanawan Gabbhirom, Somrak Sirikhetkon, Kanyarat Jarudilokkul, Kantakarn Nilsum, Thanach Photphisutthiphong, Nattinee Isarankura, Wichan Bhunyakitikorn</p>
-                        <div class="item-description">
-                            <ul>
-                                <li>As of September 3, 2024, 44 individuals were investigated under methanol intoxication outbreak related to illegal herbal liquor in Bangkok, August 2024, including 20 confirmed cases, 10 probable cases, and 8 suspected cases. Eight deaths were reported, with a gender ratio of 9.25 males per 1 female, and the median age of patients was 39 years.</li>
-                                <li>The investigation found that there may have been methanol contamination in the production process of the illegal herbal liquor, resulting in the spread at 18 illegal herbal liquor booths.</li>
-                                <li>Immediate actions included closing herbal liquor booths and launching a public awareness campaign through various media channels, including multilingual TikTok videos. The authorities also monitored the situation closely, ensuring no new cases were reported over a 7-day period.</li>
-                            </ul>
-                        </div>
-                    </details>
-                </div>
-            </div>
-        </div>
-
-        <!-- Skills Tab -->
-        <div id="skills" class="tab-content">
-            <div class="card">
-                <h2>🛠 Tech Stack</h2>
-                
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">💻 Core Languages</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/Python-3670A0.svg?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python">
-                    <img src="https://img.shields.io/badge/R-%23276DC3.svg?style=for-the-badge&logo=r&logoColor=white" alt="R">
-                    <img src="https://img.shields.io/badge/SQL-%2300758F.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL">
-                    <img src="https://img.shields.io/badge/Stata-%231A538A.svg?style=for-the-badge&logo=stata&logoColor=white" alt="Stata">
-                </div>
-
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">🤖 Data Science & AI</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/XGBoost-1B1F23.svg?style=for-the-badge&logo=xgboost&logoColor=white" alt="XGBoost">
-                    <img src="https://img.shields.io/badge/LightGBM-393939.svg?style=for-the-badge&logo=lightgbm&logoColor=white" alt="LightGBM">
-                    <img src="https://img.shields.io/badge/YOLO-00FFFF.svg?style=for-the-badge&logo=ultralytics&logoColor=black" alt="YOLO">
-                    <img src="https://img.shields.io/badge/Scikit--Learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn">
-                    <img src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch">
-                    <img src="https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow">
-                    <img src="https://img.shields.io/badge/MLX-000000.svg?style=for-the-badge&logo=apple&logoColor=white" alt="MLX">
-                </div>
-
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">📊 Data Analysis & Processing</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/NumPy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
-                    <img src="https://img.shields.io/badge/Pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas">
-                    <img src="https://img.shields.io/badge/OpenCV-white.svg?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV">
-                    <img src="https://img.shields.io/badge/jamovi-215082.svg?style=for-the-badge&logo=jamovi&logoColor=white" alt="jamovi">
-                </div>
-
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">🌍 Geospatial Analysis</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/QGIS-589632.svg?style=for-the-badge&logo=qgis&logoColor=white" alt="QGIS">
-                </div>
-
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">🎨 Visualization & Design</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/Tableau-E97627.svg?style=for-the-badge&logo=tableau&logoColor=white" alt="Tableau">
-                    <img src="https://img.shields.io/badge/Power_BI-F2C811.svg?style=for-the-badge&logo=microsoftpowerbi&logoColor=black" alt="Power BI">
-                    <img src="https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=matplotlib&logoColor=black" alt="Matplotlib">
-                    <img src="https://img.shields.io/badge/Seaborn-3B5B9A.svg?style=for-the-badge&logo=seaborn&logoColor=white" alt="Seaborn">
-                    <img src="https://img.shields.io/badge/Adobe%20Photoshop-%2331A8FF.svg?style=for-the-badge&logo=adobephotoshop&logoColor=white" alt="Adobe Photoshop">
-                    <img src="https://img.shields.io/badge/Adobe%20Lightroom-31A8FF.svg?style=for-the-badge&logo=adobelightroom&logoColor=white" alt="Adobe Lightroom">
-                </div>
-
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">☁️ Cloud & Infrastructure</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/Google_Cloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white" alt="Google Cloud">
-                    <img src="https://img.shields.io/badge/Firebase-039BE5.svg?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase">
-                    <img src="https://img.shields.io/badge/Huawei_Cloud-FF0000.svg?style=for-the-badge&logo=huawei&logoColor=white" alt="Huawei Cloud">
-                </div>
-
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">🛡️ Cybersecurity</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/ISC2%20CC-00A4E4.svg?style=for-the-badge&logo=isc2&logoColor=white" alt="ISC2 CC">
-                    <img src="https://img.shields.io/badge/Google%20Cybersecurity-4285F4.svg?style=for-the-badge&logo=google&logoColor=white" alt="Google Cybersecurity">
-                </div>
-
-                <h3 class="mono" style="font-size: 1rem; margin-top: 1.5rem;">🛠 Environments & Tools</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <img src="https://img.shields.io/badge/Jupyter-%23F37626.svg?style=for-the-badge&logo=jupyter&logoColor=white" alt="Jupyter">
-                    <img src="https://img.shields.io/badge/Anaconda-%2344A833.svg?style=for-the-badge&logo=anaconda&logoColor=white" alt="Anaconda">
-                </div>
-            </div>
-        </div>
-
-        <!-- Certifications Tab -->
-        <div id="certifications" class="tab-content">
-            <div class="card">
-                <h2>Certifications</h2>
-
-                <h3>Data Science & AI</h3>
-                <div class="cert-item-with-badge">
-                    <a href="https://assessment.aiat.or.th/certificate/2a541cbb-331d-430f-8dcc-2a88f134a6db" target="_blank">
-                        <img src="certlogo/AIAT-logo-01.jpg" alt="AiAT Badge" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Foundation AI (Theory)</span>
-                        <span class="item-meta">18 April 2026 | Artificial Intelligence Association of Thailand (AiAT)</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="https://assessment.aiat.or.th/certificate/2a541cbb-331d-430f-8dcc-2a88f134a6db" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="cert/HWENDCAIDA100092.png" target="_blank">
-                        <img src="certlogo/HCCDA.png" alt="HCCDA-AI Badge" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Huawei Certified Cloud Digital Associate-AI (HCCDA-AI)</span>
-                        <span class="item-meta">Apr 9, 2026 - Apr 8, 2029 | Huawei | Huawei Cloud</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="cert/HWENDCAIDA100092.png" target="_blank" class="badge">View_Certificate</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://www.credly.com/badges/8899f832-5090-4806-aa56-a70c73aac982/public_url" target="_blank">
-                        <img src="badge/google-ai-essentials-v1.png" alt="Google AI Essentials Badge" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Google AI Essentials V1</span>
-                        <span class="item-meta">May 19, 2024 | Google | Coursera</span>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://badges.parchment.com/public/assertions/TZjRyAo3Qa-jSuuQoizKZA" target="_blank">
-                        <img src="badge/DataRockie School - Certified Professional Data Analyst - 2024-03-12.png" alt="DataRockie Badge" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Certified Professional Data Analyst</span>
-                        <span class="item-meta">Mar 12, 2024 | DataRockie | The School of Generalist</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="https://badges.parchment.com/public/assertions/TZjRyAo3Qa-jSuuQoizKZA" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://www.coursera.org/account/accomplishments/specialization/WPWVMVL82V42" target="_blank">
-                        <img src="badge/google-advanced-data-analytics-certificate.png" alt="Google Advanced Data Analytics Badge" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Google Advanced Data Analytics</span>
-                        <span class="item-meta">Sep 26, 2023 | Google | Coursera</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            ID: WPWVMVL82V42 | <a href="https://www.coursera.org/account/accomplishments/specialization/WPWVMVL82V42" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://www.coursera.org/account/accomplishments/specialization/HMWMW9MZLBM2" target="_blank">
-                        <img src="badge/google-data-analytics-professional-certificate.2.png" alt="Google Data Analytics Badge" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Google Data Analytics Professional Certificate</span>
-                        <span class="item-meta">Apr 24, 2023 | Google | Coursera</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            ID: HMWMW9MZLBM2 | <a href="https://www.coursera.org/account/accomplishments/specialization/HMWMW9MZLBM2" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://www.coursera.org/account/accomplishments/specialization/CSFU3JSWSQMP" target="_blank">
-                        <img src="certlogo/uc_davis_logo.jpeg" alt="UC Davis Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Data Visualization with Tableau</span>
-                        <span class="item-meta">Aug 2023 | UC Davis | Coursera</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            ID: CSFU3JSWSQMP | <a href="https://www.coursera.org/account/accomplishments/specialization/CSFU3JSWSQMP" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://certificate.skilllane.com/certificates/23QLOQ9" target="_blank">
-                        <img src="certlogo/skilllane_logo.jpeg" alt="SkillLane Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Excel Level Up Update 2021</span>
-                        <span class="item-meta">Jul 2023 | SkillLane</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="https://certificate.skilllane.com/certificates/23QLOQ9" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <h3>Cybersecurity</h3>
-                <div class="cert-item-with-badge">
-                    <a href="https://www.credly.com/badges/8769d712-3992-4f5c-b8bc-af7ba2b1f15c/" target="_blank">
-                        <img src="badge/certified-in-cybersecurity-cc.1.png" alt="ISC2 Certified in Cybersecurity Badge" class="cert-badge" style="filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3)); padding: 4px;">
-                    </a>
-                    <div>
-                        <span class="item-title">ISC2 Certified in Cybersecurity (CC)</span>
-                        <span class="item-meta">Apr 2026 - Mar 2029 | ISC2</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            Certification #: 3613846 | <a href="https://www.credly.com/badges/8769d712-3992-4f5c-b8bc-af7ba2b1f15c/" target="_blank" class="badge">Verify_Credential</a> | <a href="cert/digitalcert.pdf" target="_blank" class="badge">View_Certificate</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="cert-item-with-badge">
-                    <a href="https://www.coursera.org/account/accomplishments/specialization/BJ8FH7CTWDLA" target="_blank">
-                        <img src="badge/google-cybersecurity-professional-certificate-v2.png" alt="Google Cybersecurity Badge" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Google Cybersecurity Professional Certificate V2</span>
-                        <span class="item-meta">Jul 24, 2024 | Google | Coursera</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            ID: BJ8FH7CTWDLA | <a href="https://www.coursera.org/account/accomplishments/specialization/BJ8FH7CTWDLA" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://learn.thnca.or.th/pluginfile.php/1/tool_certificate/issues/1723999206/8277556641WP.pdf" target="_blank">
-                        <img src="certlogo/THNCA.jpg" alt="THNCA Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Cybersecurity Foundation Course</span>
-                        <span class="item-meta">Aug 2024 | Thailand National Cyber Academy</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            ID: 8277556641WP | <a href="https://learn.thnca.or.th/pluginfile.php/1/tool_certificate/issues/1723999206/8277556641WP.pdf" target="_blank" class="badge">View_Certificate</a>
-                        </p>
-                    </div>
-                </div>
-
-                <h3>Medical & Public Health</h3>
-                <div class="cert-item-with-badge">
-                    <a href="https://www.citiprogram.org/verify/?w967a1d11-b9e0-4420-ac76-0f412a68e9bb-67495823" target="_blank">
-                        <img src="certlogo/citi.jpeg" alt="CITI Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Biomedical Researchers</span>
-                        <span class="item-meta">Jan 2025 - Jan 2029 | CITI Program</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            ID: 67495823 | <a href="https://www.citiprogram.org/verify/?w967a1d11-b9e0-4420-ac76-0f412a68e9bb-67495823" target="_blank" class="badge">Verify_Credential</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="cert/1721190140618.jpeg" target="_blank">
-                        <img src="certlogo/ddc.png" alt="DDC Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Introductory Course in Epidemiology and Biostatistics</span>
-                        <span class="item-meta">Jun 2024 | DDC, MOPH, Thailand</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="cert/1721190140618.jpeg" target="_blank" class="badge">View_Certificate</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="https://workshop-evaluator.herokuapp.com/evaluation/events/15651/respondents/607729/certificate" target="_blank">
-                        <img src="certlogo/international_society_of_travel_medicine_logo.jpeg" alt="ISTM Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">ISTM - 2024 International Society of Travel Medicine Review</span>
-                        <span class="item-meta">Feb 2024 | ISTM</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="https://workshop-evaluator.herokuapp.com/evaluation/events/15651/respondents/607729/certificate" target="_blank" class="badge">View_Certificate</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="cert/1696631862918.jpeg" target="_blank">
-                        <img src="certlogo/Chiang_mai_university_logo.png" alt="CMU Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Diploma in Clinical Epidemiology</span>
-                        <span class="item-meta">Dec 2022 | Chiang Mai University</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="cert/1696631862918.jpeg" target="_blank" class="badge">View_Certificate</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="cert-item-with-badge">
-                    <a href="cert/1696631825168.jpeg" target="_blank">
-                        <img src="certlogo/Chiang_mai_university_logo.png" alt="CMU Logo" class="cert-badge">
-                    </a>
-                    <div>
-                        <span class="item-title">Diploma in Clinical Statistics</span>
-                        <span class="item-meta">May 2022 | Chiang Mai University</span>
-                        <p class="item-description mono" style="margin-top: 0.5rem; font-size: 0.8rem;">
-                            <a href="cert/1696631825168.jpeg" target="_blank" class="badge">View_Certificate</a>
-                        </p>
-                    </div>
-                </div>
-
-                <h3>More Licenses & Certifications</h3>
-                <div class="cert-item-with-badge">
-                    <img src="certlogo/tourism.png" alt="Tourism Logo" class="cert-badge">
-                    <div>
-                        <span class="item-title">Tour Leader License</span>
-                        <span class="item-meta">Dec 2025 | Department of Tourism - Thailand</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Apps Tab -->
-        <div id="apps" class="tab-content">
-            <div class="card">
-                <h2>Applications</h2>
-                <div class="apps-grid">
-                    <a href="https://altit.app/" target="_blank" class="app-card">
-                        <img src="logo/altit.webp" alt="Altitude Itinerary Analyzer" class="app-logo">
-                        <span class="app-name">Altitude Itinerary Analyzer</span>
-                    </a>
-                    <a href="https://hajj-period-planner.vercel.app/" target="_blank" class="app-card">
-                        <img src="logo/hajjmens.webp" alt="Hajj Menstrual Delay Planner" class="app-logo">
-                        <span class="app-name">Hajj Menstrual Delay Planner</span>
-                    </a>
-                    <a href="https://menstrual.netlify.app/" target="_blank" class="app-card">
-                        <img src="logo/mens.webp" alt="Menstrual Cycle Predictor" class="app-logo">
-                        <span class="app-name">Menstrual Cycle Predictor</span>
-                    </a>
-                    <a href="https://hoscode.vercel.app/" target="_blank" class="app-card">
-                        <img src="logo/hospsearch.webp" alt="Thai HospSearch" class="app-logo">
-                        <span class="app-name">Thai HospSearch</span>
-                    </a>
-                    <a href="https://thaicda2558.vercel.app/" target="_blank" class="app-card">
-                        <img src="logo/thaicda2558.webp" alt="CDA 2558 App" class="app-logo">
-                        <span class="app-name">CDA 2558 App</span>
-                    </a>
-                    <a href="https://vk-poonyakanok.github.io/thai-numeral-converter/" target="_blank" class="app-card">
-                        <img src="logo/thai-numeral-converter.png" alt="Thai Numeral Converter" class="app-logo">
-                        <span class="app-name">Thai Numeral Converter</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Languages Tab -->
-        <div id="languages" class="tab-content">
-            <div class="card">
-                <h2>Language_Competency</h2>
-                <div class="cert-item">
-                    <span class="item-title">English</span>
-                    <span class="item-meta">Professional Working Proficiency</span>
-                    <p class="item-description mono">
-                        TOEFL_iBT: 91/120 (June 2025)<br>
-                        Duolingo_English_Test: 120/160 (MAR 2026)
-                    </p>
-                </div>
-                <div class="cert-item">
-                    <span class="item-title">Thai</span>
-                    <span class="item-meta">Native Proficiency</span>
-                </div>
-            </div>
-        </div>
+  <!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#top" class="nav-logo">
+        <span class="nav-logo-dot"></span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#expertise">Expertise</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#publications">Research</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
+  </nav>
 
-    <footer>
-        <p id="footer-text">Vitchakorn Poonyakanok, MD | Travel Medicine & DigiHealth</p>
-    </footer>
+  <!-- ═══════════════════ TOP ═══════════════════ -->
+  <section class="hero container-grid" id="top">
+    <div class="hero-name">
+      <span class="t-hero name-line"><span class="accent-char">V</span>itchakorn</span>
+      <span class="t-hero name-line">Poonyakanok</span>
+    </div>
+    <div class="hero-rule"></div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="t-label">Specialty</span>
+        <span style="font-size:0.875rem;font-weight:500;color:var(--text-primary);">MD · Travel Medicine Resident<br>M.Sc. Digital & AI Tech for Health</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="t-label">Location</span>
+        <span style="font-size:0.875rem;font-weight:500;color:var(--text-primary);">Bangkok, Thailand</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="t-label">Status</span>
+        <span style="font-size:0.875rem;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:6px;">
+          <span class="status-dot" style="width:5px;height:5px;"></span> Open to Collaboration
+        </span>
+      </div>
+    </div>
+    <div class="hero-scroll-indicator">
+      <span class="t-label" style="writing-mode:vertical-rl;font-size:0.5625rem;">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
 
-    <script>
-        function updateFooterDate() {
-            const footerText = document.getElementById('footer-text');
-            const lastModified = new Date(document.lastModified);
-            const formattedDate = lastModified.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            footerText.innerHTML += `<br><span style="font-size: 0.75rem; opacity: 0.8;">Last Updated: ${formattedDate}</span>`;
+  <!-- ═══════════════════ ABOUT ═══════════════════ -->
+  <section class="section" id="about">
+    <div class="container-grid">
+      <div class="section-header fade-in">
+        <span class="t-section-number">01</span>
+        <div>
+          <span class="t-label" style="display:block;margin-bottom:0.5rem;">About</span>
+          <div class="section-header-rule"></div>
+        </div>
+      </div>
+      <div class="about-grid">
+        <div class="about-text fade-in delay-1">
+          <p class="t-body-large">
+            I am a <span class="about-badge">Physician & Clinical Data Analyst</span> (known as <strong>Blue</strong>) and a Travel Medicine Resident at the Institute of Preventive Medicine, Thailand. I specialize in bridging clinical practice with data architecture, currently pursuing an M.Sc. in Digital & AI Tech at Chulalongkorn University, with an upcoming M.Sc. in Health Care Analytics at Carnegie Mellon University (2026).
+          </p>
+          <p class="t-body-large font-mono" style="font-size:0.8125rem;color:var(--accent-heading);margin-top:1.25rem;">
+            Current_Focus: "National Vaccine Registry & Public Health Data Initiatives"
+          </p>
+          <div class="about-contact">
+            <a href="mailto:vk.poonyakanok@gmail.com" class="about-contact-email">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              vk.poonyakanok@gmail.com
+            </a>
+            <div class="about-socials">
+              <a href="https://github.com/vk-poonyakanok" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
+              <a href="https://www.linkedin.com/in/vitchakorn" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://www.researchgate.net/profile/Vitchakorn-Poonyakanok" target="_blank" title="ResearchGate"><i class="fa-brands fa-researchgate"></i></a>
+              <a href="https://scholar.google.com/citations?user=r9uxNqQAAAAJ&hl=en" target="_blank" title="Google Scholar">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5.242 13.769L0.5 9.5 12 0l11.5 9.5-4.742 4.269C17.547 12.593 14.896 12 12 12s-5.547.593-6.758 1.769zM12 14c3.866 0 7 1.94 7 4.333V24l-7-3.333L5 24v-5.667C5 15.94 8.134 14 12 14z"/></svg>
+              </a>
+              <a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok" target="_blank" title="Tableau">
+                <img src="favicon/tableau.png" alt="Tableau" style="filter: grayscale(100%) opacity(0.8);">
+              </a>
+              <a href="https://www.kaggle.com/vitchakorn" target="_blank" title="Kaggle"><i class="fa-brands fa-kaggle"></i></a>
+              <a href="https://orcid.org/0009-0007-9945-0376" target="_blank" title="ORCID"><i class="fa-brands fa-orcid"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="about-stats fade-in delay-2">
+          <div class="stat-item">
+            <span class="stat-number"><span class="count-up" data-target="6">0</span>+</span>
+            <span class="stat-label">Years Clinical Practice</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number"><span class="count-up" data-target="4">0</span>+</span>
+            <span class="stat-label">Years Data Analysis</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number"><span class="count-up" data-target="2">0</span></span>
+            <span class="stat-label">Publications</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number"><span class="count-up" data-target="15">0</span>+</span>
+            <span class="stat-label">Certifications</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ EXPERIENCE ═══════════════════ -->
+  <section class="section section-alt-bg" id="experience">
+    <div class="container-grid">
+      <div class="section-header fade-in">
+        <span class="t-section-number">02</span>
+        <div>
+          <span class="t-label" style="display:block;margin-bottom:0.5rem;">Experience</span>
+          <div class="section-header-rule"></div>
+        </div>
+      </div>
+      <div class="exp-grid">
+        <div class="fade-in delay-1">
+          <div class="exp-category-label">Clinical &amp; Research</div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-year">2024 — Present</div>
+              <div class="timeline-header">
+                  <div class="timeline-logo-wrap">
+                      <img src="experience/ipm.png" alt="IPM" class="timeline-logo">
+                      <img src="experience/moph.png" alt="MOPH" class="timeline-logo">
+                  </div>
+                  <div>
+                      <div class="timeline-role">Travel Medicine Resident</div>
+                      <div class="timeline-org">Institute of Preventive Medicine, DDC, MOPH</div>
+                      <div class="timeline-location">Nonthaburi, Thailand</div>
+                  </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">Nov 2024 — Present</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/pty.png" alt="Pattayarak" class="timeline-logo">
+                    <img src="experience/moph.png" alt="MOPH" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">General Practitioner</div>
+                    <div class="timeline-org">Pattayarak Health Unit, ODPC 6, DDC, MOPH</div>
+                    <div class="timeline-location">Chonburi, Thailand</div>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2022 — 2024</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/bidi.png" alt="BIDI" class="timeline-logo">
+                    <img src="experience/moph.png" alt="MOPH" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">General Practitioner</div>
+                    <div class="timeline-org">Bamrasnaradura Infectious Diseases Institute</div>
+                    <div class="timeline-location">Nonthaburi, Thailand</div>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2020 — 2022</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/sskh.png" alt="SSKH" class="timeline-logo">
+                    <img src="experience/moph.png" alt="MOPH" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">General Practitioner (Intern)</div>
+                    <div class="timeline-org">Si Songkhram Hospital</div>
+                    <div class="timeline-location">Nakhon Phanom, Thailand</div>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2019 — 2020</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/nkh.jpg" alt="NKH" class="timeline-logo">
+                    <img src="experience/moph.png" alt="MOPH" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">General Practitioner (Intern)</div>
+                    <div class="timeline-org">Nong Khai Hospital</div>
+                    <div class="timeline-location">Nong Khai, Thailand</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fade-in delay-2">
+          <div class="exp-category-label">Education</div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-year">Aug 2026 — Incoming</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/cmu.png" alt="CMU" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">M.Sc. Health Care Analytics &amp; IT (MSHCA)</div>
+                    <div class="timeline-org">Carnegie Mellon University</div>
+                    <div class="timeline-location">Pittsburgh, PA, USA</div>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2025 — Present</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/chula.jpg" alt="Chula" class="timeline-logo">
+                    <img src="experience/digihealth.png" alt="DigiHealth" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">M.Sc. Digital &amp; AI Technologies in Health Systems</div>
+                    <div class="timeline-org">Chulalongkorn University</div>
+                    <div class="timeline-location">Bangkok, Thailand</div>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2013 — 2019</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/rama.png" alt="Ramathibodi" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">Doctor of Medicine (MD)</div>
+                    <div class="timeline-org">Mahidol University (Ramathibodi Hospital)</div>
+                    <div class="timeline-location">Bangkok, Thailand</div>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-year">2010 — 2013</div>
+              <div class="timeline-header">
+                <div class="timeline-logo-wrap">
+                    <img src="experience/tu.png" alt="Triam Udom" class="timeline-logo">
+                </div>
+                <div>
+                    <div class="timeline-role">High School</div>
+                    <div class="timeline-org">Triam Udom Suksa School</div>
+                    <div class="timeline-location">Bangkok, Thailand</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ EXPERTISE ═══════════════════ -->
+  <section class="section" id="expertise">
+    <div class="container-grid">
+      <div class="section-header fade-in">
+        <span class="t-section-number">03</span>
+        <div>
+          <span class="t-label" style="display:block;margin-bottom:0.5rem;">Expertise</span>
+          <div class="section-header-rule"></div>
+        </div>
+      </div>
+      <div class="expertise-grid fade-in delay-1">
+        <div class="expertise-card">
+          <div class="expertise-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <h3 class="expertise-title">Travel Medicine</h3>
+          <ul class="expertise-list">
+            <li>Pre-travel health risk assessment &amp; counseling</li>
+            <li>Immunization strategy &amp; vaccination scheduling</li>
+            <li>Tropical &amp; emerging infectious disease diagnosis</li>
+            <li>Malaria prophylaxis &amp; post-travel fever evaluation</li>
+            <li>Altitude illness prevention &amp; management</li>
+            <li>Epidemiological surveillance &amp; outbreak response</li>
+          </ul>
+        </div>
+        <div class="expertise-card">
+          <div class="expertise-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+          </div>
+          <h3 class="expertise-title">Health Informatics</h3>
+          <ul class="expertise-list">
+            <li>Clinical decision support system design</li>
+            <li>National vaccine registry architecture</li>
+            <li>Machine learning for clinical risk stratification</li>
+            <li>Health data interoperability</li>
+            <li>Digital disease surveillance &amp; epidemic intelligence</li>
+            <li>NLP for clinical text mining &amp; data extraction</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ PROJECTS ═══════════════════ -->
+  <section class="section section-alt-bg" id="projects">
+    <div class="container-grid">
+      <div class="section-header fade-in">
+        <span class="t-section-number">04</span>
+        <div>
+          <span class="t-label" style="display:block;margin-bottom:0.5rem;">Selected Projects</span>
+          <div class="section-header-rule"></div>
+        </div>
+      </div>
+      <div class="project-list">
+        <a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok/viz/yf_malaria/CDC" target="_blank" class="project-item fade-in delay-1">
+          <div>
+            <div class="project-title">Yellow Fever Vaccine & Malaria Prevention Dashboard</div>
+            <span class="project-link">CDC Yellow Book 2026 Data · Tableau</span>
+            <p class="project-desc">Interactive clinical dashboard providing country-specific immunization and prophylaxis requirements based on the latest CDC global health standards.</p>
+            <div class="project-tags"><span class="project-tag">Data Viz</span><span class="project-tag">Travel Medicine</span><span class="project-tag">CDC Yellow Book</span></div>
+          </div>
+        </a>
+        <a href="https://altit.app/" target="_blank" class="project-item fade-in delay-2">
+          <div>
+            <div class="project-title">Altitude Itinerary Analyzer</div>
+            <span class="project-link">altit.app</span>
+            <p class="project-desc">Full-stack AI clinical decision support application to autonomously extract &amp; analyze multi-modal travel itineraries for high-altitude risk assessment.</p>
+            <div class="project-tags"><span class="project-tag">AI/CDS</span><span class="project-tag">Full-Stack</span><span class="project-tag">Travel Medicine</span></div>
+          </div>
+        </a>
+        <a href="https://hoscode.vercel.app/" target="_blank" class="project-item fade-in delay-3">
+          <div>
+            <div class="project-title">Thai HospSearch</div>
+            <span class="project-link">hoscode.vercel.app</span>
+            <p class="project-desc">Interactive navigator for Thai healthcare administrative hierarchy (Region to Subdistrict) with direct code lookup.</p>
+            <div class="project-tags"><span class="project-tag">Health Data</span><span class="project-tag">Public Health</span></div>
+          </div>
+        </a>
+        <a href="https://hajj-period-planner.vercel.app/" target="_blank" class="project-item fade-in">
+          <div>
+            <div class="project-title">Hajj Menstrual Delay Planner</div>
+            <span class="project-link">hajj-period-planner.vercel.app</span>
+            <p class="project-desc">Web utility for calculating and visualizing menstrual cycles and planning for menstrual delay/suppression for pilgrims.</p>
+            <div class="project-tags"><span class="project-tag">Clinical Tool</span><span class="project-tag">Travel Medicine</span></div>
+          </div>
+        </a>
+        <a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok" target="_blank" class="project-item fade-in">
+          <div>
+            <div class="project-title">PM2.5 &amp; Mental Health Dynamics</div>
+            <span class="project-link">Tableau Public</span>
+            <p class="project-desc">Visualized spatial-temporal correlations between air pollution and psychiatric disorders using Interrupted Time Series (ITS) models.</p>
+            <div class="project-tags"><span class="project-tag">Data Viz</span><span class="project-tag">Epidemiology</span><span class="project-tag">ITS</span></div>
+          </div>
+        </a>
+        <a href="https://www.kaggle.com/code/vitchakorn/cirrhosis-survival-transplant-outcomes-ml" target="_blank" class="project-item fade-in">
+          <div>
+            <div class="project-title">Cirrhosis Survival Prediction</div>
+            <span class="project-link">Kaggle Notebook</span>
+            <p class="project-desc">Multi-class prediction model using Ensemble Learning (XGBoost/LightGBM) with engineered clinical features.</p>
+            <div class="project-tags"><span class="project-tag">ML</span><span class="project-tag">Clinical</span><span class="project-tag">Ensemble</span></div>
+          </div>
+        </a>
+        <a href="https://vk-poonyakanok.github.io/thai-numeral-converter/" target="_blank" class="project-item fade-in">
+          <div>
+            <div class="project-title">Thai Numeral Converter</div>
+            <span class="project-link">vk-poonyakanok.github.io</span>
+            <p class="project-desc">Automated utility for Thai government documentation, converting Arabic to Thai numerals while preserving email addresses and URLs.</p>
+            <div class="project-tags"><span class="project-tag">Utility</span><span class="project-tag">Localization</span></div>
+          </div>
+        </a>
+        <a href="https://www.kaggle.com/code/vitchakorn/bnk-cgm48-4th-general-election-predictive-analysis" target="_blank" class="project-item fade-in">
+          <div>
+            <div class="project-title">BNK/CGM48 4th General Election Predictive Analysis</div>
+            <span class="project-link">Kaggle Notebook</span>
+            <p class="project-desc">Technical case study using end-to-end ML (Scraping to Prediction) to forecast election outcomes in the entertainment industry.</p>
+            <div class="project-tags"><span class="project-tag">ML</span><span class="project-tag">Web Scraping</span><span class="project-tag">Prediction</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ PUBLICATIONS ═══════════════════ -->
+  <section class="section" id="publications">
+    <div class="container-grid">
+      <div class="section-header fade-in">
+        <span class="t-section-number">05</span>
+        <div>
+          <span class="t-label" style="display:block;margin-bottom:0.5rem;">Publications</span>
+          <div class="section-header-rule"></div>
+        </div>
+      </div>
+      <div>
+        <div class="pub-item fade-in delay-1">
+          <span class="pub-number">001</span>
+          <div class="pub-title">An Investigation of MMR‐Related Mumps Cluster Following Immunization Among Practical Nursing Students, Bangkok, Thailand, 2024</div>
+          <div class="pub-journal">Journal of Tropical Medicine (Wiley) · Aug 1, 2025</div>
+          <div class="pub-doi">DOI: <a href="https://doi.org/10.1155/jotm/9974081" target="_blank">10.1155/jotm/9974081</a></div>
+          <details>
+            <summary>Show detail</summary>
+            <p class="pub-contributors"><strong>Contributors:</strong> Sethapong Lertsakulbunlue, Drunphob Srithammavong, Kamonchanok Tepsittha, Hataya Kanjanasombut, Vitchakorn Poonyakanok, Viravarn Luvira, Phimphan Pisutsan, Rachata Charoenwisedsil, Pathomthep Leowattana, Peeriya Watakulsin et al.</p>
+            <p class="pub-abstract">This study investigated a cluster of mumps-like cases among practical nursing students following MMR vaccination, identifying operational risk factors and confirming vaccine-related mumps infections through molecular analysis. Recommendations were made to improve vaccination campaign processes.</p>
+          </details>
+        </div>
+        <div class="pub-item fade-in delay-2">
+          <span class="pub-number">002</span>
+          <div class="pub-title">Preliminary investigation and rapid response to methanol intoxication outbreak linked to illegal herbal liquor in Bangkok, August 2024</div>
+          <div class="pub-journal">Weekly Epidemiological Surveillance Report (WESR) · Sep 6, 2024</div>
+          <div class="pub-doi">DOI: <a href="https://doi.org/10.59096/wesr.v55i9.3248" target="_blank">10.59096/wesr.v55i9.3248</a></div>
+          <details>
+            <summary>Show detail</summary>
+            <p class="pub-contributors"><strong>Contributors:</strong> Charuttaporn Jitpeera, Watcharapol Rongdech, Kogkawee Raruenroeng, Vitchakorn Poonyakanok, Panita Kumphon, Kawinna Kerdsalung, Rittichai Jaipong, Tatcha Manta, Thanawan Gabbhirom, Somrak Sirikhetkon, Kanyarat Jarudilokkul, Kantakarn Nilsum, Thanach Photphisutthiphong, Nattinee Isarankura, Wichan Bhunyakitikorn</p>
+            <p class="pub-abstract">As of September 3, 2024, 44 individuals were investigated under methanol intoxication outbreak related to illegal herbal liquor in Bangkok, August 2024, including 20 confirmed cases, 10 probable cases, and 8 suspected cases. Eight deaths were reported, with a gender ratio of 9.25 males per 1 female, and the median age of patients was 39 years.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SKILLS & CERTIFICATIONS ═══════════════════ -->
+  <section class="section section-alt-bg" id="skills">
+    <div class="container-grid">
+      <div class="section-header fade-in">
+        <span class="t-section-number">06</span>
+        <div>
+          <span class="t-label" style="display:block;margin-bottom:0.5rem;">Skills &amp; Certifications</span>
+          <div class="section-header-rule"></div>
+        </div>
+      </div>
+
+      <div class="skills-certs-grid">
+        <!-- LEFT: Skills -->
+        <div class="fade-in delay-1">
+          <div class="skills-category">
+            <div class="skills-category-title">💻 Core Languages</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/Python-3670A0.svg?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python">
+              <img src="https://img.shields.io/badge/R-%23276DC3.svg?style=for-the-badge&logo=r&logoColor=white" alt="R">
+              <img src="https://img.shields.io/badge/SQL-%2300758F.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL">
+              <img src="https://img.shields.io/badge/Stata-%231A538A.svg?style=for-the-badge&logo=stata&logoColor=white" alt="Stata">
+            </div>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">🤖 Data Science &amp; AI</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/XGBoost-1B1F23.svg?style=for-the-badge&logo=xgboost&logoColor=white" alt="XGBoost">
+              <img src="https://img.shields.io/badge/LightGBM-393939.svg?style=for-the-badge&logo=lightgbm&logoColor=white" alt="LightGBM">
+              <img src="https://img.shields.io/badge/YOLO-00FFFF.svg?style=for-the-badge&logo=ultralytics&logoColor=black" alt="YOLO">
+              <img src="https://img.shields.io/badge/Scikit--Learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn">
+              <img src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch">
+              <img src="https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow">
+              <img src="https://img.shields.io/badge/MLX-000000.svg?style=for-the-badge&logo=apple&logoColor=white" alt="MLX">
+            </div>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">📊 Data Analysis &amp; Processing</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/NumPy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
+              <img src="https://img.shields.io/badge/Pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas">
+              <img src="https://img.shields.io/badge/OpenCV-white.svg?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV">
+              <img src="https://img.shields.io/badge/jamovi-215082.svg?style=for-the-badge&logo=jamovi&logoColor=white" alt="jamovi">
+            </div>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">🎨 Visualization &amp; Design</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/Tableau-E97627.svg?style=for-the-badge&logo=tableau&logoColor=white" alt="Tableau">
+              <img src="https://img.shields.io/badge/Power_BI-F2C811.svg?style=for-the-badge&logo=microsoftpowerbi&logoColor=black" alt="Power BI">
+              <img src="https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=matplotlib&logoColor=black" alt="Matplotlib">
+              <img src="https://img.shields.io/badge/Seaborn-3B5B9A.svg?style=for-the-badge&logo=seaborn&logoColor=white" alt="Seaborn">
+              <img src="https://img.shields.io/badge/Adobe%20Photoshop-%2331A8FF.svg?style=for-the-badge&logo=adobephotoshop&logoColor=white" alt="Photoshop">
+              <img src="https://img.shields.io/badge/Adobe%20Lightroom-31A8FF.svg?style=for-the-badge&logo=adobelightroom&logoColor=white" alt="Lightroom">
+            </div>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">☁️ Cloud &amp; Infrastructure</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/Google_Cloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white" alt="Google Cloud">
+              <img src="https://img.shields.io/badge/Firebase-039BE5.svg?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase">
+              <img src="https://img.shields.io/badge/Huawei_Cloud-FF0000.svg?style=for-the-badge&logo=huawei&logoColor=white" alt="Huawei Cloud">
+            </div>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">🌍 Geospatial</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/QGIS-589632.svg?style=for-the-badge&logo=qgis&logoColor=white" alt="QGIS">
+            </div>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">🛡️ Cybersecurity</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/ISC2%20CC-00A4E4.svg?style=for-the-badge&logo=isc2&logoColor=white" alt="ISC2 CC">
+              <img src="https://img.shields.io/badge/Google%20Cybersecurity-4285F4.svg?style=for-the-badge&logo=google&logoColor=white" alt="Google Cybersecurity">
+            </div>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">🛠️ Environments</div>
+            <div class="skills-badges">
+              <img src="https://img.shields.io/badge/Jupyter-%23F37626.svg?style=for-the-badge&logo=jupyter&logoColor=white" alt="Jupyter">
+              <img src="https://img.shields.io/badge/Anaconda-%2344A833.svg?style=for-the-badge&logo=anaconda&logoColor=white" alt="Anaconda">
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Certifications -->
+        <div class="fade-in delay-2">
+          <div class="cert-category">
+            <div class="cert-category-title">Data Science &amp; AI</div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/AIAT-logo-01.jpg" alt="AiAT"></div>
+              <div><div class="cert-name">Foundation AI (Theory)</div><div class="cert-meta">Apr 2026 | AiAT</div><a href="https://assessment.aiat.or.th/certificate/2a541cbb-331d-430f-8dcc-2a88f134a6db" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/HCCDA.png" alt="Huawei"></div>
+              <div><div class="cert-name">Huawei HCCDA-AI</div><div class="cert-meta">Apr 2026 – Apr 2029 | Huawei Cloud</div><a href="cert/HWENDCAIDA100092.png" target="_blank" class="cert-verify">View</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="badge/google-ai-essentials-v1.png" alt="Google"></div>
+              <div><div class="cert-name">Google AI Essentials V1</div><div class="cert-meta">May 2024 | Google | Coursera</div></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="badge/DataRockie School - Certified Professional Data Analyst - 2024-03-12.png" alt="DataRockie"></div>
+              <div><div class="cert-name">Certified Professional Data Analyst</div><div class="cert-meta">Mar 2024 | DataRockie</div><a href="https://badges.parchment.com/public/assertions/TZjRyAo3Qa-jSuuQoizKZA" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="badge/google-advanced-data-analytics-certificate.png" alt="Google"></div>
+              <div><div class="cert-name">Google Advanced Data Analytics</div><div class="cert-meta">Sep 2023 | Google | Coursera · WPWVMVL82V42</div><a href="https://www.coursera.org/account/accomplishments/specialization/WPWVMVL82V42" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="badge/google-data-analytics-professional-certificate.2.png" alt="Google"></div>
+              <div><div class="cert-name">Google Data Analytics Professional</div><div class="cert-meta">Apr 2023 | Google | Coursera · HMWMW9MZLBM2</div><a href="https://www.coursera.org/account/accomplishments/specialization/HMWMW9MZLBM2" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/uc_davis_logo.jpeg" alt="UC Davis"></div>
+              <div><div class="cert-name">Data Visualization with Tableau</div><div class="cert-meta">Aug 2023 | UC Davis | Coursera · CSFU3JSWSQMP</div><a href="https://www.coursera.org/account/accomplishments/specialization/CSFU3JSWSQMP" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/skilllane_logo.jpeg" alt="SkillLane"></div>
+              <div><div class="cert-name">Excel Level Up Update 2021</div><div class="cert-meta">Jul 2023 | SkillLane</div><a href="https://certificate.skilllane.com/certificates/23QLOQ9" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+          </div>
+
+          <div class="cert-category">
+            <div class="cert-category-title">Cybersecurity</div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="badge/certified-in-cybersecurity-cc.1.png" alt="ISC2"></div>
+              <div><div class="cert-name">ISC2 Certified in Cybersecurity (CC)</div><div class="cert-meta">Apr 2026 – Mar 2029 | #3613846</div><a href="https://www.credly.com/badges/8769d712-3992-4f5c-b8bc-af7ba2b1f15c/" target="_blank" class="cert-verify">Verify</a> <a href="cert/digitalcert.pdf" target="_blank" class="cert-verify">View</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="badge/google-cybersecurity-professional-certificate-v2.png" alt="Google"></div>
+              <div><div class="cert-name">Google Cybersecurity Professional V2</div><div class="cert-meta">Jul 24, 2024 | Google | Coursera · BJ8FH7CTWDLA</div><a href="https://www.coursera.org/account/accomplishments/specialization/BJ8FH7CTWDLA" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/THNCA.jpg" alt="THNCA"></div>
+              <div><div class="cert-name">Cybersecurity Foundation Course</div><div class="cert-meta">Aug 2024 | Thailand National Cyber Academy · 8277556641WP</div><a href="https://learn.thnca.or.th/pluginfile.php/1/tool_certificate/issues/1723999206/8277556641WP.pdf" target="_blank" class="cert-verify">View</a></div>
+            </div>
+          </div>
+
+          <div class="cert-category">
+            <div class="cert-category-title">Medical &amp; Public Health</div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/citi.jpeg" alt="CITI"></div>
+              <div><div class="cert-name">Biomedical Researchers</div><div class="cert-meta">Jan 2025 – Jan 2029 | CITI Program · #67495823</div><a href="https://www.citiprogram.org/verify/?w967a1d11-b9e0-4420-ac76-0f412a68e9bb-67495823" target="_blank" class="cert-verify">Verify</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/ddc.png" alt="DDC"></div>
+              <div><div class="cert-name">Introductory Epidemiology &amp; Biostatistics</div><div class="cert-meta">Jun 2024 | DDC, MOPH</div> <a href="cert/1721190140618.jpeg" target="_blank" class="cert-verify">View</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/international_society_of_travel_medicine_logo.jpeg" alt="ISTM"></div>
+              <div><div class="cert-name">ISTM Review Course</div><div class="cert-meta">Feb 2024 | Intl. Society of Travel Medicine</div> <a href="https://workshop-evaluator.herokuapp.com/evaluation/events/15651/respondents/607729/certificate" target="_blank" class="cert-verify">View</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/Chiang_mai_university_logo.png" alt="CMU"></div>
+              <div><div class="cert-name">Diploma in Clinical Epidemiology</div><div class="cert-meta">Dec 2022 | Chiang Mai University</div> <a href="cert/1696631862918.jpeg" target="_blank" class="cert-verify">View</a></div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/Chiang_mai_university_logo.png" alt="CMU"></div>
+              <div><div class="cert-name">Diploma in Clinical Statistics</div><div class="cert-meta">May 2022 | Chiang Mai University</div> <a href="cert/1696631825168.jpeg" target="_blank" class="cert-verify">View</a></div>
+            </div>
+          </div>
+
+          <div class="cert-category">
+            <div class="cert-category-title">Other</div>
+            <div class="cert-item">
+              <div class="cert-icon"><img src="certlogo/tourism.png" alt="Tourism"></div>
+              <div><div class="cert-name">Tour Leader License</div><div class="cert-meta">Dec 2025 | Dept. of Tourism, Thailand</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Apps -->
+      <div style="margin-top:3.5rem;" class="fade-in">
+        <div class="exp-category-label" style="margin-bottom:1.25rem;">Applications</div>
+        <div class="apps-grid">
+          <a href="https://altit.app/" target="_blank" class="app-card">
+            <div class="app-icon-box"><img src="logo/altit.webp" alt="Altit"></div>
+            <span class="app-name">Altitude Itinerary Analyzer</span>
+          </a>
+          <a href="https://hajj-period-planner.vercel.app/" target="_blank" class="app-card">
+            <div class="app-icon-box"><img src="logo/hajjmens.webp" alt="HajjMens"></div>
+            <span class="app-name">Hajj Menstrual Delay Planner</span>
+          </a>
+          <a href="https://menstrual.netlify.app/" target="_blank" class="app-card">
+            <div class="app-icon-box"><img src="logo/mens.webp" alt="Mens"></div>
+            <span class="app-name">Menstrual Cycle Predictor</span>
+          </a>
+          <a href="https://hoscode.vercel.app/" target="_blank" class="app-card">
+            <div class="app-icon-box"><img src="logo/hospsearch.webp" alt="HospSearch"></div>
+            <span class="app-name">Thai HospSearch</span>
+          </a>
+          <a href="https://thaicda2558.vercel.app/" target="_blank" class="app-card">
+            <div class="app-icon-box"><img src="logo/thaicda2558.webp" alt="CDA2558"></div>
+            <span class="app-name">CDA 2558 App</span>
+          </a>
+          <a href="https://vk-poonyakanok.github.io/thai-numeral-converter/" target="_blank" class="app-card">
+            <div class="app-icon-box"><img src="logo/thai-numeral-converter.png" alt="Thai Numeral"></div>
+            <span class="app-name">Thai Numeral Converter</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div style="margin-top:2.5rem;" class="fade-in">
+        <div class="exp-category-label" style="margin-bottom:1.25rem;">Language Competency</div>
+        <div class="lang-grid">
+          <div class="lang-item">
+            <div class="lang-name">English</div>
+            <div class="lang-level">Professional Working Proficiency</div>
+            <div class="lang-detail">TOEFL iBT: 91/120 (Jun 2025)<br>Duolingo: 120/160 (Mar 2026)</div>
+          </div>
+          <div class="lang-item">
+            <div class="lang-name">Thai</div>
+            <div class="lang-level">Native Proficiency</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CONTACT ═══════════════════ -->
+  <section class="section" id="contact">
+    <div class="container-grid">
+      <div class="section-header fade-in">
+        <span class="t-section-number">07</span>
+        <div>
+          <span class="t-label" style="display:block;margin-bottom:0.5rem;">Contact</span>
+          <div class="section-header-rule"></div>
+        </div>
+      </div>
+      <div class="contact-grid">
+        <div class="fade-in delay-1">
+          <p class="contact-cta">Open to new ideas and collaborations in <span class="accent-word">health data initiatives</span>, medical informatics, travel medicine, and public health research.</p>
+          <div style="margin-top: 2rem;">
+            <span class="t-label" style="display:block;margin-bottom:0.5rem;">Direct Email</span>
+            <a href="mailto:vk.poonyakanok@gmail.com" class="about-contact-email" style="font-size: 1rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              vk.poonyakanok@gmail.com
+            </a>
+          </div>
+        </div>
+        <div class="fade-in delay-2">
+          <form action="https://formspree.io/f/myklppap" method="POST" class="contact-form">
+            <div class="form-group">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" id="name" name="name" required placeholder="Your full name" class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" name="_replyto" required placeholder="Your email address" class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="message" class="form-label">Message</label>
+              <textarea id="message" name="message" required placeholder="How can I help you?" class="form-textarea"></textarea>
+            </div>
+            <button type="submit" class="submit-btn">
+              <span>Send Message</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="footer">
+    <div class="container-grid">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Vitchakorn Poonyakanok, MD</span>
+        <div class="footer-status">
+          <span class="status-dot"></span>
+          <span>Bangkok, TH · <span id="localTime" class="font-mono">--:--</span></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+  <script>
+    // ── Theme Toggle ──
+    const htmlEl = document.documentElement;
+    const bodyEl = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    htmlEl.setAttribute('data-theme', savedTheme);
+    bodyEl.setAttribute('data-theme', savedTheme);
+
+    themeToggle.addEventListener('click', function() {
+      const current = htmlEl.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      htmlEl.setAttribute('data-theme', next);
+      bodyEl.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    // ── Mobile Menu ──
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    menuToggle.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+    });
+
+    navLinks.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // ── Scroll Reveal ──
+    function revealOnScroll() {
+      var elements = document.querySelectorAll('.fade-in');
+      for (var i = 0; i < elements.length; i++) {
+        var el = elements[i];
+        var rect = el.getBoundingClientRect();
+        var windowHeight = window.innerHeight || document.documentElement.clientHeight;
+        if (rect.top < windowHeight - 60) {
+          el.classList.add('visible');
         }
+      }
+    }
 
-        function updateToggleIcon(theme) {
-            const toggleBtn = document.getElementById('theme-toggle');
-            if (theme === 'light') {
-                toggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
-            } else {
-                toggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
-            }
+    // Run immediately so content is visible without waiting
+    revealOnScroll();
+
+    // Run on scroll
+    window.addEventListener('scroll', revealOnScroll, { passive: true });
+
+    // Run on resize
+    window.addEventListener('resize', revealOnScroll, { passive: true });
+
+    // ── Active Nav Link ──
+    var sectionIds = ['top', 'about', 'experience', 'expertise', 'projects', 'publications', 'skills', 'contact'];
+    var navAnchors = navLinks.querySelectorAll('a');
+
+    function updateActiveNav() {
+      var scrollPos = window.scrollY + 120;
+      for (var i = sectionIds.length - 1; i >= 0; i--) {
+        var section = document.getElementById(sectionIds[i]);
+        if (section && section.offsetTop <= scrollPos) {
+          navAnchors.forEach(function(a) { a.classList.remove('active'); });
+          var target = navLinks.querySelector('a[href="#' + sectionIds[i] + '"]');
+          if (target) target.classList.add('active');
+          break;
         }
+      }
+    }
 
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            if (newTheme === 'light') {
-                body.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'dark');
-            }
-            updateToggleIcon(newTheme);
-        }
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
 
-        function updateUnderline() {
-            const activeBtn = document.querySelector('.tab-btn.active');
-            const underline = document.getElementById('tab-underline');
-            if (activeBtn && underline) {
-                underline.style.width = activeBtn.offsetWidth + 'px';
-                underline.style.left = activeBtn.offsetLeft + 'px';
-                underline.style.top = (activeBtn.offsetTop + activeBtn.offsetHeight - 2) + 'px';
-            }
-        }
+    // ── Count Up Animation ──
+    var countElements = document.querySelectorAll('.count-up');
+    var countAnimated = false;
 
-        function openTab(evt, tabName) {
-            const tabContents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove("active");
-            }
-            const tabBtns = document.getElementsByClassName("tab-btn");
-            for (let i = 0; i < tabBtns.length; i++) {
-                tabBtns[i].classList.remove("active");
-            }
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-            
-            // 1. Update sliding underline
-            updateUnderline();
+    function startCountUp() {
+      if (countAnimated) return;
+      var statsSection = document.querySelector('.about-stats');
+      if (!statsSection) return;
+      var rect = statsSection.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 100) {
+        countAnimated = true;
+        countElements.forEach(function(el) {
+          var target = parseInt(el.getAttribute('data-target'));
+          var duration = 1800;
+          var start = performance.now();
+          function update(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target).toLocaleString();
+            if (progress < 1) requestAnimationFrame(update);
+            else el.textContent = target.toLocaleString();
+          }
+          requestAnimationFrame(update);
+        });
+      }
+    }
 
-            // 2. Auto-center the active tab in the scroll view
-            const tabBar = document.querySelector('.tab-bar');
-            const activeBtn = evt.currentTarget;
-            const scrollLeft = activeBtn.offsetLeft - (tabBar.offsetWidth / 2) + (activeBtn.offsetWidth / 2);
-            tabBar.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    window.addEventListener('scroll', startCountUp, { passive: true });
+    startCountUp();
 
-            // Scroll to top of container when switching tabs on mobile
-            if (window.innerWidth < 768) {
-                const headerHeight = document.querySelector('header').offsetHeight;
-                window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-            }
-        }
-
-        // Initialize
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        if (savedTheme === 'light') document.body.setAttribute('data-theme', 'light');
-        updateToggleIcon(savedTheme);
-        updateFooterDate();
-        window.addEventListener('resize', updateUnderline);
-        updateUnderline();
-    </script>
+    // ── Bangkok Time ──
+    function updateTime() {
+      var now = new Date();
+      var options = { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit', hour12: false };
+      var timeStr = now.toLocaleTimeString('en-GB', options);
+      document.getElementById('localTime').textContent = timeStr;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
 </body>
 </html>
