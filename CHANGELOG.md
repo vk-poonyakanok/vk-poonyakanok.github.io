@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [2026-04-20] - New Style Implementation & Refinements
 
 ### Added
+- **Google Colab Skill**: Added Google Colab to the Environments category in the skills section.
 - **New Sleek Design**: Completely overhauled the UI with a modern, GitHub-inspired aesthetic using Inter and JetBrains Mono fonts.
 - **CDC Yellow Book Dashboard**: Added "Yellow Fever Vaccine & Malaria Prevention Information" project with Tableau integration.
 - **Contact Form**: Implemented a functional HTML contact form using Formspree (Endpoint: myklppap).
@@ -21,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - **Certifications**: Restored all 16+ verification and certificate-viewing links from the original main branch.
 
 ### Fixed
+- **OpenCV Logo**: Fixed the OpenCV skill badge visibility by changing it from white-on-white to a purple background with a white logo.
 - **Mobile Layout**: Resolved a CSS padding clash that was cutting off your name behind the navigation bar on handsets.
 - **Theme Functionality**: Restored missing body styles that were preventing light/dark mode from switching correctly.
 - **Mobile Scaling**: Refined `t-hero` font sizes and fluid scaling for perfect fit on all mobile browsers.
