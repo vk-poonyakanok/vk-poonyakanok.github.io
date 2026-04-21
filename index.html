@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vitchakorn Poonyakanok — Physician</title>
+  <title>Vitchakorn Poonyakanok</title>
+  <meta name="description" content="Vitchakorn (Blue) Poonyakanok — Clinical Data Analyst and Travel Medicine Resident at the Institute of Preventive Medicine, Thailand. Specializing in bridging clinical practice with data architecture.">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vk-poonyakanok.github.io/">
+  <meta property="og:title" content="Vitchakorn Poonyakanok">
+  <meta property="og:description" content="Clinical Data Analyst and Travel Medicine Resident at the Institute of Preventive Medicine, Thailand. Specializing in bridging clinical practice with data architecture.">
+  <meta property="og:image" content="https://vk-poonyakanok.github.io/pic/vitchakorn.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://vk-poonyakanok.github.io/">
+  <meta name="twitter:title" content="Vitchakorn Poonyakanok">
+  <meta name="twitter:description" content="Clinical Data Analyst and Travel Medicine Resident at the Institute of Preventive Medicine, Thailand. Specializing in bridging clinical practice with data architecture.">
+  <meta name="twitter:image" content="https://vk-poonyakanok.github.io/pic/vitchakorn.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f81f7%22/><path d=%22M50 20 C33.4 20 20 33.4 20 50 C20 66.6 33.4 80 50 80 C66.6 80 80 66.6 80 50 C80 33.4 66.6 20 50 20 M50 25 C63.8 25 75 36.2 75 50 C75 63.8 63.8 75 50 75 C36.2 75 25 63.8 25 50 C25 36.2 36.2 25 50 25 M48 25 L48 75 M25 50 L75 50 M50 25 A30 45 0 0 0 50 75 A30 45 0 0 0 50 25%22 stroke=%22white%22 stroke-width=%224%22 fill=%22none%22/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1344,6 +1359,52 @@
     @keyframes metaIn {
       to { opacity: 1; transform: translateY(0); }
     }
+    /* ── Project Toggle ── */
+    .project-show-more {
+      display: none;
+      flex-direction: column;
+    }
+
+    .project-show-more.active {
+      display: flex;
+    }
+
+    .toggle-projects-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 2rem;
+      padding: 12px 24px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .toggle-projects-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-heading);
+      background: var(--accent-muted);
+    }
+
+    .toggle-projects-btn svg {
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-projects-btn.active svg {
+      transform: rotate(180deg);
+    }
   </style>
 </head>
 <body data-theme="dark">
@@ -1385,7 +1446,7 @@
     <div class="hero-meta">
       <div class="hero-meta-item">
         <span class="t-label">Specialty</span>
-        <span style="font-size:0.875rem;font-weight:500;color:var(--text-primary);">MD · Travel Medicine Resident<br>M.Sc. Digital & AI Tech for Health</span>
+        <span style="font-size:0.875rem;font-weight:500;color:var(--text-primary);">MD · Travel Medicine Resident<br>Master of Science in Digital and AI Technologies in Health Systems</span>
       </div>
       <div class="hero-meta-item">
         <span class="t-label">Location</span>
@@ -1417,7 +1478,7 @@
       <div class="about-grid">
         <div class="about-text fade-in delay-1">
           <p class="t-body-large">
-            I am a <span class="about-badge">Physician & Clinical Data Analyst</span> (known as <strong>Blue</strong>) and a Travel Medicine Resident at the Institute of Preventive Medicine, Thailand. I specialize in bridging clinical practice with data architecture, currently pursuing an M.Sc. in Digital & AI Tech at Chulalongkorn University, with an upcoming M.Sc. in Health Care Analytics at Carnegie Mellon University (2026).
+            I am a <span class="about-badge">Physician & Clinical Data Analyst</span> (known as <strong>Blue</strong>) and a Travel Medicine Resident at the Institute of Preventive Medicine, Thailand. I specialize in bridging clinical practice with data architecture, currently pursuing a Master of Science in Digital and AI Technologies in Health Systems at Chulalongkorn University, with an upcoming Master of Science in Health Care Analytics at Carnegie Mellon University’s Heinz College of Information Systems and Public Policy (2026).
           </p>
           <p class="t-body-large font-mono" style="font-size:0.8125rem;color:var(--accent-heading);margin-top:1.25rem;">
             Current_Focus: "National Vaccine Registry & Public Health Data Initiatives"
@@ -1560,8 +1621,8 @@
                     <img src="experience/cmu.png" alt="CMU" class="timeline-logo">
                 </div>
                 <div>
-                    <div class="timeline-role">M.Sc. Health Care Analytics &amp; IT (MSHCA)</div>
-                    <div class="timeline-org">Carnegie Mellon University</div>
+                    <div class="timeline-role">Master of Science in Health Care Analytics and Information Technology (MSHCA)</div>
+                    <div class="timeline-org">Carnegie Mellon University’s Heinz College of Information Systems and Public Policy</div>
                     <div class="timeline-location">Pittsburgh, PA, USA</div>
                 </div>
               </div>
@@ -1574,7 +1635,7 @@
                     <img src="experience/digihealth.png" alt="DigiHealth" class="timeline-logo">
                 </div>
                 <div>
-                    <div class="timeline-role">M.Sc. Digital &amp; AI Technologies in Health Systems</div>
+                    <div class="timeline-role">Master of Science Program in Digital and AI Technologies in Health Systems (DigiHealth)</div>
                     <div class="timeline-org">Chulalongkorn University</div>
                     <div class="timeline-location">Bangkok, Thailand</div>
                 </div>
@@ -1698,38 +1759,44 @@
             <div class="project-tags"><span class="project-tag">Clinical Tool</span><span class="project-tag">Travel Medicine</span></div>
           </div>
         </a>
-        <a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok" target="_blank" class="project-item fade-in">
-          <div>
-            <div class="project-title">PM2.5 &amp; Mental Health Dynamics</div>
-            <span class="project-link">Tableau Public</span>
-            <p class="project-desc">Visualized spatial-temporal correlations between air pollution and psychiatric disorders using Interrupted Time Series (ITS) models.</p>
-            <div class="project-tags"><span class="project-tag">Data Viz</span><span class="project-tag">Epidemiology</span><span class="project-tag">ITS</span></div>
-          </div>
-        </a>
-        <a href="https://www.kaggle.com/code/vitchakorn/cirrhosis-survival-transplant-outcomes-ml" target="_blank" class="project-item fade-in">
-          <div>
-            <div class="project-title">Cirrhosis Survival Prediction</div>
-            <span class="project-link">Kaggle Notebook</span>
-            <p class="project-desc">Multi-class prediction model using Ensemble Learning (XGBoost/LightGBM) with engineered clinical features.</p>
-            <div class="project-tags"><span class="project-tag">ML</span><span class="project-tag">Clinical</span><span class="project-tag">Ensemble</span></div>
-          </div>
-        </a>
-        <a href="https://vk-poonyakanok.github.io/thai-numeral-converter/" target="_blank" class="project-item fade-in">
-          <div>
-            <div class="project-title">Thai Numeral Converter</div>
-            <span class="project-link">vk-poonyakanok.github.io</span>
-            <p class="project-desc">Automated utility for Thai government documentation, converting Arabic to Thai numerals while preserving email addresses and URLs.</p>
-            <div class="project-tags"><span class="project-tag">Utility</span><span class="project-tag">Localization</span></div>
-          </div>
-        </a>
-        <a href="https://www.kaggle.com/code/vitchakorn/bnk-cgm48-4th-general-election-predictive-analysis" target="_blank" class="project-item fade-in">
-          <div>
-            <div class="project-title">BNK/CGM48 4th General Election Predictive Analysis</div>
-            <span class="project-link">Kaggle Notebook</span>
-            <p class="project-desc">Technical case study using end-to-end ML (Scraping to Prediction) to forecast election outcomes in the entertainment industry.</p>
-            <div class="project-tags"><span class="project-tag">ML</span><span class="project-tag">Web Scraping</span><span class="project-tag">Prediction</span></div>
-          </div>
-        </a>
+        <div class="project-show-more" id="moreProjects">
+          <a href="https://public.tableau.com/app/profile/vitchakorn.poonyakanok" target="_blank" class="project-item">
+            <div>
+              <div class="project-title">PM2.5 &amp; Mental Health Dynamics</div>
+              <span class="project-link">Tableau Public</span>
+              <p class="project-desc">Visualized spatial-temporal correlations between air pollution and psychiatric disorders using Interrupted Time Series (ITS) models.</p>
+              <div class="project-tags"><span class="project-tag">Data Viz</span><span class="project-tag">Epidemiology</span><span class="project-tag">ITS</span></div>
+            </div>
+          </a>
+          <a href="https://www.kaggle.com/code/vitchakorn/cirrhosis-survival-transplant-outcomes-ml" target="_blank" class="project-item">
+            <div>
+              <div class="project-title">Cirrhosis Survival Prediction</div>
+              <span class="project-link">Kaggle Notebook</span>
+              <p class="project-desc">Multi-class prediction model using Ensemble Learning (XGBoost/LightGBM) with engineered clinical features.</p>
+              <div class="project-tags"><span class="project-tag">ML</span><span class="project-tag">Clinical</span><span class="project-tag">Ensemble</span></div>
+            </div>
+          </a>
+          <a href="https://vk-poonyakanok.github.io/thai-numeral-converter/" target="_blank" class="project-item">
+            <div>
+              <div class="project-title">Thai Numeral Converter</div>
+              <span class="project-link">vk-poonyakanok.github.io</span>
+              <p class="project-desc">Automated utility for Thai government documentation, converting Arabic to Thai numerals while preserving email addresses and URLs.</p>
+              <div class="project-tags"><span class="project-tag">Utility</span><span class="project-tag">Localization</span></div>
+            </div>
+          </a>
+          <a href="https://www.kaggle.com/code/vitchakorn/bnk-cgm48-4th-general-election-predictive-analysis" target="_blank" class="project-item">
+            <div>
+              <div class="project-title">BNK/CGM48 4th General Election Predictive Analysis</div>
+              <span class="project-link">Kaggle Notebook</span>
+              <p class="project-desc">Technical case study using end-to-end ML (Scraping to Prediction) to forecast election outcomes in the entertainment industry.</p>
+              <div class="project-tags"><span class="project-tag">ML</span><span class="project-tag">Web Scraping</span><span class="project-tag">Prediction</span></div>
+            </div>
+          </a>
+        </div>
+        <button class="toggle-projects-btn" id="toggleProjects">
+          <span>View All Projects</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
       </div>
     </div>
   </section>
@@ -2043,7 +2110,7 @@
   <footer class="footer">
     <div class="container-grid">
       <div class="footer-inner">
-        <span class="footer-copy">© 2025 Vitchakorn Poonyakanok, MD</span>
+        <span class="footer-copy">© 2026 Vitchakorn Poonyakanok</span>
         <div class="footer-status">
           <span class="status-dot"></span>
           <span>Bangkok, TH · <span id="localTime" class="font-mono">--:--</span></span>
@@ -2123,6 +2190,29 @@
           break;
         }
       }
+    }
+
+    // ── Project List Toggle ──
+    const toggleBtn = document.getElementById('toggleProjects');
+    const moreProjects = document.getElementById('moreProjects');
+
+    if (toggleBtn && moreProjects) {
+      toggleBtn.addEventListener('click', () => {
+        const isActive = moreProjects.classList.toggle('active');
+        toggleBtn.classList.toggle('active');
+        toggleBtn.querySelector('span').textContent = isActive ? 'Show Less' : 'View All Projects';
+        
+        if (isActive) {
+          // Trigger fade-in for newly visible items
+          const items = moreProjects.querySelectorAll('.project-item');
+          items.forEach((item, index) => {
+            setTimeout(() => {
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            }, index * 100);
+          });
+        }
+      });
     }
 
     window.addEventListener('scroll', updateActiveNav, { passive: true });
