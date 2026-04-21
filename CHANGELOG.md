@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-04-21] - Branding Standardization & UI Optimization
+
+### Added
+- **Project List Toggle**: Implemented a "View All Projects" toggle to curate the "Selected Projects" section, showing the top 4 by default for a cleaner initial view.
+- **Enhanced Meta Tags**: Added comprehensive SEO and Open Graph meta tags for improved social media link previews.
+
+### Changed
+- **Official Branding**: Standardized all Carnegie Mellon University (Heinz College) and Chulalongkorn University (DigiHealth) references to their official, full-length nomenclature.
+- **Social Preview Optimization**: Customized shared link titles and descriptions, ensuring professional representation without local file paths.
+- **Footer Updates**: Updated the copyright year to 2026 and refined name-only formatting.
+- **Section Badge Consistency**: Re-standardized "Physician & Clinical Data Analyst" badge in the About section.
+
 ## [2026-04-20] - New Style Implementation & Refinements
 
 ### Added
