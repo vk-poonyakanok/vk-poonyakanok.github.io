@@ -987,32 +987,16 @@
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--accent-heading);
-      margin-bottom: 0;
-      cursor: pointer;
+      margin-bottom: 0.625rem;
       list-style: none;
       display: flex;
       align-items: center;
     }
 
-    .skills-category-title::-webkit-details-marker,
-    .cert-category-title::-webkit-details-marker { display: none; }
-
-    .skills-category-title::before,
-    .cert-category-title::before {
-      content: "⊕";
-      margin-right: 6px;
-      color: var(--text-tertiary);
-      font-weight: 600;
-    }
-
-    .skills-category[open] > .skills-category-title::before,
-    .cert-category[open] > .cert-category-title::before { content: "⊖"; }
-
     .skills-badges {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-top: 0.625rem;
     }
 
     .skills-badges img { height: 26px; border-radius: 4px; }
@@ -1033,17 +1017,16 @@
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--accent-heading);
-      margin-bottom: 0;
+      margin-bottom: 0.5rem;
       padding-bottom: 0;
       border-bottom: none;
-      cursor: pointer;
       list-style: none;
       display: flex;
       align-items: center;
     }
 
     .cert-items {
-      margin-top: 0.5rem;
+      margin-top: 0;
     }
 
     .cert-item {
@@ -1112,6 +1095,18 @@
     }
 
     .cert-verify:hover { background: var(--accent-muted-strong); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .skills-certs-grid { gap: 2rem; }
+      .skills-category, .cert-category { padding: 0.75rem 0; }
+      .skills-category-title, .cert-category-title { font-size: 0.6875rem; }
+      .skills-badges { gap: 5px; }
+      .skills-badges img { height: 23px; }
+      .cert-item { gap: 10px; padding: 0.65rem 0; }
+      .cert-icon { width: 38px; height: 38px; }
+      .cert-name { font-size: 0.78125rem; }
+      .cert-meta { font-size: 0.5625rem; line-height: 1.45; }
+    }
 
     /* ═══════════════════════════════════════════════
        APPS GRID
@@ -1889,17 +1884,17 @@
       <div class="skills-certs-grid">
         <!-- LEFT: Skills -->
         <div class="fade-in delay-1">
-          <details class="skills-category" open>
-            <summary class="skills-category-title">💻 Core Languages</summary>
+          <div class="skills-category">
+            <div class="skills-category-title">Core Languages</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/Python-3670A0.svg?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python">
               <img src="https://img.shields.io/badge/R-%23276DC3.svg?style=for-the-badge&logo=r&logoColor=white" alt="R">
               <img src="https://img.shields.io/badge/SQL-%2300758F.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL">
               <img src="https://img.shields.io/badge/Stata-%231A538A.svg?style=for-the-badge&logo=stata&logoColor=white" alt="Stata">
             </div>
-          </details>
-          <details class="skills-category" open>
-            <summary class="skills-category-title">🤖 Data Science &amp; AI</summary>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">Data Science &amp; AI</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/XGBoost-1B1F23.svg?style=for-the-badge&logo=xgboost&logoColor=white" alt="XGBoost">
               <img src="https://img.shields.io/badge/LightGBM-393939.svg?style=for-the-badge&logo=lightgbm&logoColor=white" alt="LightGBM">
@@ -1909,26 +1904,26 @@
               <img src="https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow">
               <img src="https://img.shields.io/badge/MLX-000000.svg?style=for-the-badge&logo=apple&logoColor=white" alt="MLX">
             </div>
-          </details>
-          <details class="skills-category" open>
-            <summary class="skills-category-title">📊 Data Analysis &amp; Processing</summary>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">Data Analysis &amp; Processing</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/NumPy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
               <img src="https://img.shields.io/badge/Pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas">
               <img src="https://img.shields.io/badge/OpenCV-%235C3EE8.svg?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV">
               <img src="https://img.shields.io/badge/jamovi-215082.svg?style=for-the-badge&logo=jamovi&logoColor=white" alt="jamovi">
             </div>
-          </details>
-          <details class="skills-category" open>
-            <summary class="skills-category-title">☁️ Cloud &amp; Infrastructure</summary>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">Cloud &amp; Infrastructure</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/Google_Cloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white" alt="Google Cloud">
               <img src="https://img.shields.io/badge/Firebase-039BE5.svg?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase">
               <img src="https://img.shields.io/badge/Huawei_Cloud-FF0000.svg?style=for-the-badge&logo=huawei&logoColor=white" alt="Huawei Cloud">
             </div>
-          </details>
-          <details class="skills-category">
-            <summary class="skills-category-title">🎨 Visualization &amp; Design</summary>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">Visualization &amp; Design</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/Tableau-E97627.svg?style=for-the-badge&logo=tableau&logoColor=white" alt="Tableau">
               <img src="https://img.shields.io/badge/Power_BI-F2C811.svg?style=for-the-badge&logo=microsoftpowerbi&logoColor=black" alt="Power BI">
@@ -1937,34 +1932,34 @@
               <img src="https://img.shields.io/badge/Adobe%20Photoshop-%2331A8FF.svg?style=for-the-badge&logo=adobephotoshop&logoColor=white" alt="Photoshop">
               <img src="https://img.shields.io/badge/Adobe%20Lightroom-31A8FF.svg?style=for-the-badge&logo=adobelightroom&logoColor=white" alt="Lightroom">
             </div>
-          </details>
-          <details class="skills-category">
-            <summary class="skills-category-title">🌍 Geospatial</summary>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">Geospatial</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/QGIS-589632.svg?style=for-the-badge&logo=qgis&logoColor=white" alt="QGIS">
             </div>
-          </details>
-          <details class="skills-category">
-            <summary class="skills-category-title">🛡️ Cybersecurity</summary>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">Cybersecurity</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/ISC2%20CC-00A4E4.svg?style=for-the-badge&logo=isc2&logoColor=white" alt="ISC2 CC">
               <img src="https://img.shields.io/badge/Google%20Cybersecurity-4285F4.svg?style=for-the-badge&logo=google&logoColor=white" alt="Google Cybersecurity">
             </div>
-          </details>
-          <details class="skills-category">
-            <summary class="skills-category-title">🛠️ Environments</summary>
+          </div>
+          <div class="skills-category">
+            <div class="skills-category-title">Environments</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/Colab-F9AB00.svg?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Colab">
               <img src="https://img.shields.io/badge/Jupyter-%23F37626.svg?style=for-the-badge&logo=jupyter&logoColor=white" alt="Jupyter">
               <img src="https://img.shields.io/badge/Anaconda-%2344A833.svg?style=for-the-badge&logo=anaconda&logoColor=white" alt="Anaconda">
             </div>
-          </details>
+          </div>
         </div>
 
         <!-- RIGHT: Certifications -->
         <div class="fade-in delay-2">
-          <details class="cert-category" open>
-            <summary class="cert-category-title">Cloud &amp; Infrastructure</summary>
+          <div class="cert-category">
+            <div class="cert-category-title">Cloud &amp; Infrastructure</div>
             <div class="cert-items">
               <div class="cert-item">
                 <div class="cert-icon"><img src="certlogo/HCCDA.png" alt="Huawei"></div>
@@ -1975,10 +1970,10 @@
                 <div><div class="cert-name">Huawei Cloud HCCDA-AI</div><div class="cert-meta">Apr 2026 – Apr 2029 | Huawei Cloud · HWENDCAIDA100092</div><a href="cert/HWENDCAIDA100092.png" target="_blank" class="cert-verify" rel="noopener noreferrer">View</a></div>
               </div>
             </div>
-          </details>
+          </div>
 
-          <details class="cert-category" open>
-            <summary class="cert-category-title">Data Science &amp; AI</summary>
+          <div class="cert-category">
+            <div class="cert-category-title">Data Science &amp; AI</div>
             <div class="cert-items">
               <div class="cert-item">
                 <div class="cert-icon"><img src="certlogo/AIAT-logo-01.jpg" alt="AiAT"></div>
@@ -2009,10 +2004,10 @@
                 <div><div class="cert-name">Excel Level Up Update 2021</div><div class="cert-meta">Jul 2023 | SkillLane</div><a href="https://certificate.skilllane.com/certificates/23QLOQ9" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a></div>
               </div>
             </div>
-          </details>
+          </div>
 
-          <details class="cert-category" open>
-            <summary class="cert-category-title">Medical &amp; Public Health</summary>
+          <div class="cert-category">
+            <div class="cert-category-title">Medical &amp; Public Health</div>
             <div class="cert-items">
               <div class="cert-item">
                 <div class="cert-icon"><img src="certlogo/citi.jpeg" alt="CITI"></div>
@@ -2035,10 +2030,10 @@
                 <div><div class="cert-name">Diploma in Clinical Statistics</div><div class="cert-meta">May 2022 | Chiang Mai University</div> <a href="cert/1696631825168.jpeg" target="_blank" class="cert-verify" rel="noopener noreferrer">View</a></div>
               </div>
             </div>
-          </details>
+          </div>
 
-          <details class="cert-category">
-            <summary class="cert-category-title">Cybersecurity</summary>
+          <div class="cert-category">
+            <div class="cert-category-title">Cybersecurity</div>
             <div class="cert-items">
               <div class="cert-item">
                 <div class="cert-icon"><img src="badge/certified-in-cybersecurity-cc.1.png" alt="ISC2"></div>
@@ -2053,17 +2048,17 @@
                 <div><div class="cert-name">Cybersecurity Foundation Course</div><div class="cert-meta">Aug 2024 | Thailand National Cyber Academy · 8277556641WP</div><a href="https://learn.thnca.or.th/pluginfile.php/1/tool_certificate/issues/1723999206/8277556641WP.pdf" target="_blank" class="cert-verify" rel="noopener noreferrer">View</a></div>
               </div>
             </div>
-          </details>
+          </div>
 
-          <details class="cert-category">
-            <summary class="cert-category-title">Other</summary>
+          <div class="cert-category">
+            <div class="cert-category-title">Other</div>
             <div class="cert-items">
               <div class="cert-item">
                 <div class="cert-icon"><img src="certlogo/tourism.png" alt="Tourism"></div>
                 <div><div class="cert-name">Tour Leader License</div><div class="cert-meta">Dec 2025 | Dept. of Tourism, Thailand</div></div>
               </div>
             </div>
-          </details>
+          </div>
         </div>
       </div>
 
