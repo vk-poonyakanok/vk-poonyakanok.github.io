@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - **Certification Stat**: Updated the About certification count from `15+` to `18+`.
 - **Certification Organization**: Split Huawei Cloud HCCDA credentials into a dedicated Cloud & Infrastructure category.
 - **Skills & Certifications Layout**: Converted skill and certification groups into responsive always-visible grouped lists, removed accordion controls, and kept Core Languages first with Data Science & AI second.
+- **Section Header Spacing**: Increased desktop spacing between large section numbers and section labels to prevent overlap.
 - **Hero Positioning**: Clarified the hero specialty line to identify DigiHealth as an in-progress M.Sc. program.
 - **Huawei Cloud HCCDA-AI Metadata**: Clarified the existing HCCDA-AI entry as a separate certificate series and added certificate no. `HWENDCAIDA100092`.
 
