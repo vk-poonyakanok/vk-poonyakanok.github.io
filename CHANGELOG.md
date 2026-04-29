@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-04-29] - Huawei Cloud Certificate Update
+
+### Added
+- **Huawei Cloud HCCDA-Tech Essentials**: Added the separate HCCDA-Tech Essentials certificate with certificate no. `HWENDCTEDA695219` and a local certificate image link.
+
+### Changed
+- **Selected Project Order**: Promoted Altitude Itinerary Analyzer to the first pinned project position.
+- **External Link Security**: Added `rel="noopener noreferrer"` to new-tab links.
+- **Navigation Accessibility**: Added an accessible label to the dot logo back-to-top link.
+- **Certification Stat**: Updated the About certification count from `15+` to `18+`.
+- **Certification Organization**: Split Huawei Cloud HCCDA credentials into a dedicated Cloud & Infrastructure category.
+- **Hero Positioning**: Clarified the hero specialty line to identify DigiHealth as an in-progress M.Sc. program.
+- **Huawei Cloud HCCDA-AI Metadata**: Clarified the existing HCCDA-AI entry as a separate certificate series and added certificate no. `HWENDCAIDA100092`.
+
 ## [2026-04-21] - Branding Standardization & UI Optimization
 
 ### Added
