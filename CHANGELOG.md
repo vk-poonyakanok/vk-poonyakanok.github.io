@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - **Huawei Cloud HCCDA-Tech Essentials**: Added the separate HCCDA-Tech Essentials certificate with certificate no. `HWENDCTEDA695219` and a local certificate image link.
+- **Google Developer Profile Link**: Added `g.dev/vitchakorn` to the About section social links.
 
 ### Changed
 - **Selected Project Order**: Promoted Altitude Itinerary Analyzer to the first pinned project position.
