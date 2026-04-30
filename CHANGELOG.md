@@ -7,13 +7,14 @@ All notable changes to this project will be documented in this file.
 ### Added
 - **Huawei Cloud HCCDA-Tech Essentials**: Added the separate HCCDA-Tech Essentials certificate with certificate no. `HWENDCTEDA695219` and a local certificate image link.
 - **Google Developer Profile Link**: Added `g.dev/vitchakorn` to the About section social links.
+- **AI Hackathons**: Added three Super AI Engineer Season 6 hackathon certificates to the Skills section with verification links and certificate IDs.
 
 ### Changed
 - **Selected Project Order**: Promoted Altitude Itinerary Analyzer to the first pinned project position.
 - **External Link Security**: Added `rel="noopener noreferrer"` to new-tab links.
 - **Navigation Accessibility**: Added an accessible label to the dot logo back-to-top link.
 - **Social Link Priority**: Reordered About social links by professional, research, builder, data, and visualization priority.
-- **Certification Stat**: Updated the About certification count from `15+` to `18+`.
+- **Certification Stat**: Updated the About certification count from `15+` to `21+`.
 - **Certification Organization**: Split Huawei Cloud HCCDA credentials into a dedicated Cloud & Infrastructure category.
 - **Certification Order**: Moved Data Science & AI to the top of the certification list.
 - **Skills & Certifications Layout**: Converted skill and certification groups into responsive always-visible grouped lists, removed accordion controls, and kept Core Languages first with Data Science & AI second.
