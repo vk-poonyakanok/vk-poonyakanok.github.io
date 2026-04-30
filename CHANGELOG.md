@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - **Selected Project Order**: Promoted Altitude Itinerary Analyzer to the first pinned project position.
 - **External Link Security**: Added `rel="noopener noreferrer"` to new-tab links.
 - **Navigation Accessibility**: Added an accessible label to the dot logo back-to-top link.
-- **Social Link Priority**: Reordered About social links by builder, professional, research, and visualization priority.
+- **Social Link Priority**: Reordered About social links by professional, research, builder, data, and visualization priority.
 - **Certification Stat**: Updated the About certification count from `15+` to `18+`.
 - **Certification Organization**: Split Huawei Cloud HCCDA credentials into a dedicated Cloud & Infrastructure category.
 - **Certification Order**: Moved Data Science & AI to the top of the certification list.
