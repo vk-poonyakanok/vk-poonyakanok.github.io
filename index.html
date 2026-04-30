@@ -1036,6 +1036,22 @@
       line-height: 1.5;
     }
 
+    .hackathon-section {
+      margin-top: 3rem;
+    }
+
+    .hackathon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .hackathon-grid .challenge-item {
+      border-bottom: none;
+    }
+
     .cert-category {
       margin: 0;
       border: none;
@@ -1174,6 +1190,10 @@
       .challenge-item { padding: 0.6rem 0; }
       .challenge-name { font-size: 0.78125rem; }
       .challenge-meta { font-size: 0.5625rem; }
+      .hackathon-section { margin-top: 2rem; }
+      .hackathon-grid { grid-template-columns: 1fr; gap: 0; }
+      .hackathon-grid .challenge-item { border-bottom: 1px solid var(--border-light); }
+      .hackathon-grid .challenge-item:last-child { border-bottom: none; }
       .cert-item { gap: 10px; padding: 0.65rem 0; }
       .cert-icon { width: 38px; height: 38px; }
       .cert-name { font-size: 0.78125rem; }
@@ -1979,26 +1999,6 @@
             </div>
           </div>
           <div class="skills-category">
-            <div class="skills-category-title">AI Hackathons</div>
-            <div class="challenge-list">
-              <div class="challenge-item">
-                <div class="challenge-name">From Data to Insight</div>
-                <div class="challenge-meta">Super AI Engineer Season 6 · Hack 1 · AiAT · Cert ID 610147BE</div>
-                <a href="https://mysuperai.aiat.or.th/certificate/hack1/600013" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a>
-              </div>
-              <div class="challenge-item">
-                <div class="challenge-name">Agentic Pipeline Hackathon: 2026 Thai Election OCR Challenge</div>
-                <div class="challenge-meta">Super AI Engineer Season 6 · Hack 2 · AiAT · Cert ID 7E3E221B</div>
-                <a href="https://mysuperai.aiat.or.th/certificate/hack2/600013" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a>
-              </div>
-              <div class="challenge-item">
-                <div class="challenge-name">FahMai RAG Hackathon</div>
-                <div class="challenge-meta">Super AI Engineer Season 6 · Hack 3 · AiAT · Cert ID BED316AA</div>
-                <a href="https://mysuperai.aiat.or.th/certificate/hack3/600013" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a>
-              </div>
-            </div>
-          </div>
-          <div class="skills-category">
             <div class="skills-category-title">Data Analysis &amp; Processing</div>
             <div class="skills-badges">
               <img src="https://img.shields.io/badge/NumPy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
@@ -2151,6 +2151,28 @@
                 <div><div class="cert-name">Tour Leader License</div><div class="cert-meta">Dec 2025 | Dept. of Tourism, Thailand</div></div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hackathons -->
+      <div class="hackathon-section fade-in">
+        <div class="exp-category-label" style="margin-bottom:1.25rem;">AI Hackathons</div>
+        <div class="hackathon-grid">
+          <div class="challenge-item">
+            <div class="challenge-name">From Data to Insight</div>
+            <div class="challenge-meta">Super AI Engineer Season 6 · Hack 1 · AiAT · Cert ID 610147BE</div>
+            <a href="https://mysuperai.aiat.or.th/certificate/hack1/600013" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a>
+          </div>
+          <div class="challenge-item">
+            <div class="challenge-name">Agentic Pipeline Hackathon: 2026 Thai Election OCR Challenge</div>
+            <div class="challenge-meta">Super AI Engineer Season 6 · Hack 2 · AiAT · Cert ID 7E3E221B</div>
+            <a href="https://mysuperai.aiat.or.th/certificate/hack2/600013" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a>
+          </div>
+          <div class="challenge-item">
+            <div class="challenge-name">FahMai RAG Hackathon</div>
+            <div class="challenge-meta">Super AI Engineer Season 6 · Hack 3 · AiAT · Cert ID BED316AA</div>
+            <a href="https://mysuperai.aiat.or.th/certificate/hack3/600013" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a>
           </div>
         </div>
       </div>

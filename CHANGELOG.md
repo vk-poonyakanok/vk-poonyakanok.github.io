@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 - **Certification Stat**: Updated the About certification count from `15+` to `21+`.
 - **Certification Organization**: Split Huawei Cloud HCCDA credentials into a dedicated Cloud & Infrastructure category.
 - **Certification Order**: Moved Data Science & AI to the top of the certification list.
-- **Skills & Certifications Layout**: Converted skill and certification groups into responsive always-visible grouped lists, removed accordion controls, and kept Core Languages first with Data Science & AI second.
+- **Skills & Certifications Layout**: Converted skill and certification groups into responsive always-visible grouped lists, added Hackathons as its own subsection, removed accordion controls, and kept Core Languages first with Data Science & AI second.
 - **Desktop Certification Balance**: Added wide-screen auto-balancing for certification groups so the Skills & Certifications section has a more even desktop rhythm.
 - **Section Header Spacing**: Increased desktop spacing between large section numbers and section labels to prevent overlap.
 - **Hero Positioning**: Clarified the hero specialty line to identify DigiHealth as an in-progress M.Sc. program.
