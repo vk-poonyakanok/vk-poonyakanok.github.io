@@ -22,6 +22,7 @@ The `#expertise` section exists in markup but is hidden and excluded from naviga
 ## Content Notes
 - DigiHealth is complete. Use `Master of Science in Digital and AI Technologies in Health Systems (DigiHealth)` and the date range `2025 — 2026`.
 - The About intro should describe DigiHealth as completed, not currently pursued.
+- Travel Medicine Residency (IPM, DDC, MOPH) is complete: `2024 — 2026`, no chip. The Pattayarak Health Unit GP role (ODPC 6, DDC, MOPH) is also `2024 — 2026`, no chip — deliberately matched to `Vitchakorn_Poonyakanok_CV.tex` in the separate `~/Github/cv` repo, which states `Nov 2024 -- Jul 2026`. The engagement was on-site Nov–Dec 2024 and telephone/intermittent on-site consultation afterwards; the CV also lists a Jan–Jun 2025 syphilis surveillance study at ODPC 6, so do NOT narrow this entry to `2024` — that would contradict both the CV and that study. MSHCA at Carnegie Mellon's Heinz College is the current program — keep its `Current` chip on the `Aug 2026` entry, and describe it (not DigiHealth or Travel Medicine) as the ongoing pursuit in the About intro.
 - Training has Super AI Engineer Season 6 as a standalone section.
 - AI Practitioner is the primary visible Level 1 credential. Its public verification link is `https://mysuperai.aiat.or.th/verify/3893dd94-0ff5-464f-b26f-f8f44e655bdf`.
 - Keep Foundation AI (Theory) and the three Level 1 Minihacks inside the collapsible `Level 1 detail` block under AI Practitioner.

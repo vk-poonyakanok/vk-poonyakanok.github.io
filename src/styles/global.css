@@ -11,8 +11,15 @@
       --bg-code: #010409;
       --text-primary: #e6edf3;
       --text-secondary: #8b949e;
-      --text-tertiary: #6e7681;
-      --text-quaternary: #484f58;
+      /* tertiary carries real 10-12px text (nav links, stat labels, timeline
+         locations, cert/training meta, form labels) so it must clear WCAG
+         4.5:1 against the *card* background, not just --bg, which is the
+         harder of the two. quaternary is decorative only -- bullet
+         separators, jump-nav numerals, the section-number text stroke -- and
+         is held at ~3:1 so it stays a visibly dimmer tier without pretending
+         to be body text. Anything text-like must use tertiary or above. */
+      --text-tertiary: #7d8590;
+      --text-quaternary: #5e6772;
       --accent: #2f81f7;
       --accent-rgb: 47, 129, 247;
       --accent-heading: #58a6ff;
@@ -45,8 +52,8 @@
       --bg-code: #e8eef5;
       --text-primary: #1f2328;
       --text-secondary: #3f4a56;
-      --text-tertiary: #687482;
-      --text-quaternary: #9aa7b5;
+      --text-tertiary: #636e7c;
+      --text-quaternary: #7e8ea0;
       --accent: #0757bd;
       --accent-rgb: 7, 87, 189;
       --accent-heading: #0757bd;
@@ -1532,7 +1539,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.6875rem;
       font-weight: 700;
-      color: var(--text-quaternary);
+      color: var(--text-tertiary);
     }
 
     .pub-title {
@@ -2474,7 +2481,7 @@
     .footer-copy {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.6875rem;
-      color: var(--text-quaternary);
+      color: var(--text-tertiary);
     }
 
     .footer-status {
@@ -2483,7 +2490,7 @@
       gap: 6px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.6875rem;
-      color: var(--text-quaternary);
+      color: var(--text-tertiary);
     }
 
     .status-dot {
