@@ -7,7 +7,7 @@ description: >-
 pubDate: 2026-07-16T00:00:00.000Z
 draft: false
 lang: en
-heroImage: /blog/thai-web-typography/hero.png
+heroImage: /blog/thai-web-typography/hero.jpg
 translationSlug: thai-web-typography
 tags:
   - Web Development
@@ -72,10 +72,10 @@ The site's own CSS had a comment reading `/* Thai typography adjustments for spa
 
 `word-break: keep-all` is designed primarily for CJK (Chinese/Japanese/Korean) text, meaning "don't break inside a run of CJK characters." Applied to Thai in WebKit, it left WebKit with no valid break opportunity anywhere in the unspaced Thai text (because `keep-all` disabled the normal word-boundary lookup), so it fell back to `overflow-wrap: break-word`, a last-resort mechanism that just breaks wherever a line would otherwise overflow. The result: mid-syllable breaks at effectively random points, exactly what the screenshots showed.
 
-![A real example from another post on this site, before the fix. Thai text is broken mid-word at several points in the same paragraph.](/blog/thai-web-typography/example-break-1.png)
+![A real example from another post on this site, before the fix. Thai text is broken mid-word at several points in the same paragraph.](/blog/thai-web-typography/example-break-1.webp)
 *A real example from another post on this site, before the fix.*
 
-![Another example from the opening paragraph of the same post. Thai words are broken mid-word starting from the very first line.](/blog/thai-web-typography/example-break-2.png)
+![Another example from the opening paragraph of the same post. Thai words are broken mid-word starting from the very first line.](/blog/thai-web-typography/example-break-2.webp)
 *The opening paragraph of the same post. Words break mid-word starting from the first line.*
 
 The fix is one deleted line:

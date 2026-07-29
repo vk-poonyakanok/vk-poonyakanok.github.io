@@ -1,0 +1,142 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+
+// GitHub Pages serves /404.html for any unmatched path, so this replaces the
+// generic "Page not found · GitHub Pages" screen, which carried no branding
+// and no way back into the site. Relevant beyond the usual typo case: the
+// old flat /project/<slug>.html URLs were removed when project pages moved
+// to folders, so inbound links from before that change land here.
+const destinations = [
+  { href: '/', label: 'Home', note: 'Portfolio overview' },
+  { href: '/project/', label: 'Project Archive', note: 'Every case study' },
+  { href: '/blog/', label: 'Blog', note: 'Writing and notes' },
+  { href: '/contact/', label: 'Contact', note: 'Get in touch' },
+];
+---
+
+<Layout
+  title="Page Not Found | Vitchakorn Poonyakanok"
+  description="That page could not be found. Browse the portfolio, project archive, or blog instead."
+  canonicalUrl="https://vitchakorn.com/404.html"
+>
+  <Navigation compact backHref="/" backLabel="Home" />
+
+  <main id="main" class="notfound-main section-alt-bg">
+    <div class="container-grid">
+      <div class="notfound-inner">
+        <span class="t-section-number notfound-code">404</span>
+        <h1 class="notfound-title">This page doesn&rsquo;t exist</h1>
+        <p class="notfound-body">
+          The link may be out of date, or the address mistyped. Project case
+          studies moved to folder URLs a while back &mdash; for example
+          <code>/project/yfmalaria/</code> rather than the older
+          <code>.html</code> form.
+        </p>
+
+        <nav class="notfound-links" aria-label="Suggested pages">
+          {destinations.map((d) => (
+            <a href={d.href} class="notfound-link">
+              <span class="notfound-link-label">{d.label}</span>
+              <span class="notfound-link-note">{d.note}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .notfound-main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 96px;
+    padding-bottom: 80px;
+  }
+
+  .notfound-inner {
+    max-width: 640px;
+  }
+
+  .notfound-code {
+    display: block;
+    margin-bottom: 1.25rem;
+  }
+
+  .notfound-title {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .notfound-body {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 2.25rem;
+  }
+
+  .notfound-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8125rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--bg-code);
+    color: var(--accent-heading);
+    /* long paths must not force horizontal page scroll on narrow screens */
+    overflow-wrap: anywhere;
+  }
+
+  .notfound-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .notfound-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    background: var(--bg-card);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+
+  .notfound-link:hover {
+    border-color: var(--accent-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+  }
+
+  .notfound-link:focus-visible {
+    outline: 2px solid var(--accent-heading);
+    outline-offset: 2px;
+  }
+
+  .notfound-link-label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .notfound-link-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .notfound-link { transition: none; }
+    .notfound-link:hover { transform: none; }
+  }
+</style>

@@ -13,6 +13,7 @@ interface Props {
   isHome?: boolean;
   ogType?: "website" | "article";
   alternates?: { hreflang: string; href: string }[];
+  lang?: "en" | "th";
 }
 
 const {
@@ -30,6 +31,10 @@ const {
   // instead of getting mislabeled as "article".
   ogType = isHome ? "website" : "article",
   alternates,
+  // Drives <html lang>. BlogPost sets lang="th" on the content div, but the
+  // <title>, <h1>, description and tags all sit outside it, so without this
+  // a Thai post's headline is announced by an English TTS voice.
+  lang = "en",
 } = Astro.props;
 
 // og:image/twitter:image must be absolute URLs per spec — pages pass a
@@ -38,7 +43,7 @@ const absoluteImage = image.startsWith('http') ? image : `https://vitchakorn.com
 ---
 
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang={lang} data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,7 +93,7 @@ const absoluteImage = image.startsWith('http') ? image : `https://vitchakorn.com
           "name": "Vitchakorn Poonyakanok",
           "alternateName": "Blue Poonyakanok",
           "url": "https://vitchakorn.com/",
-          "image": "https://vitchakorn.com/pic/vitchakorn.png",
+          "image": "https://vitchakorn.com/pic/vitchakorn.jpg",
           "email": "mailto:vk.poonyakanok@gmail.com",
           "jobTitle": [
             "Physician",
@@ -161,6 +166,7 @@ const absoluteImage = image.startsWith('http') ? image : `https://vitchakorn.com
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
   <slot />
 
   <!-- Global Client Side scripts -->

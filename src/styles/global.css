@@ -94,6 +94,31 @@
       border: 0;
     }
 
+    /* First tab stop on every page: lets keyboard users jump past the nav
+       instead of tabbing it on each visit. Off-screen until focused, then
+       pinned above the sticky nav (which sits at z-index 1000). */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 12px;
+      z-index: 1100;
+      padding: 0.6rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--accent-heading);
+      border-radius: 0 0 6px 6px;
+      text-decoration: none;
+      transition: top 0.15s ease;
+    }
+
+    .skip-link:focus-visible {
+      top: 0;
+      outline: 2px solid var(--text-primary);
+      outline-offset: 2px;
+    }
+
     html, body {
       width: 100%;
       overflow-x: clip;
@@ -1174,7 +1199,14 @@
       border-color: var(--accent);
       color: var(--accent-heading);
       background: var(--accent-muted);
-      outline: none;
+    }
+
+    /* Focus needs to be distinguishable from hover, which the shared rule
+       above is not on its own -- a keyboard user otherwise gets the same
+       1px border shift a mouse user gets on hover. */
+    .carousel-btn:focus-visible {
+      outline: 2px solid var(--accent-heading);
+      outline-offset: 2px;
     }
 
     .featured-project-slide {
@@ -1455,10 +1487,15 @@
       width: 100%;
     }
 
+    /* --accent-muted is a 0.1-0.12 alpha wash, so the box-shadow alone
+       composites to ~1.15:1 against the card -- effectively no focus
+       indicator at all. Keep it as the soft glow but pair it with a real
+       outline that actually meets the 3:1 non-text contrast requirement. */
     .form-input:focus, .form-textarea:focus {
-      outline: none;
       border-color: var(--accent-border);
       box-shadow: 0 0 0 3px var(--accent-muted);
+      outline: 2px solid var(--accent-heading);
+      outline-offset: 1px;
     }
 
     .form-textarea {

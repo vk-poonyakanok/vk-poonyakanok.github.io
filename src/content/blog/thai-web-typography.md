@@ -7,7 +7,7 @@ description: >-
 pubDate: 2026-07-16T00:00:00.000Z
 draft: false
 lang: th
-heroImage: /blog/thai-web-typography/hero.png
+heroImage: /blog/thai-web-typography/hero.jpg
 translationSlug: thai-web-typography-en
 tags:
   - Web Development
@@ -72,10 +72,10 @@ tags:
 
 `word-break: keep-all` ถูกออกแบบมาสำหรับตัวอักษรแบบจีน/ญี่ปุ่น/เกาหลี (CJK) เป็นหลัก เพื่อบอกว่า "อย่าตัดคำกลาง sequence ของตัวอักษร CJK" แต่เมื่อใช้กับภาษาไทยใน WebKit กลับกลายเป็นว่า WebKit หาจุดตัดคำ (break opportunity) ที่ถูกต้องไม่เจอเลยสักจุดในข้อความไทยที่ไม่มีช่องว่าง (เพราะ `keep-all` ไปปิดกลไกการหา word boundary ตามปกติ) สุดท้ายเลยต้องพึ่ง `overflow-wrap: break-word` ซึ่งเป็นกลไก fallback ที่ตัดตรงไหนก็ได้ที่ทำให้บรรทัดไม่ล้นขอบจอ ผลคือตัดกลางพยางค์แบบสุ่มๆ ตามที่เห็นใน screenshot
 
-![ตัวอย่างจริงจากบทความอื่นบนเว็บนี้ ก่อนแก้ bug ข้อความไทยถูกตัดกลางคำหลายจุดในย่อหน้าเดียวกัน](/blog/thai-web-typography/example-break-1.png)
+![ตัวอย่างจริงจากบทความอื่นบนเว็บนี้ ก่อนแก้ bug ข้อความไทยถูกตัดกลางคำหลายจุดในย่อหน้าเดียวกัน](/blog/thai-web-typography/example-break-1.webp)
 *ตัวอย่างจริงจากบทความอื่นบนเว็บนี้ ก่อนแก้บั๊ก*
 
-![อีกตัวอย่างจากย่อหน้าเปิดของบทความเดียวกัน คำภาษาไทยถูกตัดกลางคำตั้งแต่บรรทัดแรก](/blog/thai-web-typography/example-break-2.png)
+![อีกตัวอย่างจากย่อหน้าเปิดของบทความเดียวกัน คำภาษาไทยถูกตัดกลางคำตั้งแต่บรรทัดแรก](/blog/thai-web-typography/example-break-2.webp)
 *ย่อหน้าเปิดของบทความเดียวกัน คำถูกตัดกลางคำตั้งแต่บรรทัดแรก*
 
 ทางแก้คือลบบรรทัดเดียว:

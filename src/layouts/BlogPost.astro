@@ -96,7 +96,7 @@ const articleSchema = {
 };
 ---
 
-<Layout title={`${title} | Vitchakorn Poonyakanok`} description={description} keywords={keywords} image={heroImage} imageWidth={ogImageWidth} imageHeight={ogImageHeight} imageAlt={ogImageAlt} canonicalUrl={canonicalUrl} alternates={alternates}>
+<Layout title={`${title} | Vitchakorn Poonyakanok`} description={description} keywords={keywords} image={heroImage} imageWidth={ogImageWidth} imageHeight={ogImageHeight} imageAlt={ogImageAlt} canonicalUrl={canonicalUrl} alternates={alternates} lang={lang}>
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <Navigation
     compact
@@ -107,7 +107,7 @@ const articleSchema = {
     translationTitle={switcherText}
   />
 
-  <main class="blog-post-container section-alt-bg" style="min-height: 100vh; padding-top: 64px; padding-bottom: 80px;">
+  <main id="main" class="blog-post-container section-alt-bg" style="min-height: 100vh; padding-top: 64px; padding-bottom: 80px;">
     <div class="container-grid">
       <div class={showJumpNav ? "blog-layout with-sidebar" : "blog-layout"}>
         {showJumpNav && (
@@ -703,8 +703,9 @@ const articleSchema = {
     line-height: 1.7;
   }
   .markdown-body .thai-demo-input:focus {
-    outline: none;
     border-color: var(--accent-border);
+    outline: 2px solid var(--accent-heading);
+    outline-offset: 1px;
   }
   .markdown-body .thai-demo-tabs {
     display: flex;

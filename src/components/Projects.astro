@@ -187,6 +187,10 @@
       const projectPrev = document.getElementById('projectPrev');
       const projectNext = document.getElementById('projectNext');
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Matches the 769px grid breakpoint in global.css; below it the
+      // slides really are a one-at-a-time carousel, above it they are not.
+      const carouselMedia = window.matchMedia('(max-width: 768px)');
+      function isCarouselLayout() { return carouselMedia.matches; }
       let activeProjectSlide = 0;
       let projectTimer = null;
       let projectCarouselInView = false;
@@ -238,10 +242,22 @@
         activeProjectSlide = (index + projectSlides.length) % projectSlides.length;
         const slideDirection = direction || (activeProjectSlide >= previousProjectSlide ? 'next' : 'prev');
 
+        // Above 769px the carousel becomes a static 4-card grid (see the
+        // media query in global.css) -- every card is visible at once, so
+        // marking the three non-active ones aria-hidden would strip visible,
+        // still-focusable links out of the accessibility tree, and the
+        // autoplay tick below would rotate which ones every 3.5s mid-read.
+        // Only the mobile carousel layout has a genuinely hidden slide.
+        const carouselLayout = isCarouselLayout();
+
         projectSlides.forEach(function(slide, slideIndex) {
           const isActive = slideIndex === activeProjectSlide;
           slide.classList.toggle('active', isActive);
-          slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+          if (carouselLayout) {
+            slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+          } else {
+            slide.removeAttribute('aria-hidden');
+          }
           slide.classList.remove('slide-from-next', 'slide-from-prev');
 
           if (isActive && activeProjectSlide !== previousProjectSlide && !reduceMotion) {
@@ -265,7 +281,9 @@
       }
 
       function startProjectCarousel() {
-        if (reduceMotion || projectTimer || !projectCarouselInView) return;
+        // Nothing to advance in the desktop grid layout -- every card is
+        // already on screen, so autoplay there only churned state.
+        if (reduceMotion || projectTimer || !projectCarouselInView || !isCarouselLayout()) return;
         projectTimer = window.setInterval(nextProjectSlide, 3500);
       }
 
@@ -354,6 +372,16 @@
       projectCarousel.addEventListener('focusout', startProjectCarousel);
 
       showProjectSlide(0);
+
+      // Crossing the grid/carousel breakpoint (resize, rotate) has to re-run
+      // the slide sync so aria-hidden is applied or cleared for the layout
+      // that is now active, and has to stop autoplay on the way into the
+      // desktop grid.
+      carouselMedia.addEventListener('change', function() {
+        stopProjectCarousel();
+        showProjectSlide(activeProjectSlide);
+        startProjectCarousel();
+      });
 
       if ('IntersectionObserver' in window) {
         const projectCarouselObserver = new IntersectionObserver(function(entries) {
