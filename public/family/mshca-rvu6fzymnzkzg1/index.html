@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSHCA ที่ CMU — ข้อมูลสำหรับครอบครัว</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="referrer" content="no-referrer">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MSHCA ที่ CMU — ข้อมูลสำหรับครอบครัว">
+<meta property="og:description" content="หน้านี้ต้องใช้รหัสผ่านเพื่อเปิดดู">
+<meta property="og:image" content="https://vitchakorn.com/family/mshca-rvu6fzymnzkzg1/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{min-height:100vh;display:flex;align-items:center;justify-content:center;
+       padding:24px;background:#f4f5f7;color:#111315;
+       font-family:'Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif}
+  .card{width:100%;max-width:380px;background:#fff;border:1px solid #c7cbd1;
+        border-radius:10px;padding:30px 26px;box-shadow:0 2px 10px rgba(20,20,19,.08)}
+  .bar{width:44px;height:3px;background:#c41230;margin-bottom:18px}
+  h1{font-size:1.22rem;line-height:1.45;font-weight:800;margin-bottom:8px}
+  p{font-size:.87rem;line-height:1.65;color:#5b6067;margin-bottom:20px}
+  label{display:block;font-size:.78rem;font-weight:700;color:#3a3f47;margin-bottom:7px}
+  input{width:100%;padding:12px 14px;font-size:1.05rem;font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+        letter-spacing:.06em;border:1px solid #c7cbd1;border-radius:7px;background:#fff;color:#111315}
+  input:focus{outline:2px solid #c41230;outline-offset:1px;border-color:#c41230}
+  button{width:100%;margin-top:14px;padding:12px 16px;font-size:.95rem;font-weight:700;
+         font-family:inherit;color:#fff;background:#c41230;border:0;border-radius:7px;cursor:pointer}
+  button:hover:not(:disabled){background:#8e0d24}
+  button:disabled{opacity:.6;cursor:default}
+  button:focus-visible{outline:2px solid #111315;outline-offset:2px}
+  .msg{margin-top:13px;font-size:.83rem;line-height:1.55;min-height:1.2em}
+  .msg[data-kind=err]{color:#c41230;font-weight:600}
+  .msg[data-kind=info]{color:#5b6067}
+  .foot{margin-top:20px;padding-top:14px;border-top:1px solid #e4e6e9;font-size:.75rem;color:#8a9099}
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="bar"></div>
+    <h1>MSHCA ที่ CMU — ข้อมูลสำหรับครอบครัว</h1>
+    <p>หน้านี้ป้องกันด้วยรหัสผ่าน กรุณากรอกรหัสที่ได้รับเพื่อเปิดอ่าน</p>
+    <form id="f" autocomplete="off">
+      <label for="pw">รหัสผ่าน</label>
+      <input id="pw" type="password" inputmode="text" autocapitalize="none"
+             autocorrect="off" spellcheck="false" placeholder="กรอกรหัสผ่าน" required>
+      <button id="go" type="submit">เปิดอ่าน</button>
+    </form>
+    <div class="msg" id="m" role="status" aria-live="polite"></div>
+    <div class="foot">ลิงก์นี้เปิดให้ดูถึง 1 ก.ย. 2026 · ถ้าลืมรหัส กรุณาติดต่อผู้ที่ส่งลิงก์นี้ให้</div>
+  </main>
+<script>
+(function () {
+  var f = document.getElementById('f'), pw = document.getElementById('pw');
+  var go = document.getElementById('go'), m = document.getElementById('m');
+  var KEY = 'fam-mshca-rvu6fzymnzkzg1';
+
+  function say(t, kind) { m.textContent = t; m.setAttribute('data-kind', kind || 'info'); }
+
+  // Decryption needs SubtleCrypto, which browsers expose only in a secure
+  // context. Say so plainly rather than failing at submit with "undefined".
+  if (!window.isSecureContext || !(window.crypto && crypto.subtle)) {
+    say('เบราว์เซอร์นี้เปิดหน้านี้ไม่ได้ กรุณาเปิดผ่าน https:// ด้วยเบราว์เซอร์รุ่นใหม่', 'err');
+    pw.disabled = go.disabled = true;
+    return;
+  }
+
+  // Soft expiry. The hard one is a scheduled workflow that deletes
+  // content.enc from the repo; this only covers the gap if that cron runs
+  // late, and is trivially bypassed by changing the device clock. Anyone
+  // who saved content.enc before the date keeps it regardless -- that is
+  // inherent to client-side decryption, not a flaw in this check.
+  var EXPIRES = Date.parse('2026-09-01T23:59:59+07:00');
+  if (Date.now() > EXPIRES) {
+    say('ลิงก์นี้หมดอายุแล้ว หากต้องการดูอีกครั้ง กรุณาติดต่อผู้ที่ส่งลิงก์นี้ให้', 'err');
+    pw.disabled = go.disabled = true;
+    return;
+  }
+
+  var cache = null;
+  function payload() {
+    // ?v= busts any intermediary cache holding a stale build.
+    if (!cache) cache = fetch('content.enc?v=634458', { cache: 'no-cache' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('http ' + r.status);
+        return r.arrayBuffer();
+      });
+    return cache;
+  }
+  payload().catch(function () { /* surfaced on submit instead */ });
+
+  async function unlock(code) {
+    var buf = new Uint8Array(await payload());
+    var salt = buf.slice(0, 16), iv = buf.slice(16, 28), data = buf.slice(28);
+    var base = await crypto.subtle.importKey(
+      'raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']);
+    var key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: salt, iterations: 600000, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    // Throws if the passcode is wrong: GCM authentication fails.
+    var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, data);
+    return new TextDecoder().decode(plain);
+  }
+
+  function render(html) {
+    // The pamphlet is a self-extracting bundle whose inline script runs on
+    // DOMContentLoaded. open()/write()/close() reparses it as a fresh
+    // document so that event fires again; assigning innerHTML would not
+    // execute the script at all.
+    document.open();
+    document.write(html);
+    document.close();
+  }
+
+  async function submit(code, fromSession) {
+    pw.disabled = go.disabled = true;
+    say('กำลังปลดล็อก...');
+    try {
+      var html = await unlock(code);
+      try { sessionStorage.setItem(KEY, code); } catch (e) {}
+      render(html);
+    } catch (err) {
+      // Distinguish "cannot reach the file" from "wrong passcode" so a
+      // network failure does not read as a typo.
+      var net = err && /http |fetch|network|Failed/i.test(String(err.message || err));
+      if (fromSession) { try { sessionStorage.removeItem(KEY); } catch (e) {} }
+      say(net ? 'โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' : 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่', 'err');
+      pw.disabled = go.disabled = false;
+      if (!fromSession) { pw.select(); pw.focus(); }
+    }
+  }
+
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var code = pw.value.trim();
+    if (code) submit(code, false);
+  });
+
+  // Re-open without retyping on refresh, but only for this tab session.
+  var saved = null;
+  try { saved = sessionStorage.getItem(KEY); } catch (e) {}
+  if (saved) submit(saved, true); else pw.focus();
+})();
+</script>
+</body>
+</html>

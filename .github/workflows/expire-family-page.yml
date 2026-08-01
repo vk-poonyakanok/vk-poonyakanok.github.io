@@ -1,0 +1,89 @@
+# Expire the time-limited /family/ pages.
+#
+# The gate page also refuses to unlock past its baked-in date, but that check
+# runs on the visitor's machine and is bypassed by changing the device clock.
+# This workflow is the real enforcement: it deletes the encrypted payload from
+# the repo, and the push triggers deploy.yml so the live URL starts 404ing.
+#
+# It cannot un-share what someone already saved. Anyone who downloaded
+# content.enc and knows the passcode can still decrypt their copy offline --
+# that is inherent to client-side encryption on static hosting.
+#
+# To extend a window, bump EXPIRES in the encrypt script, rebuild the gate, and
+# update the date below. To end one early, run this workflow manually.
+
+name: Expire Family Pages
+
+on:
+  schedule:
+    # 01:00 UTC = 08:00 Bangkok. GitHub delays cron under load, so treat the
+    # deletion as "on or shortly after" the date, not to the minute.
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Delete now, ignoring the expiry date'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: 'expire-family-pages'
+  cancel-in-progress: false
+
+jobs:
+  expire:
+    name: Remove expired pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Delete payloads past their expiry
+        env:
+          FORCE: ${{ inputs.force }}
+        run: |
+          set -euo pipefail
+
+          # "<path> <expiry-UTC>", whitespace-separated. Keep the date in sync
+          # with the one baked into the gate page by encrypt_pamphlet.mjs.
+          PAGES=$(cat <<'EOF'
+          public/family/mshca-rvu6fzymnzkzg1	2026-09-01T16:59:59Z
+          EOF
+          )
+
+          # Compared as strings, not epochs: ISO-8601 UTC ("Z") timestamps of
+          # equal width sort lexicographically, so this needs no date parsing
+          # and behaves identically under BSD and GNU date.
+          now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          removed=0
+
+          while read -r path expires; do
+            [ -n "$path" ] || continue
+            if [ ! -d "$path" ]; then
+              echo "skip   $path (already gone)"
+              continue
+            fi
+            if [ "$FORCE" = "true" ] || [[ "$now" > "$expires" ]]; then
+              echo "remove $path (expired $expires, now $now)"
+              git rm -rq "$path"
+              removed=$((removed + 1))
+            else
+              echo "keep   $path (expires $expires, now $now)"
+            fi
+          done <<< "$PAGES"
+
+          if [ "$removed" -eq 0 ]; then
+            echo "nothing to do"
+            exit 0
+          fi
+
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Expire time-limited family page(s)
+
+          Removed by .github/workflows/expire-family-page.yml on reaching the
+          agreed access window. The push redeploys the site, so the URL 404s."
+          git push
