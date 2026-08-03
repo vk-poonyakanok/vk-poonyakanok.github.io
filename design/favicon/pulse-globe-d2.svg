@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Vitchakorn Poonyakanok Favicon</title>
+  <desc id="desc">Concept D2: a solid disc tipped 14 degrees, with a meridian ellipse and a pulse-trace equator cut out of it in negative space.</desc>
+  <defs>
+    <linearGradient id="pg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop class="stop-start" offset="0%" />
+      <stop class="stop-end" offset="100%" />
+    </linearGradient>
+    <!-- Cuts stop 14 units short of the rim so the circular silhouette stays whole. -->
+    <clipPath id="pg-inner"><circle cx="128" cy="128" r="86" /></clipPath>
+    <mask id="pg-mask">
+      <circle cx="128" cy="128" r="100" fill="white" />
+      <g clip-path="url(#pg-inner)" transform="rotate(-14 128 128)" fill="none" stroke="black"
+         stroke-width="15" stroke-linejoin="round">
+        <ellipse cx="128" cy="128" rx="46" ry="100" />
+        <path stroke-linecap="round" d="M 30,134 L 84,134 L 100,102 L 120,166 L 137,126 L 148,134 L 226,134" />
+      </g>
+    </mask>
+  </defs>
+  <style>
+    /* Dark theme */
+    .stop-start { stop-color: #58a6ff; }
+    .stop-end { stop-color: #2f81f7; }
+
+    /* Light theme */
+    @media (prefers-color-scheme: light) {
+      .stop-start { stop-color: #0757bd; }
+      .stop-end { stop-color: #2f81f7; }
+    }
+  </style>
+  <circle cx="128" cy="128" r="100" fill="url(#pg-grad)" mask="url(#pg-mask)" />
+</svg>
