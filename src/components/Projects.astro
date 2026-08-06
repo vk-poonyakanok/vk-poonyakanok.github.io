@@ -1,407 +1,77 @@
 ---
-// Astro Component
+// Top six of the twelve case studies under public/project/. Slugs, thumbs
+// and hrefs must stay in sync with public/project/index.html (the archive
+// listing) and the customPages list in astro.config.mjs.
+const projects = [
+  {
+    slug: 'ddschatbot',
+    kicker: 'P.01 — PUBLIC HEALTH LLM',
+    title: 'DDS Chatbot',
+    thumb: '/project/ddschatbot/ddschatbot-thumb.webp',
+    alt: 'DDS Chatbot — Thai disease-surveillance assistant',
+    desc: 'Guardrailed Thai disease-surveillance assistant for DDC — tool-calling over a PII-free data mart. A 753-turn authorized red-team cut attack success from ~25% to ~1% in-session; 99.8% pass on a 3,819-run regression benchmark.',
+  },
+  {
+    slug: 'altit',
+    kicker: 'P.02 — CLINICAL DECISION SUPPORT',
+    title: 'Altitude Analyzer',
+    thumb: '/project/altit/altit1-thumb.webp',
+    alt: 'Altitude Itinerary Analyzer',
+    desc: 'AI itinerary extraction and high-altitude risk assessment for travel medicine clinics. 84.9% altitude accuracy within ±100 m on text itineraries; 2nd Place, BRIDGE-AI Summit 2026.',
+  },
+  {
+    slug: 'yfmalaria',
+    kicker: 'P.03 — CLINICAL DASHBOARD',
+    title: 'YF &amp; Malaria Map',
+    thumb: '/project/yfmalaria/yfmalaria-thumb.webp',
+    alt: 'Yellow fever and malaria prevention dashboard',
+    desc: "Country-clickable CDC Yellow Book guidance with multi-country trip planning.",
+  },
+  {
+    slug: 'hospcode',
+    kicker: 'P.04 — HEALTH DATA TOOL',
+    title: 'Thai HospSearch',
+    thumb: '/project/hospcode/hospcode-thumb.webp',
+    alt: 'Thai HospSearch facility-code navigator',
+    desc: "Facility-code navigator over ~174K MOPH-coded records across Thailand's 13 health regions, 77 provinces and 7,436 subdistricts — client-side SQLite, no backend.",
+  },
+  {
+    slug: 'pm2-5',
+    kicker: 'P.05 — EPIDEMIOLOGY VIZ',
+    title: 'PM2.5 × Mental Health',
+    thumb: '/project/pm2-5/pm2-5-thumb.webp',
+    alt: 'PM2.5 and mental health Tableau story',
+    desc: 'Interrupted time-series analysis of air pollution and psychiatric hospital visits.',
+  },
+  {
+    slug: 'cirrhosis',
+    kicker: 'P.06 — MACHINE LEARNING',
+    title: 'Cirrhosis Survival',
+    thumb: '/project/cirrhosis/cirrhosis-thumb.webp',
+    alt: 'Cirrhosis survival prediction notebook',
+    desc: 'Multi-class ensemble prediction (XGBoost/LightGBM) with engineered clinical features.',
+  },
+];
 ---
 
-<section class="section" id="projects">
-    <div class="container-grid">
-      <div class="section-header fade-in">
-        <span class="t-section-number">03</span>
-        <div>
-          <h2 class="t-label section-title">Top Projects</h2>
-          <div class="section-header-rule"></div>
+<section class="rd-work" id="projects">
+  <div class="rd-section-head">
+    <div class="rd-section-num">03</div>
+    <h2 class="rd-section-kicker">Projects</h2>
+    <a href="/project/" class="rd-btn rd-section-action">FULL PROJECT ARCHIVE / 12 ↗</a>
+  </div>
+
+  <div class="rd-work-grid">
+    {projects.map((p) => (
+      <a href={`/project/${p.slug}/`} class="rd-work-card">
+        <div class="rd-work-meta">
+          <span>{p.kicker}</span>
+          <span class="arrow">↗</span>
         </div>
-      </div>
-      <div class="featured-project-carousel fade-in delay-1" id="projectCarousel" aria-label="Featured projects">
-        <div class="featured-project-header">
-          <span class="t-label">Featured Work</span>
-          <div class="featured-project-controls">
-            <button type="button" class="carousel-btn" id="projectPrev" aria-label="Previous featured project">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button type="button" class="carousel-btn" id="projectNext" aria-label="Next featured project">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
-        </div>
-        <article class="featured-project-slide active" aria-hidden="false">
-          <a href="project/ddschatbot/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/ddschatbot/ddschatbot-thumb.webp" alt="DDS Chatbot Thai disease surveillance interface preview" loading="eager" width="1200" height="822">
-            </div>
-          </a>
-          <a href="project/ddschatbot/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Public Health LLM</div>
-            <h3 class="featured-project-title">DDS Chatbot</h3>
-            <p class="featured-project-desc">Guardrailed Thai disease-surveillance LLM assistant for DDC, using tool-calling over an aggregate, PII-free data mart — built to give surveillance staff safe self-service query access without exposing raw case-level records.</p>
-            <div class="project-tags"><span class="project-tag">Live Demo</span><span class="project-tag">LLM Tool Calling</span><span class="project-tag">Public Health</span><span class="project-tag">PDPA-Aligned</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/altit/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/altit/altit1-thumb.webp" alt="Altitude Itinerary Analyzer interface preview" loading="lazy" width="1400" height="840">
-            </div>
-          </a>
-          <a href="project/altit/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">AI Clinical Decision Support</div>
-            <h3 class="featured-project-title">Altitude Itinerary Analyzer</h3>
-            <p class="featured-project-desc">AI-assisted travel medicine tool for extracting and analyzing complex itineraries for high-altitude risk assessment.</p>
-            <div class="project-tags"><span class="project-tag">Live App</span><span class="project-tag">Artificial Intelligence</span><span class="project-tag">Clinical Decision Support</span><span class="project-tag">Travel Medicine</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/yfmalaria/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/yfmalaria/yfmalaria-thumb.webp" alt="Yellow fever and malaria dashboard preview" loading="lazy" width="1400" height="1077">
-            </div>
-          </a>
-          <a href="project/yfmalaria/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Clinical Dashboard</div>
-            <h3 class="featured-project-title">Yellow Fever Vaccine &amp; Malaria Prevention Dashboard</h3>
-            <p class="featured-project-desc">Interactive, country-clickable map combining CDC Yellow Book vaccination and malaria prophylaxis guidance, rebuilt with multi-country trip planning on top of the original Tableau dashboard.</p>
-            <div class="project-tags"><span class="project-tag">Dashboard</span><span class="project-tag">Tableau</span><span class="project-tag">CDC Yellow Book</span><span class="project-tag">Trip Planning</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/hospcode/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/hospcode/hospcode-thumb.webp" alt="Thai HospSearch application preview" loading="lazy" width="1400" height="914">
-            </div>
-          </a>
-          <a href="project/hospcode/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Health Data Tool</div>
-            <h3 class="featured-project-title">Thai HospSearch</h3>
-            <p class="featured-project-desc">Navigator for Thai healthcare administrative hierarchy and facility code lookup from region to subdistrict.</p>
-            <div class="project-tags"><span class="project-tag">Live App</span><span class="project-tag">Health Data</span><span class="project-tag">Public Health</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/hajjmens/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/hajjmens/hajjmens-thumb.webp" alt="Hajj Menstrual Delay Planner application preview" loading="lazy" width="1400" height="833">
-            </div>
-          </a>
-          <a href="project/hajjmens/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Clinical Planning Utility</div>
-            <h3 class="featured-project-title">Hajj Menstrual Delay Planner</h3>
-            <p class="featured-project-desc">Web utility for visualizing cycles and supporting menstrual delay or suppression planning for pilgrimage travel.</p>
-            <div class="project-tags"><span class="project-tag">Live App</span><span class="project-tag">Clinical Tool</span><span class="project-tag">Travel Medicine</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/pm2-5/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/pm2-5/pm2-5-thumb.webp" alt="PM2.5 and Mental Health Dynamics Tableau story preview" loading="lazy" width="1400" height="773">
-            </div>
-          </a>
-          <a href="project/pm2-5/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Tableau Public</div>
-            <h3 class="featured-project-title">PM2.5 &amp; Mental Health Dynamics</h3>
-            <p class="featured-project-desc">Visualized spatial-temporal correlations between air pollution and psychiatric disorders using Interrupted Time Series (ITS) models.</p>
-            <div class="project-tags"><span class="project-tag">Data Viz</span><span class="project-tag">Epidemiology</span><span class="project-tag">Interrupted Time Series</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/cirrhosis/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/cirrhosis/cirrhosis-thumb.webp" alt="Cirrhosis Survival Prediction notebook preview" loading="lazy" width="1400" height="1178">
-            </div>
-          </a>
-          <a href="project/cirrhosis/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Kaggle Notebook</div>
-            <h3 class="featured-project-title">Cirrhosis Survival Prediction</h3>
-            <p class="featured-project-desc">Multi-class prediction model using Ensemble Learning (XGBoost/LightGBM) with engineered clinical features.</p>
-            <div class="project-tags"><span class="project-tag">Machine Learning</span><span class="project-tag">Clinical</span><span class="project-tag">Ensemble</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/th-numeral/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/th-numeral/th-numeral-thumb.webp" alt="Thai Numeral Converter application preview" loading="lazy" width="1366" height="768">
-            </div>
-          </a>
-          <a href="project/th-numeral/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Thai Documentation Utility</div>
-            <h3 class="featured-project-title">Thai Numeral Converter</h3>
-            <p class="featured-project-desc">Automated utility for Thai government documentation, converting Arabic to Thai numerals while preserving email addresses and URLs.</p>
-            <div class="project-tags"><span class="project-tag">Utility</span><span class="project-tag">Localization</span></div>
-            </div>
-          </a>
-        </article>
-        <article class="featured-project-slide" aria-hidden="true">
-          <a href="project/bnk48/" target="_blank" class="featured-project-media-link" rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-            <div class="featured-project-media">
-              <img src="project/bnk48/bnk48-thumb.webp" alt="BNK and CGM48 election predictive analysis notebook preview" loading="lazy" width="1400" height="1161">
-            </div>
-          </a>
-          <a href="project/bnk48/" target="_blank" class="featured-project-copy-link" rel="noopener noreferrer">
-            <div class="featured-project-copy">
-            <div class="featured-project-kicker">Kaggle Notebook</div>
-            <h3 class="featured-project-title">BNK/CGM48 4th General Election Predictive Analysis</h3>
-            <p class="featured-project-desc">Technical case study using end-to-end ML (Scraping to Prediction) to forecast election outcomes in the entertainment industry.</p>
-            <div class="project-tags"><span class="project-tag">Machine Learning</span><span class="project-tag">Web Scraping</span><span class="project-tag">Prediction</span></div>
-            </div>
-          </a>
-        </article>
-        <div class="carousel-dots" aria-label="Featured project selector">
-          <button type="button" class="carousel-dot" data-project-slide="0" aria-label="Show DDS Chatbot" aria-current="true"></button>
-          <button type="button" class="carousel-dot" data-project-slide="1" aria-label="Show Altitude Itinerary Analyzer" aria-current="false"></button>
-          <button type="button" class="carousel-dot" data-project-slide="2" aria-label="Show Yellow Fever Vaccine and Malaria Prevention Dashboard" aria-current="false"></button>
-          <button type="button" class="carousel-dot" data-project-slide="3" aria-label="Show Thai HospSearch" aria-current="false"></button>
-          <button type="button" class="carousel-dot" data-project-slide="4" aria-label="Show Hajj Menstrual Delay Planner" aria-current="false"></button>
-          <button type="button" class="carousel-dot" data-project-slide="5" aria-label="Show PM2.5 and Mental Health Dynamics" aria-current="false"></button>
-          <button type="button" class="carousel-dot" data-project-slide="6" aria-label="Show Cirrhosis Survival Prediction" aria-current="false"></button>
-          <button type="button" class="carousel-dot" data-project-slide="7" aria-label="Show Thai Numeral Converter" aria-current="false"></button>
-          <button type="button" class="carousel-dot" data-project-slide="8" aria-label="Show BNK/CGM48 4th General Election Predictive Analysis" aria-current="false"></button>
-        </div>
-      </div>
-      <div class="cert-archive-link-row">
-        <a href="project/" target="_blank" rel="noopener noreferrer" class="nav-action-link">View Full Project Archive</a>
-      </div>
-    </div>
-  </section>
-
-<script>
-    // ── Featured Project Carousel ──
-    const projectCarousel = document.getElementById('projectCarousel');
-
-    if (projectCarousel) {
-      const projectSlides = projectCarousel.querySelectorAll('.featured-project-slide');
-      const projectDots = projectCarousel.querySelectorAll('.carousel-dot');
-      const projectDesktopDots = projectCarousel.querySelector(':scope > .carousel-dots');
-      const projectPrev = document.getElementById('projectPrev');
-      const projectNext = document.getElementById('projectNext');
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      // Matches the 769px grid breakpoint in global.css; below it the
-      // slides really are a one-at-a-time carousel, above it they are not.
-      const carouselMedia = window.matchMedia('(max-width: 768px)');
-      function isCarouselLayout() { return carouselMedia.matches; }
-      let activeProjectSlide = 0;
-      let projectTimer = null;
-      let projectCarouselInView = false;
-      let projectTouchStartX = 0;
-      let projectTouchStartY = 0;
-      let suppressProjectClick = false;
-      const projectMobileNav = document.createElement('div');
-      const mobileDots = document.createElement('div');
-      projectMobileNav.className = 'featured-project-mobile-nav';
-      projectMobileNav.setAttribute('aria-label', 'Featured project mobile controls');
-      mobileDots.className = 'carousel-dots';
-
-      projectMobileNav.innerHTML = `
-        <button type="button" class="carousel-btn" data-project-action="prev" aria-label="Previous featured project">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-      `;
-
-      projectDots.forEach(function(dot) {
-        const mobileDot = dot.cloneNode(true);
-        mobileDots.appendChild(mobileDot);
-      });
-
-      projectMobileNav.appendChild(mobileDots);
-      projectMobileNav.insertAdjacentHTML('beforeend', `
-        <button type="button" class="carousel-btn" data-project-action="next" aria-label="Next featured project">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      `);
-
-      function updateProjectDots() {
-        projectCarousel.querySelectorAll('.carousel-dot').forEach(function(dot) {
-          dot.setAttribute('aria-current', parseInt(dot.getAttribute('data-project-slide'), 10) === activeProjectSlide ? 'true' : 'false');
-        });
-      }
-
-      function placeProjectMobileNav() {
-        const activeSlide = projectSlides[activeProjectSlide];
-        if (!activeSlide) return;
-
-        const mediaLink = activeSlide.querySelector('.featured-project-media-link');
-        if (mediaLink && projectMobileNav.parentNode !== activeSlide) {
-          mediaLink.insertAdjacentElement('afterend', projectMobileNav);
-        }
-      }
-
-      function showProjectSlide(index, direction) {
-        const previousProjectSlide = activeProjectSlide;
-        activeProjectSlide = (index + projectSlides.length) % projectSlides.length;
-        const slideDirection = direction || (activeProjectSlide >= previousProjectSlide ? 'next' : 'prev');
-
-        // Above 769px the carousel becomes a static 4-card grid (see the
-        // media query in global.css) -- every card is visible at once, so
-        // marking the three non-active ones aria-hidden would strip visible,
-        // still-focusable links out of the accessibility tree, and the
-        // autoplay tick below would rotate which ones every 3.5s mid-read.
-        // Only the mobile carousel layout has a genuinely hidden slide.
-        const carouselLayout = isCarouselLayout();
-
-        projectSlides.forEach(function(slide, slideIndex) {
-          const isActive = slideIndex === activeProjectSlide;
-          slide.classList.toggle('active', isActive);
-          if (carouselLayout) {
-            slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-          } else {
-            slide.removeAttribute('aria-hidden');
-          }
-          slide.classList.remove('slide-from-next', 'slide-from-prev');
-
-          if (isActive && activeProjectSlide !== previousProjectSlide && !reduceMotion) {
-            slide.classList.add(slideDirection === 'prev' ? 'slide-from-prev' : 'slide-from-next');
-            window.setTimeout(function() {
-              slide.classList.remove('slide-from-next', 'slide-from-prev');
-            }, 320);
-          }
-        });
-
-        updateProjectDots();
-        placeProjectMobileNav();
-      }
-
-      function nextProjectSlide() {
-        showProjectSlide(activeProjectSlide + 1, 'next');
-      }
-
-      function previousProjectSlide() {
-        showProjectSlide(activeProjectSlide - 1, 'prev');
-      }
-
-      function startProjectCarousel() {
-        // Nothing to advance in the desktop grid layout -- every card is
-        // already on screen, so autoplay there only churned state.
-        if (reduceMotion || projectTimer || !projectCarouselInView || !isCarouselLayout()) return;
-        projectTimer = window.setInterval(nextProjectSlide, 3500);
-      }
-
-      function stopProjectCarousel() {
-        if (!projectTimer) return;
-        window.clearInterval(projectTimer);
-        projectTimer = null;
-      }
-
-      if (projectPrev) {
-        projectPrev.addEventListener('click', function() {
-          stopProjectCarousel();
-          previousProjectSlide();
-          startProjectCarousel();
-        });
-      }
-
-      if (projectNext) {
-        projectNext.addEventListener('click', function() {
-          stopProjectCarousel();
-          nextProjectSlide();
-          startProjectCarousel();
-        });
-      }
-
-      projectDots.forEach(function(dot) {
-        dot.addEventListener('click', function() {
-          stopProjectCarousel();
-          showProjectSlide(parseInt(dot.getAttribute('data-project-slide'), 10));
-          startProjectCarousel();
-        });
-      });
-
-      projectCarousel.addEventListener('click', function(event) {
-        if (suppressProjectClick) {
-          event.preventDefault();
-          event.stopPropagation();
-          suppressProjectClick = false;
-          return;
-        }
-
-        const actionButton = event.target.closest('[data-project-action]');
-        if (actionButton) {
-          event.preventDefault();
-          stopProjectCarousel();
-          actionButton.getAttribute('data-project-action') === 'prev' ? previousProjectSlide() : nextProjectSlide();
-          startProjectCarousel();
-          return;
-        }
-
-        const dot = event.target.closest('.carousel-dot');
-        if (dot && !projectDesktopDots.contains(dot)) {
-          event.preventDefault();
-          stopProjectCarousel();
-          showProjectSlide(parseInt(dot.getAttribute('data-project-slide'), 10));
-          startProjectCarousel();
-        }
-      });
-
-      projectCarousel.addEventListener('touchstart', function(event) {
-        if (!window.matchMedia('(max-width: 768px)').matches || event.touches.length !== 1) return;
-        projectTouchStartX = event.touches[0].clientX;
-        projectTouchStartY = event.touches[0].clientY;
-      }, { passive: true });
-
-      projectCarousel.addEventListener('touchend', function(event) {
-        if (!window.matchMedia('(max-width: 768px)').matches || !event.changedTouches.length) return;
-
-        const deltaX = event.changedTouches[0].clientX - projectTouchStartX;
-        const deltaY = event.changedTouches[0].clientY - projectTouchStartY;
-
-        if (Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
-          stopProjectCarousel();
-          deltaX < 0 ? nextProjectSlide() : previousProjectSlide();
-          startProjectCarousel();
-          suppressProjectClick = true;
-          window.setTimeout(function() {
-            suppressProjectClick = false;
-          }, 250);
-        }
-      }, { passive: true });
-
-      projectCarousel.addEventListener('mouseenter', stopProjectCarousel);
-      projectCarousel.addEventListener('mouseleave', startProjectCarousel);
-      projectCarousel.addEventListener('focusin', stopProjectCarousel);
-      projectCarousel.addEventListener('focusout', startProjectCarousel);
-
-      showProjectSlide(0);
-
-      // Crossing the grid/carousel breakpoint (resize, rotate) has to re-run
-      // the slide sync so aria-hidden is applied or cleared for the layout
-      // that is now active, and has to stop autoplay on the way into the
-      // desktop grid.
-      carouselMedia.addEventListener('change', function() {
-        stopProjectCarousel();
-        showProjectSlide(activeProjectSlide);
-        startProjectCarousel();
-      });
-
-      if ('IntersectionObserver' in window) {
-        const projectCarouselObserver = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            projectCarouselInView = entry.isIntersecting;
-
-            if (projectCarouselInView) {
-              showProjectSlide(0);
-              startProjectCarousel();
-            } else {
-              stopProjectCarousel();
-            }
-          });
-        }, { threshold: 0.35 });
-
-        projectCarouselObserver.observe(projectCarousel);
-      } else {
-        projectCarouselInView = true;
-        startProjectCarousel();
-      }
-    }
-
-</script>
+        <img src={p.thumb} alt={p.alt} width="600" height="210" loading="lazy">
+        <div class="rd-work-title" set:html={p.title} />
+        <div class="rd-work-desc">{p.desc}</div>
+      </a>
+    ))}
+  </div>
+</section>

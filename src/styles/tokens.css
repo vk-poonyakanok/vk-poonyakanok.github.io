@@ -1,0 +1,103 @@
+/* ═══════════════════════════════════════════════════════════════
+   Palette — Redesign v2 (Swiss grid × clinical editorial)
+   Site-wide, imported once by src/layouts/Layout.astro.
+
+   Two naming layers live here on purpose:
+     * the v2 names (--bg/--ink/--card/--line/--rule/--muted/--accent/
+       --accent-ink/--chip) used by redesign.css and the v2 components;
+     * the legacy names (--bg-card/--text-primary/--border/...) that the
+       older page CSS in global.css still references, re-pointed at the
+       same v2 values so blog and archive pages inherit the new look
+       without rewriting their stylesheets.
+   Tokens sit on :root ONLY. <body> inherits them. Declaring them on body
+   as well would let body's own value beat the inherited one during the gap
+   between the blocking theme script (which stamps <html>) and the deferred
+   one (which stamps <body>) -- i.e. a dark repaint on every light load.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root,
+:root[data-theme="dark"] {
+  /* ── v2 core ── */
+  --bg: #14120d;
+  --ink: #f0ead9;
+  --card: #1c1913;
+  --line: #f0ead9;
+  --rule: #3a352a;
+  --muted: #a89f88;
+  --accent: #6d89ff;
+  --accent-ink: #14120d;
+  --chip: #262217;
+  --accent-rgb: 109, 137, 255;
+
+  /* ── legacy aliases ── */
+  --bg-elevated: #14120d;
+  --bg-card: #1c1913;
+  --bg-card-hover: #262217;
+  --bg-code: #0d0b07;
+  --text-primary: #f0ead9;
+  --text-secondary: #c9c0a8;
+  --text-tertiary: #a89f88;
+  --text-quaternary: #7d7360;
+  --accent-heading: #93a6ff;
+  --accent-hover: #93a6ff;
+  --accent-muted: rgba(109, 137, 255, 0.12);
+  --accent-muted-strong: rgba(109, 137, 255, 0.22);
+  --accent-border: rgba(109, 137, 255, 0.4);
+  --border: #3a352a;
+  --border-light: #2a251c;
+  --dot-color: rgba(240, 234, 217, 0.025);
+  --nav-bg: rgba(20, 18, 13, 0.92);
+  --selection-bg: rgba(109, 137, 255, 0.35);
+  --success: #4fb96a;
+  --success-muted: rgba(79, 185, 106, 0.14);
+  --stress: #e3b341;
+  --stress-rgb: 227, 179, 65;
+  --stress-muted: rgba(227, 179, 65, 0.12);
+  --stress-muted-strong: rgba(227, 179, 65, 0.22);
+  --stress-border: rgba(227, 179, 65, 0.4);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="light"] {
+  /* ── v2 core ── */
+  --bg: #f5f1e8;
+  --ink: #16140f;
+  --card: #fdfbf5;
+  --line: #16140f;
+  --rule: #d9d2c2;
+  --muted: #59523f;
+  --accent: #2244e0;
+  --accent-ink: #ffffff;
+  --chip: #ece6d8;
+  --accent-rgb: 34, 68, 224;
+
+  /* ── legacy aliases ── */
+  --bg-elevated: #fdfbf5;
+  --bg-card: #fdfbf5;
+  --bg-card-hover: #f1ece0;
+  --bg-code: #ece6d8;
+  --text-primary: #16140f;
+  --text-secondary: #443e2f;
+  --text-tertiary: #59523f;
+  --text-quaternary: #837a63;
+  --accent-heading: #2244e0;
+  --accent-hover: #1a35b0;
+  --accent-muted: rgba(34, 68, 224, 0.1);
+  --accent-muted-strong: rgba(34, 68, 224, 0.18);
+  --accent-border: rgba(34, 68, 224, 0.42);
+  --border: #cfc7b4;
+  --border-light: #e3ddcd;
+  --dot-color: rgba(22, 20, 15, 0.045);
+  --nav-bg: rgba(245, 241, 232, 0.94);
+  --selection-bg: rgba(34, 68, 224, 0.22);
+  --success: #1a7f37;
+  --success-muted: rgba(26, 127, 55, 0.12);
+  --stress: #9a6700;
+  --stress-rgb: 154, 103, 0;
+  --stress-muted: rgba(154, 103, 0, 0.1);
+  --stress-muted-strong: rgba(154, 103, 0, 0.18);
+  --stress-border: rgba(154, 103, 0, 0.42);
+  --shadow-card: 0 1px 4px rgba(22, 20, 15, 0.12);
+}
+
+:root { --nav-h: 57px; }

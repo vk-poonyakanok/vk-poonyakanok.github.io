@@ -1,27 +1,22 @@
 ---
+// The Contact section is built on the Redesign v2 system, so this page
+// pulls redesign.css rather than the legacy global.css the blog uses.
+import '../styles/redesign.css';
 import Layout from '../layouts/Layout.astro';
 import Navigation from '../components/Navigation.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Contact | Vitchakorn Poonyakanok" description="Get in touch for collaborations in clinical AI, travel medicine, and public health data systems." canonicalUrl="https://vitchakorn.com/contact/">
+<Layout
+  title="Contact | Vitchakorn Poonyakanok"
+  description="Get in touch for collaborations in clinical AI, travel medicine, and public health data systems."
+  canonicalUrl="https://vitchakorn.com/contact/"
+  ogType="website"
+>
   <Navigation />
   <main id="main">
     <Contact standalone />
   </main>
   <Footer />
 </Layout>
-
-<script>
-  // This page shows only the Contact section (no scroll-spy like the
-  // homepage), so mark it active directly to get the same accent-tinted
-  // section number/heading treatment Contact has when scrolled into view
-  // on the homepage.
-  document.body.dataset.activeSection = 'contact';
-
-  // Contact.astro's .fade-in elements start at opacity:0 and only get
-  // .visible from the homepage's scroll-reveal script -- this page has no
-  // such script, so reveal them directly instead of leaving them invisible.
-  document.querySelectorAll('.fade-in').forEach((el) => el.classList.add('visible'));
-</script>

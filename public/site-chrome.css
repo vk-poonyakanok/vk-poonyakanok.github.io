@@ -1,0 +1,117 @@
+/* ═══════════════════════════════════════════════════════════════
+   Redesign v2 site chrome for the standalone pages under public/.
+
+   The Astro pages get this from Navigation.astro's scoped styles; the
+   hand-written HTML (project archive, case studies, credentials) links
+   this file instead so both render the identical bar. Colours come from
+   each page's own :root token block, which carries the same v2 values as
+   src/styles/tokens.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+.rd-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  align-items: stretch;
+  border-bottom: 2px solid var(--text-primary);
+  background: var(--bg);
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.rd-nav::-webkit-scrollbar { display: none; }
+.rd-nav a { color: inherit; text-decoration: none; }
+
+/* min-width: max-content is load-bearing -- see Navigation.astro. */
+.rd-nav-brand {
+  flex: 2 1 auto;
+  min-width: max-content;
+  padding: 14px 20px;
+  border-right: 1px solid var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rd-nav-brand:hover { color: var(--accent); }
+.rd-nav-dot { width: 9px; height: 9px; background: var(--accent); display: inline-block; flex: none; }
+.rd-nav-name { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+.rd-nav-nick { font-style: italic; text-transform: none; font-weight: 400; color: var(--text-tertiary); }
+
+.rd-nav-item {
+  flex: 1 1 auto;
+  min-width: max-content;
+  padding: 14px 16px;
+  border-right: 1px solid var(--text-primary);
+  display: flex;
+  align-items: center;
+}
+.rd-nav-item:hover { color: var(--accent); }
+.rd-nav-item.is-back { flex: 2; text-transform: none; }
+
+.rd-nav-btn {
+  flex: none;
+  padding: 14px 16px;
+  border: none;
+  border-right: 1px solid var(--text-primary);
+  background: var(--bg);
+  color: var(--text-primary);
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rd-nav-btn:hover { color: var(--accent); }
+.rd-nav-theme { background: var(--bg-card); }
+
+.rd-nav-cta {
+  flex: none;
+  padding: 14px 24px;
+  background: var(--accent);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+.rd-nav-cta:hover { color: #ffffff; background: color-mix(in srgb, var(--accent) 85%, var(--text-primary)); }
+
+/* Second destination beside Blog. Outlined rather than filled so the bar
+   keeps a single accent block instead of two competing ones. */
+.rd-nav-cta.is-secondary { background: var(--bg); color: var(--text-primary); }
+.rd-nav-cta.is-secondary:hover { background: var(--bg-card); color: var(--accent); }
+
+/* The bar is fixed, so push the page content clear of it. site-chrome.js
+   measures the bar and writes --nav-h; the literal is only the pre-script
+   fallback and matches the bar's authored height. */
+.rd-nav-spacer { height: var(--nav-h, 51px); }
+
+/* Anchor jumps must clear the fixed bar rather than parking the target
+   heading underneath it. */
+:target { scroll-margin-top: calc(var(--nav-h, 51px) + 2px); }
+
+.rd-nav svg { width: 16px; height: 16px; display: block; }
+/* Each page's own stylesheet drives which of the two icons is shown via
+   [data-theme] on <html>; this only has to make them the right size. */
+
+@media (max-width: 860px) {
+  /* Decorative, and the first thing to go when space is tight. */
+  .rd-nav-nick { display: none; }
+}
+
+/* The wordmark must never truncate. Once the tail stops leaving room for
+   it, drop the Archive button rather than compressing the brand. */
+@media (max-width: 700px) {
+  .rd-nav-cta.is-secondary { display: none; }
+}
+
+@media (max-width: 400px) {
+  .rd-nav { font-size: 12px; }
+  .rd-nav-brand { padding: 14px 14px; }
+  .rd-nav-cta { padding: 14px 16px; }
+}

@@ -1,5 +1,9 @@
 ---
-import '../styles/global.css';
+// Palette only -- site-wide. Page CSS is imported per page: the v2 pages
+// pull src/styles/redesign.css, the blog pulls src/styles/global.css. Both
+// read their colours from these tokens, so the two never have to agree on
+// anything but the variable names.
+import '../styles/tokens.css';
 
 interface Props {
   title?: string;
@@ -102,7 +106,7 @@ const absoluteImage = image.startsWith('http') ? image : `https://vitchakorn.com
           ],
           "homeLocation": {
             "@type": "Place",
-            "name": "Bangkok, Thailand"
+            "name": "Pittsburgh, Pennsylvania, United States"
           },
           "affiliation": {
             "@type": "CollegeOrUniversity",

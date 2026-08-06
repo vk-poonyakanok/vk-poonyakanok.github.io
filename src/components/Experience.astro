@@ -1,152 +1,145 @@
 ---
-// Astro Component
+// Dates mirror Vitchakorn_Poonyakanok_CV.tex in the separate ~/Github/cv
+// repo. Both MOPH entries run Nov 2024 -- Jul 2026 there (academic leave
+// from Aug 2026 for the MSHCA), so neither is narrowed to a single year.
+const clinical = [
+  {
+    year: '2024 — 2026',
+    logos: [
+      { src: '/experience/ipm.webp', alt: 'Institute of Preventive Medicine' },
+      { src: '/experience/moph.webp', alt: 'Ministry of Public Health' },
+    ],
+    role: 'Travel Medicine Resident',
+    org: 'Institute of Preventive Medicine, DDC, MOPH',
+    note: 'Preventive medicine, travel risk assessment, vaccinology, and health security. On academic leave from Aug 2026; residency resumes on return.',
+  },
+  {
+    year: '2024 — 2026',
+    logos: [
+      { src: '/experience/pty.webp', alt: 'Pattayarak Health Unit' },
+      { src: '/experience/moph.webp', alt: 'Ministry of Public Health' },
+    ],
+    role: 'Medical Physician, Professional Level — Preventive &amp; Travel Medicine',
+    org: 'Office of Disease Prevention and Control 6 (ODPC 6), DDC, MOPH',
+    note: 'Pre-travel consultations, vaccination and certification, and travel health risk analysis; site physician for the WHO Enhanced Gonococcal Antimicrobial Surveillance Programme (EGASP).',
+  },
+  {
+    year: '2022 — 2024',
+    logos: [
+      { src: '/experience/bidi.webp', alt: 'Bamrasnaradura Infectious Diseases Institute' },
+      { src: '/experience/moph.webp', alt: 'Ministry of Public Health' },
+    ],
+    role: 'General Practitioner',
+    org: 'Bamrasnaradura Infectious Diseases Institute',
+    note: 'Led outpatient and ARI clinic services through COVID-19 and mpox responses; analysed 32,084 ARI visits in Python to locate scheduling bottlenecks.',
+  },
+  {
+    year: '2020 — 2022',
+    logos: [
+      { src: '/experience/sskh.webp', alt: 'Si Songkhram Hospital' },
+      { src: '/experience/moph.webp', alt: 'Ministry of Public Health' },
+    ],
+    role: 'General Practitioner (Intern)',
+    org: 'Si Songkhram Hospital',
+  },
+  {
+    year: '2019 — 2020',
+    logos: [
+      { src: '/experience/nkh.webp', alt: 'Nong Khai Hospital' },
+      { src: '/experience/moph.webp', alt: 'Ministry of Public Health' },
+    ],
+    role: 'General Practitioner (Intern)',
+    org: 'Nong Khai Hospital',
+  },
+];
+
+const education = [
+  {
+    year: 'AUG 2026 — MAY 2028',
+    current: true,
+    logos: [
+      { src: '/experience/cmu.webp', alt: 'Carnegie Mellon University' },
+      { src: '/experience/carnegie_mellon_university___h_john_heinz_iii_college_logo.jpeg', alt: 'Heinz College' },
+    ],
+    role: 'M.S. Health Care Analytics &amp; IT (MSHCA)',
+    org: 'Carnegie Mellon University, Heinz College',
+    note: 'Royal Thai Government (DDC) scholarship. Health system analytics, data governance, and information systems.',
+  },
+  {
+    year: '2025 — 2026',
+    logos: [
+      { src: '/experience/chula.webp', alt: 'Chulalongkorn University' },
+      { src: '/experience/digihealth-dh.png', alt: 'DigiHealth' },
+    ],
+    role: 'M.S. Digital &amp; AI Technologies in Health Systems',
+    org: 'Chulalongkorn University (DigiHealth)',
+    note: 'Independent study: AI-assisted altitude extraction from travel itineraries — the work behind altit.app.',
+  },
+  {
+    year: '2013 — 2019',
+    logos: [{ src: '/experience/rama.webp', alt: 'Ramathibodi Hospital' }],
+    role: 'Doctor of Medicine (MD)',
+    org: 'Mahidol University (Ramathibodi Hospital)',
+  },
+  {
+    year: '2010 — 2013',
+    logos: [{ src: '/experience/tu.webp', alt: 'Triam Udom Suksa School' }],
+    role: 'High School',
+    org: 'Triam Udom Suksa School',
+  },
+];
 ---
 
-<section class="section section-alt-bg" id="experience">
-    <div class="container-grid">
-      <div class="section-header fade-in">
-        <span class="t-section-number">02</span>
-        <div>
-          <h2 class="t-label section-title">Experience</h2>
-          <div class="section-header-rule"></div>
-        </div>
-      </div>
-      <div class="exp-grid">
-        <div class="fade-in delay-1">
-          <div class="exp-category-label">Clinical &amp; Research</div>
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-year">2024 — 2026</div>
-              <div class="timeline-header">
-                  <div class="timeline-logo-wrap">
-                      <img src="experience/ipm.webp" alt="IPM" class="timeline-logo">
-                      <img src="experience/moph.webp" alt="MOPH" class="timeline-logo">
-                  </div>
-                  <div>
-                      <div class="timeline-role">Travel Medicine Resident</div>
-                      <div class="timeline-org">Institute of Preventive Medicine, DDC, MOPH</div>
-                      <div class="timeline-location">Nonthaburi, Thailand</div>
-                  </div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2024 — 2026</div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/pty.webp" alt="Pattayarak" class="timeline-logo">
-                    <img src="experience/moph.webp" alt="MOPH" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">General Practitioner</div>
-                    <div class="timeline-org">Pattayarak Health Unit, ODPC 6, DDC, MOPH</div>
-                    <div class="timeline-location">Chonburi, Thailand</div>
-                </div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2022 — 2024</div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/bidi.webp" alt="BIDI" class="timeline-logo">
-                    <img src="experience/moph.webp" alt="MOPH" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">General Practitioner</div>
-                    <div class="timeline-org">Bamrasnaradura Infectious Diseases Institute</div>
-                    <div class="timeline-location">Nonthaburi, Thailand</div>
-                </div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2020 — 2022</div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/sskh.webp" alt="SSKH" class="timeline-logo">
-                    <img src="experience/moph.webp" alt="MOPH" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">General Practitioner (Intern)</div>
-                    <div class="timeline-org">Si Songkhram Hospital</div>
-                    <div class="timeline-location">Nakhon Phanom, Thailand</div>
-                </div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2019 — 2020</div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/nkh.webp" alt="NKH" class="timeline-logo">
-                    <img src="experience/moph.webp" alt="MOPH" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">General Practitioner (Intern)</div>
-                    <div class="timeline-org">Nong Khai Hospital</div>
-                    <div class="timeline-location">Nong Khai, Thailand</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="fade-in delay-2">
-          <div class="exp-category-label">Education</div>
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-year">Aug 2026 <span class="timeline-chip">Current</span></div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/cmu.webp" alt="CMU" class="timeline-logo">
-                    <img src="experience/carnegie_mellon_university___h_john_heinz_iii_college_logo.jpeg" alt="Heinz College" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">Master of Science in Health Care Analytics and Information Technology (MSHCA)</div>
-                    <div class="timeline-org">Carnegie Mellon University’s Heinz College of Information Systems and Public Policy</div>
-                    <div class="timeline-location">Pittsburgh, PA, USA</div>
-                </div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2025 — 2026</div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/chula.webp" alt="Chula" class="timeline-logo">
-                    <img src="experience/digihealth-dh.png" alt="DigiHealth" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">Master of Science in Digital and AI Technologies in Health Systems (DigiHealth)</div>
-                    <div class="timeline-org">Chulalongkorn University</div>
-                    <div class="timeline-location">Bangkok, Thailand</div>
-                </div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2013 — 2019</div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/rama.webp" alt="Ramathibodi" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">Doctor of Medicine (MD)</div>
-                    <div class="timeline-org">Mahidol University (Ramathibodi Hospital)</div>
-                    <div class="timeline-location">Bangkok, Thailand</div>
-                </div>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2010 — 2013</div>
-              <div class="timeline-header">
-                <div class="timeline-logo-wrap">
-                    <img src="experience/tu.webp" alt="Triam Udom" class="timeline-logo">
-                </div>
-                <div>
-                    <div class="timeline-role">High School</div>
-                    <div class="timeline-org">Triam Udom Suksa School</div>
-                    <div class="timeline-location">Bangkok, Thailand</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<section class="rd-section" id="experience">
+  <div class="rd-section-head">
+    <div class="rd-section-num">02</div>
+    <h2 class="rd-section-kicker">Experience</h2>
+  </div>
 
+  <div class="rd-split">
+    <div>
+      <div class="rd-col-label">Clinical &amp; Research</div>
+      <div class="rd-tl">
+        {clinical.map((item) => (
+          <div class="rd-tl-item">
+            <div class="rd-tl-year">{item.year}</div>
+            <div class="rd-tl-row">
+              <div class="rd-tl-logos">
+                {item.logos.map((l) => <img src={l.src} alt={l.alt} width="38" height="38" loading="lazy">)}
+              </div>
+              <div>
+                <div class="rd-tl-role" set:html={item.role} />
+                <div class="rd-tl-org">{item.org}</div>
+                {item.note && <div class="rd-tl-note">{item.note}</div>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  </section>
+
+    <div>
+      <div class="rd-col-label">Education</div>
+      <div class="rd-tl">
+        {education.map((item) => (
+          <div class="rd-tl-item">
+            <div class="rd-tl-year">{item.year}</div>
+            <div class="rd-tl-row">
+              <div class="rd-tl-logos">
+                {item.logos.map((l) => <img src={l.src} alt={l.alt} width="38" height="38" loading="lazy">)}
+              </div>
+              <div>
+                <div class="rd-tl-role">
+                  <span set:html={item.role} />
+                  {item.current && <span class="rd-chip-current">CURRENT</span>}
+                </div>
+                <div class="rd-tl-org">{item.org}</div>
+                {item.note && <div class="rd-tl-note">{item.note}</div>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

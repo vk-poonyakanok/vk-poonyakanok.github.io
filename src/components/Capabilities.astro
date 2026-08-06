@@ -1,212 +1,167 @@
 ---
-// Astro Component
+// Icons are self-hosted under /logo/si/ (mirrored from Simple Icons)
+// rather than fetched per-badge from cdn.simpleicons.org -- that was 23
+// cross-origin requests on the critical path for decorative 15px marks.
+//
+// Skill rows mirror the `skills` block in ~/Github/cv/profile/profile.yaml.
+// Deliberately absent: React/Vite/TypeScript/Tailwind and the other
+// AI-assisted-dev-only entries the profile flags as "present in the shipped
+// products, not personal competencies".
+const stacks = [
+  {
+    title: 'Core',
+    items: [
+      { label: 'Python', icon: '/logo/si/python.svg' },
+      { label: 'R', icon: '/logo/si/r.svg' },
+      { label: 'SQL', icon: '/logo/si/postgresql.svg' },
+      { label: 'Stata' },
+      { label: 'Pandas', icon: '/logo/si/pandas.svg' },
+      { label: 'NumPy', icon: '/logo/si/numpy.svg' },
+    ],
+  },
+  {
+    title: 'ML &amp; AI',
+    items: [
+      { label: 'PyTorch', icon: '/logo/si/pytorch.svg' },
+      { label: 'TensorFlow', icon: '/logo/si/tensorflow.svg' },
+      { label: 'Scikit-Learn', icon: '/logo/si/scikitlearn.svg' },
+      { label: 'XGBoost' },
+      { label: 'LightGBM' },
+      { label: 'YOLO', icon: '/logo/si/ultralytics.svg' },
+      { label: 'OpenCV', icon: '/logo/si/opencv.svg' },
+    ],
+  },
+  {
+    title: 'LLM APIs',
+    items: [
+      { label: 'GPT', img: '/logo/OpenAI-logo-white.svg', lightInvert: true },
+      { label: 'Claude', icon: '/logo/si/claude.svg' },
+      { label: 'Gemini', icon: '/logo/si/googlegemini.svg' },
+      { label: 'GLM', img: '/logo/Z.ai-logo.svg' },
+      { label: 'Grok', img: '/logo/xAI-logo.svg', lightInvert: true },
+      { label: 'ThaiLLM', img: '/logo/ThaiLLM-logo-white.svg', lightInvert: true },
+    ],
+  },
+  {
+    title: 'Visualization',
+    items: [
+      { label: 'Tableau', img: '/favicon/tableau.png' },
+      { label: 'Power BI', img: '/logo/Power-BI.svg' },
+      { label: 'Matplotlib', img: '/logo/Matplotlib-logo.svg' },
+      { label: 'Seaborn', img: '/logo/Seaborn-logo.svg' },
+      { label: 'Looker', icon: '/logo/si/looker.svg' },
+      { label: 'QGIS', icon: '/logo/si/qgis.svg' },
+    ],
+  },
+  {
+    title: 'Cloud &amp; Security',
+    items: [
+      { label: 'Google Cloud', icon: '/logo/si/googlecloud.svg' },
+      { label: 'Firebase', icon: '/logo/si/firebase.svg' },
+      { label: 'Huawei Cloud', icon: '/logo/si/huawei.svg' },
+      { label: 'ISC2 CC', icon: '/logo/si/isc2.svg' },
+      { label: 'Git', icon: '/logo/si/git.svg' },
+    ],
+  },
+  {
+    title: 'Computing',
+    items: [
+      { label: 'LANTA HPC' },
+      { label: 'Linux', icon: '/logo/si/linux.svg' },
+      { label: 'Anaconda', icon: '/logo/si/anaconda.svg' },
+      { label: 'Jupyter', icon: '/logo/si/jupyter.svg' },
+      { label: 'Arduino', icon: '/logo/si/arduino.svg' },
+    ],
+  },
+];
+
+const credentials = [
+  {
+    href: 'https://www.credly.com/badges/8769d712-3992-4f5c-b8bc-af7ba2b1f15c/',
+    img: '/badge/certified-in-cybersecurity-cc.1-white.png',
+    name: 'ISC2 Certified in Cybersecurity',
+    meta: 'APR 2026 – MAR 2029 · ISC2 ↗',
+  },
+  {
+    href: 'https://vitchakorn.com/cert/HWENDCTEDA695219.png',
+    img: '/certlogo/HCCDA.png',
+    name: 'Huawei Cloud HCCDA ×2',
+    meta: 'APR 2026 – APR 2029 · TECH + AI ↗',
+  },
+  {
+    href: 'https://cpweb.ewe.go.th/show-cert?code=305723&system=5&type=certCom&bgImage=false',
+    img: '/certlogo/logo_tpqi.webp',
+    name: 'TPQI × Huawei Cloud Developer L5',
+    meta: '2026 · + AI LITERACY POWER USERS ↗',
+  },
+  {
+    href: 'https://www.citiprogram.org/verify/?w967a1d11-b9e0-4420-ac76-0f412a68e9bb-67495823',
+    img: '/certlogo/citi.jpeg',
+    name: 'Biomedical Researchers',
+    meta: 'JAN 2025 – JAN 2029 · CITI PROGRAM ↗',
+  },
+  {
+    href: 'https://api.badgr.io/public/assertions/TZjRyAo3Qa-jSuuQoizKZA',
+    img: '/badge/DataRockie School - Certified Professional Data Analyst - 2024-03-12.png',
+    name: 'Certified Professional Data Analyst',
+    meta: 'MAR 2024 · DATAROCKIE ↗',
+  },
+];
 ---
 
-<section class="section section-alt-bg" id="skills">
-    <div class="container-grid">
-      <div class="section-header fade-in">
-        <span class="t-section-number">06</span>
+<section class="rd-section" id="skills">
+  <div class="rd-section-head">
+    <div class="rd-section-num">06</div>
+    <h2 class="rd-section-kicker">Capabilities</h2>
+    <a href="/credentials.html" class="rd-btn rd-section-action">FULL CREDENTIAL ARCHIVE ↗</a>
+  </div>
+
+  <div class="rd-body">
+    <div class="rd-stack-grid">
+      {stacks.map((group) => (
         <div>
-          <h2 class="t-label section-title">Capabilities</h2>
-          <div class="section-header-rule"></div>
-        </div>
-      </div>
-
-      <div class="skills-certs-grid">
-        <!-- LEFT: Skills -->
-        <div class="skills-column fade-in delay-1">
-          <div class="column-kicker">Selected Stack</div>
-          <div class="skills-category">
-            <div class="skills-category-title">Core Tools</div>
-            <div class="skills-badges">
-              <img src="https://img.shields.io/badge/Python-566D80.svg?style=for-the-badge&logo=python&logoColor=CCBE87" alt="Python">
-              <img src="https://img.shields.io/badge/R-567294.svg?style=for-the-badge&logo=r&logoColor=white" alt="R">
-              <img src="https://img.shields.io/badge/SQL-2B5A64.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL">
-              <img src="https://img.shields.io/badge/Stata-3C5268.svg?style=for-the-badge&logo=stata&logoColor=white" alt="Stata">
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Data Analysis &amp; Processing</div>
-            <div class="skills-badges">
-              <img src="https://img.shields.io/badge/NumPy-15282F.svg?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
-              <img src="https://img.shields.io/badge/Pandas-241D3F.svg?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas">
-              <img src="https://img.shields.io/badge/OpenCV-7D71B5.svg?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV">
-              <img src="https://img.shields.io/badge/jamovi-3E5165.svg?style=for-the-badge&logo=jamovi&logoColor=white" alt="jamovi">
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Applied ML &amp; AI</div>
-            <div class="skills-badges">
-              <img src="https://img.shields.io/badge/YOLO-4DB2B2.svg?style=for-the-badge&logo=ultralytics&logoColor=black" alt="YOLO">
-              <img src="https://img.shields.io/badge/Scikit--Learn-B68E5F.svg?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn">
-              <img src="https://img.shields.io/badge/PyTorch-B47366.svg?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch">
-              <img src="https://img.shields.io/badge/TensorFlow-B2794D.svg?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow">
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Large Language Model APIs</div>
-            <div class="skills-badges">
-              <span class="skill-logo-badge logo-invert"><img src="logo/OpenAI-logo-white.svg" alt="" aria-hidden="true">GPT</span>
-              <img src="https://img.shields.io/badge/Claude-B28B7E.svg?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude API">
-              <img src="https://img.shields.io/badge/Gemini-7792BF.svg?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini API">
-              <span class="skill-logo-badge"><img src="logo/Z.ai-logo.svg" alt="" aria-hidden="true">GLM</span>
-              <span class="skill-logo-badge logo-invert"><img src="logo/xAI-logo.svg" alt="" aria-hidden="true">Grok</span>
-              <span class="skill-logo-badge"><img src="logo/ThaiLLM-logo-white.svg" alt="" aria-hidden="true">ThaiLLM</span>
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Cloud &amp; Infrastructure</div>
-            <div class="skills-badges">
-              <img src="https://img.shields.io/badge/Google_Cloud-7792BF.svg?style=for-the-badge&logo=google-cloud&logoColor=white" alt="Google Cloud">
-              <img src="https://img.shields.io/badge/Firebase-4784A1.svg?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase">
-              <img src="https://img.shields.io/badge/Huawei_Cloud-B24D4D.svg?style=for-the-badge&logo=huawei&logoColor=white" alt="Huawei Cloud">
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Visualization &amp; Design</div>
-            <div class="skills-badges">
-              <span class="skill-logo-badge" style="--badge-bg:#262a30;"><img src="favicon/tableau.png" alt="" aria-hidden="true">Tableau</span>
-              <span class="skill-logo-badge" style="--badge-bg:#ae9e55;--badge-color:#262a30;"><img src="logo/Power-BI.svg" alt="" aria-hidden="true">Power BI</span>
-              <span class="skill-logo-badge" style="--badge-bg:#ffffff;--badge-color:#262a30;--badge-border:#d9e1ea;"><img src="logo/Matplotlib-logo.svg" alt="" aria-hidden="true">Matplotlib</span>
-              <span class="skill-logo-badge" style="--badge-bg:#465462;"><img src="logo/Seaborn-logo.svg" alt="" aria-hidden="true">Seaborn</span>
-              <span class="skill-logo-badge" style="--badge-bg:#101c26;--badge-color:#6f9ec1;--badge-icon-bg:#21303f;--badge-icon-color:#6f9ec1;"><span class="skill-initial">Ps</span>Adobe Photoshop</span>
-              <span class="skill-logo-badge" style="--badge-bg:#101c26;--badge-color:#6f9ec1;--badge-icon-bg:#21303f;--badge-icon-color:#6f9ec1;"><span class="skill-initial">Lr</span>Adobe Lightroom</span>
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Geospatial</div>
-            <div class="skills-badges">
-              <img src="https://img.shields.io/badge/QGIS-5F7850.svg?style=for-the-badge&logo=qgis&logoColor=white" alt="QGIS">
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Cybersecurity</div>
-            <div class="skills-badges">
-              <img src="https://img.shields.io/badge/ISC2%20CC-4486A0.svg?style=for-the-badge&logo=isc2&logoColor=white" alt="ISC2 CC">
-              <img src="https://img.shields.io/badge/Google%20Cybersecurity-7792BF.svg?style=for-the-badge&logo=google&logoColor=white" alt="Google Cybersecurity">
-            </div>
-          </div>
-          <div class="skills-category">
-            <div class="skills-category-title">Research &amp; Computing Environments</div>
-            <div class="skills-badges">
-              <img src="https://img.shields.io/badge/Colab-AE8F4B.svg?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Colab">
-              <img src="https://img.shields.io/badge/Jupyter-B58463.svg?style=for-the-badge&logo=jupyter&logoColor=white" alt="Jupyter">
-              <img src="https://img.shields.io/badge/Anaconda-5D8556.svg?style=for-the-badge&logo=anaconda&logoColor=white" alt="Anaconda">
-              <img src="https://img.shields.io/badge/Linux-BBA665.svg?style=for-the-badge&logo=linux&logoColor=black" alt="Linux">
-              <img src="https://img.shields.io/badge/LANTA_HPC-1D1F21.svg?style=for-the-badge&logo=serverfault&logoColor=white" alt="LANTA HPC">
-            </div>
+          <div class="rd-col-label" style="margin-bottom:12px" set:html={group.title} />
+          <div class="rd-badges">
+            {group.items.map((item) => (
+              <span class="rd-badge">
+                {item.icon && <img src={item.icon} alt="" width="15" height="15" loading="lazy">}
+                {item.img && <img src={item.img} alt="" width="15" height="15" loading="lazy" data-light-invert={item.lightInvert ? '1' : undefined}>}
+                {item.label}
+              </span>
+            ))}
           </div>
         </div>
-
-        <!-- RIGHT: Certifications -->
-        <div class="certifications-column fade-in delay-2">
-          <div class="column-kicker">Credential Archive</div>
-
-          <div class="cert-category">
-            <div class="cert-category-title">Top Credentials</div>
-            <div class="cert-items">
-              <div class="cert-item">
-                <div class="cert-icon"><img src="badge/certified-in-cybersecurity-cc.1-white.png" alt="ISC2"></div>
-                <div><div class="cert-name">ISC2 Certified in Cybersecurity (CC)</div><div class="cert-meta">Apr 2026 – Mar 2029 | ISC2</div><a href="https://www.credly.com/badges/8769d712-3992-4f5c-b8bc-af7ba2b1f15c/" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a> <a href="cert/digitalcert.pdf" target="_blank" class="cert-verify" rel="noopener noreferrer">View</a></div>
-              </div>
-              <div class="cert-item">
-                <div class="cert-icon"><img src="certlogo/citi.jpeg" alt="CITI"></div>
-                <div><div class="cert-name">Biomedical Researchers</div><div class="cert-meta">Jan 2025 – Jan 2029 | CITI Program</div><a href="https://www.citiprogram.org/verify/?w967a1d11-b9e0-4420-ac76-0f412a68e9bb-67495823" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a></div>
-              </div>
-              <div class="cert-item">
-                <div class="cert-icon"><img src="certlogo/HCCDA.png" alt="Huawei"></div>
-                <div>
-                  <div class="cert-name">Huawei Cloud HCCDA Certifications</div>
-                  <div class="cert-meta">Apr 2026 – Apr 2029 | HCCDA-Tech Essentials · HCCDA-AI</div>
-                  <a href="cert/HWENDCTEDA695219.png" target="_blank" class="cert-verify" rel="noopener noreferrer">Tech</a>
-                  <a href="cert/HWENDCAIDA100092.png" target="_blank" class="cert-verify" rel="noopener noreferrer">AI</a>
-                </div>
-              </div>
-              <div class="cert-item">
-                <div class="cert-icon"><img src="badge/DataRockie School - Certified Professional Data Analyst - 2024-03-12.png" alt="DataRockie"></div>
-                <div><div class="cert-name">Certified Professional Data Analyst</div><div class="cert-meta">Mar 2024 | DataRockie</div><a href="https://badges.parchment.com/public/assertions/TZjRyAo3Qa-jSuuQoizKZA" target="_blank" class="cert-verify" rel="noopener noreferrer">Verify</a></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="cert-archive-link-row">
-            <a href="credentials.html" target="_blank" rel="noopener noreferrer" class="cert-archive-link">View full credential archive &rarr;</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="capabilities-languages fade-in delay-2">
-        <div class="column-kicker">Languages</div>
-        <div class="lang-grid">
-          <div class="lang-item">
-            <div class="lang-header">
-              <div>
-                <div class="lang-name">English</div>
-                <div class="lang-level">Professional Working Proficiency</div>
-              </div>
-              <span class="lang-code">EN</span>
-            </div>
-            <div class="lang-evidence" aria-label="English proficiency evidence">
-              <div class="lang-proof-card">
-                <span class="lang-proof-logo toefl" aria-hidden="true"><img src="logo/toefl-logo.svg" alt=""></span>
-                <div>
-                  <div class="lang-proof-name">TOEFL iBT</div>
-                  <div class="lang-proof-date">Jun 2025</div>
-                </div>
-                <div class="lang-proof-score">91/120</div>
-              </div>
-              <div class="lang-proof-card">
-                <span class="lang-proof-logo duolingo" aria-hidden="true"><img src="logo/duolingo.svg" alt=""></span>
-                <div>
-                  <div class="lang-proof-name">Duolingo English Test</div>
-                  <div class="lang-proof-date">Mar 2026</div>
-                </div>
-                <div class="lang-proof-score">120/160</div>
-              </div>
-            </div>
-          </div>
-          <div class="lang-item compact">
-            <div class="lang-header">
-              <div>
-                <div class="lang-name">Thai</div>
-                <div class="lang-level">Native Proficiency</div>
-              </div>
-              <span class="lang-code">TH</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Apps -->
-      <div style="margin-top:3.5rem;" class="fade-in" hidden>
-        <div class="exp-category-label" style="margin-bottom:1.25rem;">Applications</div>
-        <div class="apps-grid">
-          <a href="https://altit.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-            <div class="app-icon-box"><img src="logo/altit.webp" alt="Altit"></div>
-            <span class="app-name">Altitude Itinerary Analyzer</span>
-          </a>
-          <a href="https://hajj-period-planner.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-            <div class="app-icon-box"><img src="logo/hajjmens.webp" alt="HajjMens"></div>
-            <span class="app-name">Hajj Menstrual Delay Planner</span>
-          </a>
-          <a href="https://menstrual.netlify.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-            <div class="app-icon-box"><img src="logo/mens.webp" alt="Mens"></div>
-            <span class="app-name">Menstrual Cycle Predictor</span>
-          </a>
-          <a href="https://hoscode.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-            <div class="app-icon-box"><img src="logo/hospsearch.webp" alt="HospSearch"></div>
-            <span class="app-name">Thai HospSearch</span>
-          </a>
-          <a href="https://thaicda2558.vercel.app/" target="_blank" class="app-card" rel="noopener noreferrer">
-            <div class="app-icon-box"><img src="logo/thaicda2558.webp" alt="CDA2558"></div>
-            <span class="app-name">CDA 2558 App</span>
-          </a>
-          <a href="https://vpoonyak.github.io/thai-numeral-converter/" target="_blank" class="app-card" rel="noopener noreferrer">
-            <div class="app-icon-box"><img src="logo/thai-numeral-converter.png" alt="Thai Numeral"></div>
-            <span class="app-name">Thai Numeral Converter</span>
-          </a>
-        </div>
-      </div>
-
+      ))}
     </div>
-  </section>
+
+    <div class="rd-block">
+      <div class="rd-col-label" style="margin-bottom:12px">Top credentials</div>
+      <div class="rd-cred-list">
+        {credentials.map((c) => (
+          <a href={c.href} target="_blank" rel="noopener noreferrer" class="rd-cred">
+            <img src={c.img} alt="" width="36" height="36" loading="lazy">
+            <span>
+              <span class="rd-cred-name">{c.name}</span>
+              <span class="rd-cred-meta">{c.meta}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="rd-block">
+      <div class="rd-col-label" style="margin-bottom:12px">Languages</div>
+      <div class="rd-badges">
+        <span class="rd-badge">Thai — Native</span>
+        <span class="rd-badge">
+          <img src="/logo/toefl-logo.svg" alt="" class="toefl" width="34" height="15" loading="lazy" data-theme-invert="1">
+          TOEFL iBT — 91/120
+        </span>
+        <span class="rd-badge">
+          <img src="/logo/duolingo.svg" alt="" width="15" height="15" loading="lazy">
+          Duolingo English Test — 120/160
+        </span>
+      </div>
+    </div>
+  </div>
+</section>

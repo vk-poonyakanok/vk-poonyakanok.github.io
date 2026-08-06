@@ -3,36 +3,66 @@
 This repository is a static GitHub Pages portfolio for Vitchakorn Poonyakanok, built with Astro (`src/pages/`, `src/components/`, `src/layouts/`) and deployed via `npm run build` in `.github/workflows/deploy.yml`. There is no root `index.html` anymore — the homepage is `src/pages/index.astro`.
 
 ## Working Principles
-- Keep edits tightly scoped and preserve the single-file site architecture unless the user asks for a larger refactor.
-- Match the existing design language: section numbers, understated borders, compact badges, JetBrains Mono labels, and responsive wrapping.
+- Keep edits tightly scoped and preserve the component split under `src/components/` unless the user asks for a larger refactor.
+- Match the Redesign v2 design language: hairline/2px rules, outlined section numbers, JetBrains Mono labels, uppercase 900-weight display type, flat squared corners (no border-radius), and full-bleed bordered grids.
 - Use local assets when available. Do not remove hidden sections or unused assets unless explicitly requested.
-- Use `rg` for search and `apply_patch` for manual edits.
+- Use `rg` for search.
+
+## Design System (Redesign v2)
+Ported from `design/Website redesign with three directions/Redesign v2.dc.html`; the reference render is `design/Vitchakorn Redesign v2 (standalone).html`.
+
+- `src/styles/tokens.css` — the palette, imported site-wide by `Layout.astro`. Tokens are keyed on `:root` **only** — never add a bare `body { --bg: … }`. `<body>` is stamped with `data-theme` by a *deferred* script while `<html>` is stamped by a *blocking* one, so a body-level declaration beats the inherited value and repaints the page dark on every light-theme load. The standalone pages under `public/` follow the same rule and carry the same blocking bootstrap in `<head>`. It defines the v2 names (`--bg --ink --card --line --rule --muted --accent --accent-ink --chip`) **and** the legacy aliases (`--bg-card --text-primary --border` …) that `global.css` still references, so both stylesheets read the same colours. Change a colour here and it propagates everywhere.
+- `src/styles/redesign.css` — v2 page CSS. Imported by `index.astro` and `contact.astro` only.
+- `src/styles/global.css` — the older page CSS, kept for the blog. Imported by `blog/index.astro`, `BlogPost.astro`, and `404.astro`. Its token block was removed; it inherits from `tokens.css`.
+- Never import both `redesign.css` and `global.css` on the same page — they carry different base resets.
+- Nav and footer CSS live inside `Navigation.astro` / `Footer.astro` as scoped styles, so the v2 chrome renders on every page regardless of which page stylesheet is loaded.
+- The standalone HTML under `public/` (project archive, case studies, `credentials.html`) carries its own copy of the v2 tokens in a `:root` block and links `/site-chrome.css` for the same nav bar. Palette changes have to be made in both places.
+- Theme: dark by default; the toggle writes `data-theme` to both `<html>` and `<body>` and persists under the `theme` localStorage key.
 
 ## Current Visible Section Order
-1. `#about`
-2. `#experience`
-3. `#projects`
-4. `#publications`
-5. `#training`
-6. `#skills`
-7. `#contact`
+1. `#about` — 01 About
+2. `#experience` — 02 Experience
+3. `#projects` — 03 Projects
+4. `#publications` — 04 Publications
+5. `#training` — 05 Training
+6. `#skills` — 06 Capabilities
+7. `#contact` — 07 Contact
 
-The `#expertise` section exists in markup but is hidden and excluded from navigation/active-section tracking.
+Section ids and labels are the originals; the Redesign v2 kicker slot holds
+the section name rather than the source design's italic phrases ("the
+person", "the work", …). `#rolesWrap` (the 3D stage) sits between the hero
+and `#about` and is rail item `00`. The old `#expertise` section was removed.
+
+Anchor targets carry `scroll-margin-top: calc(var(--nav-h) + 2px)` (see
+`redesign.css`) because the bar is fixed — without it a jump parks the
+section header underneath it. `--nav-h` is measured and written onto
+`<html>` by `Navigation.astro`, so it tracks the bar's real height.
+
+## Roles 3D Stage
+- `public/roles3d/` is a self-contained three.js scene (`index.html` + `land-mask.js` + `thailand-dots.js` + `assets/earth-grid.bin`), embedded as an iframe by `src/components/Roles3D.astro` and driven entirely by `postMessage`.
+- Messages the host sends: `{rolesProgress: 0..1}` (scroll position through the 640vh runway), `{theme: 'dark'|'light'}`, `{paused: boolean}`. The pause flag stops the render loop once the stage leaves the viewport — without it the canvas keeps rendering for the whole rest of the page.
+- The host removes the whole section when WebGL2 is unavailable or the visitor prefers reduced motion, so the 640vh of scroll never becomes dead space.
+- three.js is **vendored** at `public/roles3d/vendor/` (`three.module.js` imports `./three.core.js` relatively, so the two must stay side by side). It used to load from unpkg; with 640vh of runway behind it, a slow or unreachable CDN meant six blank screens. Keep the page out of `customPages` in `astro.config.mjs`; it carries `robots: noindex`.
+- A live WebGL surface makes browser-extension screenshots capture stale frames. When doing visual QA, temporarily move `dist/roles3d/index.html` aside, or verify layout through `elementFromPoint` instead of trusting the screenshot.
 
 ## Content Notes
-- DigiHealth is complete. Use `Master of Science in Digital and AI Technologies in Health Systems (DigiHealth)` and the date range `2025 — 2026`.
-- The About intro should describe DigiHealth as completed, not currently pursued.
-- Travel Medicine Residency (IPM, DDC, MOPH) is complete: `2024 — 2026`, no chip. The Pattayarak Health Unit GP role (ODPC 6, DDC, MOPH) is also `2024 — 2026`, no chip — deliberately matched to `Vitchakorn_Poonyakanok_CV.tex` in the separate `~/Github/cv` repo, which states `Nov 2024 -- Jul 2026`. The engagement was on-site Nov–Dec 2024 and telephone/intermittent on-site consultation afterwards; the CV also lists a Jan–Jun 2025 syphilis surveillance study at ODPC 6, so do NOT narrow this entry to `2024` — that would contradict both the CV and that study. MSHCA at Carnegie Mellon's Heinz College is the current program — keep its `Current` chip on the `Aug 2026` entry, and describe it (not DigiHealth or Travel Medicine) as the ongoing pursuit in the About intro.
-- Training has Super AI Engineer Season 6 as a standalone section.
-- AI Practitioner is the primary visible Level 1 credential. Its public verification link is `https://mysuperai.aiat.or.th/verify/3893dd94-0ff5-464f-b26f-f8f44e655bdf`.
-- Keep Foundation AI (Theory) and the three Level 1 Minihacks inside the collapsible `Level 1 detail` block under AI Practitioner.
-- Level 1 Minihacks use public `mysuperai.aiat.or.th/verify/...` links rather than local certificate images.
-- Level 2 entries remain visible as separate online/on-site hackathon evidence, but method writeups stay inside collapsible `Method detail` blocks.
-- Additional clinical methods training is collapsed under `Additional clinical methods training`.
-- `#skills` is labeled `Capabilities` in visible UI and combines selected stack badges with a collapsed credential archive.
-- Languages are no longer a standalone section; they live as a `Languages` column inside `#skills`.
-- Desktop Projects are a four-item Top Projects grid; mobile keeps the carousel.
-- The About stats grid's "Years Clinical Practice" / "Years Data Analysis" numbers are computed at load from `data-years-since` attributes on their `.stat-number` spans (see script's "Stat Years" block), not hand-edited — update the date attribute, not the visible text, if an anchor date changes. Clinical practice anchors to the Nong Khai Hospital start date (`2019-09-09`, confirmed against `profile.yaml`); data analysis anchors to the Chiang Mai University Diploma in Clinical Statistics start (`2022-02-05`).
+- Content is sourced from the separate `~/Github/cv` repo — `Vitchakorn_Poonyakanok_CV.tex` for dates and `profile/profile.yaml` (a symlink into iCloud) for the fuller record. The `.tex` wins on dates.
+- DigiHealth is complete: `2025 — 2026`. MSHCA at Carnegie Mellon's Heinz College is the current program — `AUG 2026 — MAY 2028`, `CURRENT` chip, Royal Thai Government (DDC) scholarship — and it, not DigiHealth or Travel Medicine, is the ongoing pursuit in the About intro.
+- Travel Medicine Residency (IPM, DDC, MOPH) is `2024 — 2026`, no chip. The ODPC 6 role is also `2024 — 2026`, no chip — matched to the CV's `Nov 2024 -- Jul 2026`. The title is now **Medical Physician, Professional Level (Preventive Medicine)** (promoted 2026-04-02); both entries note the Aug 2026 academic leave. Do NOT narrow either to a single year — that would contradict the CV and the Jan–Jun 2025 syphilis surveillance study.
+- Super AI Engineer S6 selectivity is **157 of 10,457** (official AIAT figures confirmed 2026-08) — not the rounded "150 / 10,000+" that circulated earlier.
+- `#research` carries the BRIDGE-AI Summit 2026 Silver Award card first, then the two publications, then the syphilis surveillance evaluation.
+- AI Practitioner is the primary visible Level 1 credential: `https://mysuperai.aiat.or.th/verify/3893dd94-0ff5-464f-b26f-f8f44e655bdf`.
+- The Capabilities stack rows mirror the `skills` block in `profile.yaml`. React/Vite/TypeScript/Tailwind are deliberately **absent** — `profile.yaml` flags them as "present in the shipped products, not personal competencies".
+- Location and the footer clock are Pittsburgh (`America/New_York`); the zone label is derived at runtime so it reads EST/EDT correctly.
+- The hero's "Years clinical practice" / "Years data analysis" numbers are computed at load from `data-years-since` attributes (see `Hero.astro`), not hand-edited — update the date attribute, not the visible text. Clinical practice anchors to the Nong Khai Hospital start (`2019-09-09`); data analysis to the Chiang Mai University Diploma in Clinical Statistics start (`2022-02-05`).
+- Nav cells set `min-width: max-content`. The bar is `white-space: nowrap`, so a cell allowed to shrink past its text doesn't wrap — it bleeds under the next cell. Section links collapse into the dropdown at ≤1080px (the full bar needs ~1080px); the nickname goes at ≤860px and the Archive button at ≤700px. Verified clip-free from 320px to 1440px.
+- `badge/certified-in-cybersecurity-cc.1-white.png` is a **full-colour** ISC2 mark — "white" names the intended backdrop, not the artwork. It takes no chip and no inversion; inverting it rotated its hues in light mode.
+- The project and credential archive buttons live in their section headers as `.rd-section-action` (right-aligned, drops to its own line below 620px). There is no separate "Featured systems" sub-heading.
+- Monochrome logos use `data-theme-invert` (flip a black mark on the dark canvas) or `data-light-invert` (flip a white mark on the cream one).
+- Section names render as `<h2 class="rd-section-kicker">`, not `<div>` — the page otherwise has a single `h1` and no outline for crawlers or screen readers. The hero `h1` uses block `<span>`s with trailing spaces *inside* them, because Astro collapses whitespace between elements and `<br>` produced "ClinicalData,Engineered.".
+- Stack-badge icons are self-hosted at `public/logo/si/` (mirrored from Simple Icons). Don't reintroduce `cdn.simpleicons.org` — that was 23 cross-origin requests on the critical path for decorative 15px marks.
+- The standalone pages load `/site-chrome.css` **and** `/site-chrome.js`; the script measures the fixed bar and writes `--nav-h`, which the spacer and `:target` scroll-margin both read.
+- The social icon row (`SocialLinks.astro`) is all inline SVG on `currentColor` so every mark sits in the same muted grey — including Tableau, which uses the inline path rather than the colour `favicon/tableau.png`.
 
 ## Important Assets
 - DigiHealth logo: `experience/digihealth-dh.png`
@@ -75,18 +105,35 @@ Run after meaningful edits:
 
 ```bash
 git diff --check
+npx astro build
 ```
 
-Check local asset references:
+Check local asset references across the whole built site (the old one-liner read a root `index.html` that no longer exists):
 
 ```bash
-node -e "const fs=require('fs'),path=require('path'); const html=fs.readFileSync('index.html','utf8'); const attrs=[...html.matchAll(/(?:src|href)=\\\"([^\\\"]+)\\\"/g)].map(m=>m[1]); const local=attrs.filter(v=>!v.startsWith('http')&&!v.startsWith('mailto:')&&!v.startsWith('#')&&!v.startsWith('tel:')&&!v.startsWith('data:')); const missing=[]; for (const v of local){ const clean=decodeURIComponent(v.split('#')[0].split('?')[0]); if(clean && !fs.existsSync(path.join(process.cwd(),clean))) missing.push(v); } console.log(JSON.stringify({local:local.length,missing},null,2));"
+cd dist && node -e "
+const fs=require('fs'),path=require('path');
+function walk(d,acc=[]){for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name); if(e.isDirectory())walk(p,acc); else if(p.endsWith('.html'))acc.push(p);} return acc;}
+const missing=[]; let checked=0;
+for(const f of walk('.')){
+  for(const m of fs.readFileSync(f,'utf8').matchAll(/(?:src|href)=\"([^\"]+)\"/g)){
+    const v=m[1];
+    if(/^(https?:|mailto:|tel:|data:|#|\/\/)/.test(v)) continue;
+    const clean=decodeURIComponent(v.split('#')[0].split('?')[0]);
+    if(!clean) continue;
+    const base = clean.startsWith('/') ? '.'+clean : path.join(path.dirname(f), clean);
+    checked++;
+    if(!fs.existsSync(base) && !fs.existsSync(path.join(base,'index.html'))) missing.push(f+' -> '+v);
+  }
+}
+console.log('checked',checked); console.log(missing.length?missing.join('\n'):'no missing local refs');
+"
 ```
 
-For browser QA, run a localhost-only server:
+For browser QA, serve the build on localhost only:
 
 ```bash
-python3 -m http.server 8765 --bind 127.0.0.1
+cd dist && python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
-Then inspect desktop, tablet, and mobile layouts; section navigation; the Training collapsible detail; and mobile horizontal overflow.
+Then inspect desktop, tablet, and mobile layouts in both themes; the rail scrollspy; the 3D roles runway; the mobile dropdown; and mobile horizontal overflow. See the Roles 3D note above about screenshots going stale while WebGL is live.

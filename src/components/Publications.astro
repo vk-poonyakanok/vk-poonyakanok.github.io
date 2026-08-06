@@ -1,39 +1,56 @@
 ---
-// Astro Component
+const publications = [
+  {
+    href: 'https://doi.org/10.1155/jotm/9974081',
+    meta: '001 · Journal of Tropical Medicine (Wiley) · Aug 2025 · DOI 10.1155/jotm/9974081 ↗',
+    title: 'An Investigation of MMR-Related Mumps Cluster Following Immunization Among Practical Nursing Students, Bangkok, Thailand, 2024',
+    authors: 'Lertsakulbunlue S, Srithammavong D, Tepsittha K, Kanjanasombut H, Poonyakanok V, et al.',
+  },
+  {
+    href: 'https://doi.org/10.59096/wesr.v55i9.3248',
+    meta: '002 · Weekly Epidemiological Surveillance Report · Sep 2024 · DOI 10.59096/wesr.v55i9.3248 ↗',
+    title: 'Preliminary investigation and rapid response to methanol intoxication outbreak linked to illegal herbal liquor in Bangkok, August 2024',
+    authors: 'Jitpeera C, Rongdech W, Raruenroeng K, Poonyakanok V, et al.',
+  },
+];
 ---
 
-<section class="section section-alt-bg" id="publications">
-    <div class="container-grid">
-      <div class="section-header fade-in">
-        <span class="t-section-number">04</span>
-        <div>
-          <h2 class="t-label section-title">Publications</h2>
-          <div class="section-header-rule"></div>
+<section class="rd-section" id="publications">
+  <div class="rd-section-head">
+    <div class="rd-section-num">04</div>
+    <h2 class="rd-section-kicker">Publications</h2>
+  </div>
+
+  <div class="rd-body">
+    <div class="rd-research">
+      <a href="https://bridgeai2026.md.chula.ac.th/certificates/bai-d21.pdf" target="_blank" rel="noopener noreferrer" class="rd-award">
+        <div class="rd-award-kicker">AWARD · JUL 2026 · BRIDGE-AI SUMMIT 2026 ↗</div>
+        <div class="rd-award-title">2nd Place, Silver Award — Medical AI</div>
+        <div class="rd-award-body">
+          Track B (Advanced Innovator), Digital Health Innovation Competitions — Faculty of
+          Medicine, Chulalongkorn University with Weill Cornell Medicine. 2nd of 15 teams in
+          the Medical AI category, from 60 graduate-student and medical-resident teams across
+          four categories, for the AI-assisted altitude-extraction work behind altit.app.
         </div>
-      </div>
-      <div>
-        <div class="pub-item fade-in delay-1">
-          <span class="pub-number">001</span>
-          <div class="pub-title">An Investigation of MMR‐Related Mumps Cluster Following Immunization Among Practical Nursing Students, Bangkok, Thailand, 2024</div>
-          <div class="pub-journal">Journal of Tropical Medicine (Wiley) · Aug 1, 2025</div>
-          <div class="pub-doi">DOI: <a href="https://doi.org/10.1155/jotm/9974081" target="_blank" rel="noopener noreferrer">10.1155/jotm/9974081</a></div>
-          <details>
-            <summary>Show detail</summary>
-            <p class="pub-contributors"><strong>Contributors:</strong> Sethapong Lertsakulbunlue, Drunphob Srithammavong, Kamonchanok Tepsittha, Hataya Kanjanasombut, Vitchakorn Poonyakanok, Viravarn Luvira, Phimphan Pisutsan, Rachata Charoenwisedsil, Pathomthep Leowattana, Peeriya Watakulsin et al.</p>
-            <p class="pub-abstract">This study investigated a cluster of mumps-like cases among practical nursing students following MMR vaccination, identifying operational risk factors and confirming vaccine-related mumps infections through molecular analysis. Recommendations were made to improve vaccination campaign processes.</p>
-          </details>
-        </div>
-        <div class="pub-item fade-in delay-2">
-          <span class="pub-number">002</span>
-          <div class="pub-title">Preliminary investigation and rapid response to methanol intoxication outbreak linked to illegal herbal liquor in Bangkok, August 2024</div>
-          <div class="pub-journal">Weekly Epidemiological Surveillance Report (WESR) · Sep 6, 2024</div>
-          <div class="pub-doi">DOI: <a href="https://doi.org/10.59096/wesr.v55i9.3248" target="_blank" rel="noopener noreferrer">10.59096/wesr.v55i9.3248</a></div>
-          <details>
-            <summary>Show detail</summary>
-            <p class="pub-contributors"><strong>Contributors:</strong> Charuttaporn Jitpeera, Watcharapol Rongdech, Kogkawee Raruenroeng, Vitchakorn Poonyakanok, Panita Kumphon, Kawinna Kerdsalung, Rittichai Jaipong, Tatcha Manta, Thanawan Gabbhirom, Somrak Sirikhetkon, Kanyarat Jarudilokkul, Kantakarn Nilsum, Thanach Photphisutthiphong, Nattinee Isarankura, Wichan Bhunyakitikorn</p>
-            <p class="pub-abstract">As of September 3, 2024, 44 individuals were investigated under methanol intoxication outbreak related to illegal herbal liquor in Bangkok, August 2024, including 20 confirmed cases, 10 probable cases, and 8 suspected cases. Eight deaths were reported, with a gender ratio of 9.25 males per 1 female, and the median age of patients was 39 years.</p>
-          </details>
+      </a>
+
+      {publications.map((p) => (
+        <a href={p.href} target="_blank" rel="noopener noreferrer" class="rd-pub">
+          <div class="rd-pub-meta">{p.meta}</div>
+          <div class="rd-pub-title">{p.title}</div>
+          <div class="rd-pub-authors">{p.authors}</div>
+        </a>
+      ))}
+
+      <div class="rd-pub">
+        <div class="rd-pub-meta">003 · SURVEILLANCE EVALUATION · JAN — JUN 2025 · ODPC 6, DDC</div>
+        <div class="rd-pub-title">Evaluation of the Syphilis Surveillance System, ODPC 6, Pattaya, Chon Buri, Thailand</div>
+        <div class="rd-pub-authors">
+          Co-investigator. Assessed the national Digital Disease Surveillance (DDS) platform's
+          sensitivity, predictive value positive, timeliness and representativeness against the
+          CDC surveillance-evaluation framework, and recommended improvements.
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>

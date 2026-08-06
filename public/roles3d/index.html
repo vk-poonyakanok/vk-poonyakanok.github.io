@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Four Roles — Scroll 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "three": "/roles3d/vendor/three.module.js"
+  }
+}
+</script>
+<!-- three.js is vendored under vendor/ rather than pulled from unpkg: the
+     stage is 640vh of scroll runway, so a CDN that is slow or down would
+     leave the visitor scrolling six blank screens. three.module.js imports
+     ./three.core.js relatively, so both files must stay side by side. The
+     OrbitControls/OBJExporter/GLTFExporter entries the map used to carry
+     were never imported and have been dropped. -->
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #060609; color: #f5f5f7; font-family: 'Inter', 'Helvetica Neue', sans-serif; }
+  a { color: #5ea0ff; text-decoration: none; }
+  a:hover { color: #f5f5f7; }
+  body.light { background: #f5f1e8; color: #16140f; }
+  body.light .kicker, body.light a { color: #2244e0; }
+  body.light .sub { color: #59523f; }
+  body.light .num, body.light .scrollhint { color: #8a8270; }
+  #stage { position: fixed; inset: 0; z-index: 0; }
+  #stage canvas { display: block; }
+  .sec { position: relative; z-index: 1; height: 100vh; pointer-events: none; }
+  .sec.role { height: 190vh; }
+  .pin { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
+  .sec[data-side="right"] .pin { justify-content: flex-end; }
+  .sec[data-side="right"] .copy { text-align: right; }
+  .hero-center .pin { justify-content: center; text-align: center; }
+  .hero-center .copy { max-width: 780px; }
+  .copy { pointer-events: auto; max-width: 560px; padding: 44px clamp(28px, 6vw, 100px); opacity: 0; transform: translateY(24px); will-change: opacity, transform; background: radial-gradient(ellipse 105% 100% at center, rgba(6, 6, 9, 0.72) 30%, rgba(6, 6, 9, 0) 78%); }
+  body.light .copy { background: radial-gradient(ellipse 105% 100% at center, rgba(245, 241, 232, 0.8) 30%, rgba(245, 241, 232, 0) 78%); }
+  .kicker { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #5ea0ff; margin-bottom: 18px; }
+  h1 { font-family: 'Inter', sans-serif; font-weight: 900; font-size: clamp(44px, 6.5vw, 88px); line-height: 0.98; letter-spacing: -0.02em; text-transform: uppercase; }
+  h2 { font-family: 'Inter', sans-serif; font-weight: 900; font-size: clamp(34px, 4.5vw, 60px); line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 16px; }
+  .sub { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.55; color: #b9b9c2; font-weight: 400; }
+  .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5c5c66; margin-top: 22px; letter-spacing: 0.14em; }
+  .scrollhint { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 2; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #5c5c66; text-transform: uppercase; transition: opacity 0.4s; }
+  /* embed mode: parent page scrolls, we just render — sections become fixed overlays */
+  body.embed { overflow: hidden; }
+  body.embed .sec, body.embed .sec.role { position: fixed; inset: 0; height: 100vh; }
+  body.embed .scrollhint { display: none; }
+  /* clear the parent page's fixed section rail on the right */
+  body.embed .sec[data-side="right"] .copy { padding-right: 96px; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+
+<section class="sec hero-center" data-screen-label="Hero">
+  <div class="pin"><div class="copy">
+    <div class="kicker">Vitchakorn Poonyakanok</div>
+    <h1>Four roles.<br>One mission.</h1>
+    <p class="sub" style="margin-top:22px">Medicine, populations, data, and machines — turned into better health decisions.</p>
+  </div></div>
+</section>
+
+<section class="sec role" data-screen-label="Travel Medicine">
+  <div class="pin"><div class="copy">
+    <div class="kicker">Role 01</div>
+    <h2>Travel<br>Medicine</h2>
+    <p class="sub">Clinical care for people crossing borders — live routes between major cities, pre-travel risk, post-travel illness.</p>
+    <div class="num">01 / 04</div>
+  </div></div>
+</section>
+
+<section class="sec role" data-side="right" data-screen-label="Public Health">
+  <div class="pin"><div class="copy">
+    <div class="kicker">Role 02</div>
+    <h2>Public<br>Health</h2>
+    <p class="sub">Contact tracing from an index case outward — surveillance, outbreak response, and prevention at national scale.</p>
+    <div class="num">02 / 04</div>
+  </div></div>
+</section>
+
+<section class="sec role" data-screen-label="Data Analyst">
+  <div class="pin"><div class="copy">
+    <div class="kicker">Role 03</div>
+    <h2>Data<br>Analyst</h2>
+    <p class="sub">From observed history to forecast — models that project what comes next, with honest uncertainty.</p>
+    <div class="num">03 / 04</div>
+  </div></div>
+</section>
+
+<section class="sec role" style="height:240vh" data-side="right" data-screen-label="AI Engineering">
+  <div class="pin"><div class="copy">
+    <div class="kicker">Role 04</div>
+    <h2>AI<br>Engineering</h2>
+    <p class="sub">Building intelligent systems for health — LLMs, prediction models, and tools that scale clinical judgment.</p>
+    <div class="num">04 / 04</div>
+  </div></div>
+</section>
+
+<section class="sec hero-center" style="height:140vh" data-screen-label="Outro">
+  <div class="pin"><div class="copy">
+    <div class="kicker">The intersection</div>
+    <h2>Where they meet,<br>I work.</h2>
+    <p class="sub" style="margin-top:18px">Clinical data, human outcomes.</p>
+  </div></div>
+</section>
+
+<div class="scrollhint" id="hint">Scroll ↓</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { MASK_W, MASK_H, MASK_B64 } from './land-mask.js';
+import { THAI_B64 } from './thailand-dots.js';
+const maskBin = atob(MASK_B64);
+function isLand(lonDeg, latDeg) {
+  const x = Math.min(MASK_W - 1, Math.floor((lonDeg + 180) / 360 * MASK_W));
+  const y = Math.min(MASK_H - 1, Math.floor((90 - latDeg) / 180 * MASK_H));
+  const i = y * MASK_W + x;
+  return (maskBin.charCodeAt(i >> 3) >> (7 - (i & 7))) & 1;
+}
+
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x060609);
+scene.fog = new THREE.Fog(0x060609, 9, 17);
+const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 60);
+
+scene.add(new THREE.AmbientLight(0x404050, 1.2));
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(4, 6, 3); scene.add(key);
+const fill = new THREE.DirectionalLight(0x6a7dff, 0.8); fill.position.set(-5, 2, -4); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffffff, 0.9); rim.position.set(0, -3, -6); scene.add(rim);
+
+const alu  = new THREE.MeshStandardMaterial({ name: 'aluminum', color: 0xd8d8de, metalness: 0.9, roughness: 0.32 });
+const dark = new THREE.MeshStandardMaterial({ name: 'graphite', color: 0x23232b, metalness: 0.7, roughness: 0.5 });
+const mkBlue = n => new THREE.MeshStandardMaterial({ name: n, color: 0x2f81f7, metalness: 0.5, roughness: 0.35, emissive: 0x2f81f7, emissiveIntensity: 0.12 });
+const blue = mkBlue('accent-1'), blue2 = mkBlue('accent-2'), blue3 = mkBlue('accent-3'), blue4 = mkBlue('accent-4');
+const glow = new THREE.MeshStandardMaterial({ name: 'glow-white', color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.5, metalness: 0, roughness: 0.6 });
+const lineMat = new THREE.LineBasicMaterial({ color: 0x2f81f7, transparent: true, opacity: 0.45 });
+
+const pointMats = [];
+const world = new THREE.Group(); world.name = 'four-roles'; scene.add(world);
+const R = 2.3;
+const ll = (lat, lon, r) => { const la = lat * Math.PI / 180, lo = lon * Math.PI / 180; return new THREE.Vector3(Math.cos(la) * Math.sin(lo) * r, Math.sin(la) * r, Math.cos(la) * Math.cos(lo) * r); };
+
+// ---- 1. Travel Medicine: globe with major cities + live flight tracking
+const travel = new THREE.Group(); travel.name = 'travel-medicine'; travel.position.set(R, 0, 0);
+const GR = 0.58;
+// real Earth: sampled from the user's living_earth GLB into a compact 512×256
+// grid (radius + vertex color). Land relief is exaggerated; the ocean is gated
+// by the land mask and stays a perfectly smooth sphere.
+{
+  let grid = null;
+  try { grid = new Uint8Array(await (await fetch('assets/earth-grid.bin')).arrayBuffer()); } catch (e) { console.warn('earth grid missing', e); }
+  const GW = 512, GH = 256;
+  const sample = (lat, lon) => {
+    const fx = ((lon + 180) / 360) * GW - 0.5;
+    const fy = (1 - (lat + 90) / 180) * GH - 0.5;
+    const x0 = Math.floor(fx), y0 = Math.floor(fy), tx = fx - x0, ty = fy - y0;
+    const o = [0, 0, 0, 0];
+    for (let dy = 0; dy <= 1; dy++) for (let dx = 0; dx <= 1; dx++) {
+      const xi = ((x0 + dx) % GW + GW) % GW;
+      const yi = Math.min(GH - 1, Math.max(0, y0 + dy));
+      const w = (dx ? tx : 1 - tx) * (dy ? ty : 1 - ty);
+      const b = (yi * GW + xi) * 4;
+      for (let c = 0; c < 4; c++) o[c] += grid[b + c] * w;
+    }
+    return o;
+  };
+  const smoothstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const landFrac = (lat, lon) => {
+    let s = 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) s += isLand(lon + dx * 0.75, lat + dy * 0.75);
+    return s / 9;
+  };
+  const geo = new THREE.SphereGeometry(GR, 256, 128);
+  const pos = geo.attributes.position;
+  const col = new Float32Array(pos.count * 3);
+  const v = new THREE.Vector3(), c = new THREE.Color();
+  const seaC = new THREE.Color(0x16344f);
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    const r = v.length();
+    const lat = Math.asin(v.y / r) * 180 / Math.PI;
+    const lon = Math.atan2(v.x, v.z) * 180 / Math.PI;
+    const k = smoothstep(0.3, 0.7, landFrac(lat, lon)); // ocean gate: 0 at sea
+    if (grid) {
+      const [rN, r8, g8, b8] = sample(-lat, 90 - lon); // model frame: lat flipped, lon mirrored +90° (verified against the land mask)
+      const elev = Math.max(0, rN / 255 - 0.42) / 0.58;
+      v.setLength(GR + k * (0.006 + 0.055 * elev)); // land only; ocean stays spherical
+      c.setRGB(Math.min(1, r8 / 255 * 1.2), Math.min(1, g8 / 255 * 1.2), Math.min(1, b8 / 255 * 1.2));
+      c.lerp(seaC, (1 - k) * 0.88); // hide mid-ocean ridge markings — calm uniform deep blue
+    } else {
+      c.copy(seaC);
+    }
+    pos.setXYZ(i, v.x, v.y, v.z);
+    col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  geo.computeVertexNormals();
+  const globe = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ name: 'earth-relief', vertexColors: true, roughness: 0.55, metalness: 0.1 }));
+  globe.name = 'globe'; travel.add(globe);
+}
+// same major cities as the site's hero art
+const CITIES = {
+  nyc: [40.7, -74.0], la: [34.0, -118.2], lon: [51.5, -0.1], par: [48.9, 2.4],
+  fra: [50.1, 8.7], dxb: [25.3, 55.3], del: [28.6, 77.2], sin: [1.35, 103.8],
+  tyo: [35.7, 139.7], sel: [37.6, 127.0], syd: [-33.9, 151.2], nbo: [-1.3, 36.8],
+  gru: [-23.6, -46.6], ist: [41.0, 29.0], bkk: [13.75, 100.5], pit: [40.44, -80.0]
+};
+for (const [k, c] of Object.entries(CITIES)) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(k === 'bkk' || k === 'pit' ? 0.022 : 0.014, 12, 8), glow);
+  m.name = 'city-' + k; m.position.copy(ll(c[0], c[1], GR + 0.045)); travel.add(m);
+}
+// flight routes: main PIT→BKK + ambient pairs, each with a tracked plane
+const PAIRS = [['pit','bkk'], ['nyc','lon'], ['lon','dxb'], ['dxb','sin'], ['sin','tyo'], ['tyo','la'], ['par','nbo'], ['del','bkk'], ['bkk','syd'], ['gru','par'], ['ist','fra'], ['sel','sin']];
+// airliner in the reference style: lathed tapering fuselage, thin swept
+// tapered wings, underslung pod engines, swept stabilizers + fin. Nose +Z.
+function makePlane(s) {
+  const g = new THREE.Group(); g.name = 'plane';
+  // fuselage profile (radius, station) from tail tip to nose, lathed then pointed +Z
+  const prof = [[0.012, -0.78], [0.05, -0.55], [0.095, -0.32], [0.11, -0.12], [0.11, 0.3], [0.1, 0.45], [0.07, 0.58], [0.012, 0.68]]
+    .map(([r, y]) => new THREE.Vector2(r, y));
+  const fus = new THREE.Mesh(new THREE.LatheGeometry(prof, 28), glow);
+  fus.name = 'fuselage'; fus.rotation.x = Math.PI / 2; g.add(fus);
+  // swept, tapered wing (trapezoid extrusion; shape +y maps to -z = swept back)
+  const wingShape = new THREE.Shape([[0, -0.13], [0.74, 0.22], [0.74, 0.34], [0, 0.15]].map(([x, y]) => new THREE.Vector2(x, y)));
+  const wingGeo = new THREE.ExtrudeGeometry(wingShape, { depth: 0.02, bevelEnabled: false });
+  const aluDS = alu.clone(); aluDS.name = 'aluminum-wing'; aluDS.side = THREE.DoubleSide;
+  [-1, 1].forEach(side => {
+    const wing = new THREE.Mesh(wingGeo, aluDS);
+    wing.name = side < 0 ? 'wing-left' : 'wing-right';
+    wing.rotation.x = -Math.PI / 2;
+    wing.scale.set(side, 1, 1);
+    wing.position.set(0, -0.035, 0.12);
+    wing.rotation.z = -side * 0.06; // dihedral
+    g.add(wing);
+    const eng = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.054, 0.2, 14, 1, true), aluDS);
+    eng.name = side < 0 ? 'engine-left' : 'engine-right';
+    eng.rotation.x = Math.PI / 2;
+    eng.position.set(side * 0.24, -0.1, 0.18);
+    g.add(eng);
+    const stab = new THREE.Mesh(wingGeo, aluDS);
+    stab.name = side < 0 ? 'stab-left' : 'stab-right';
+    stab.rotation.x = -Math.PI / 2;
+    stab.scale.set(side * 0.38, 0.38, 1);
+    stab.position.set(0, 0.03, -0.6);
+    g.add(stab);
+  });
+  // swept vertical fin (shape +x maps to -z after the 90° yaw)
+  const finShape = new THREE.Shape([[-0.1, 0], [0.17, 0], [0.31, 0.27], [0.17, 0.27]].map(([x, y]) => new THREE.Vector2(x, y)));
+  const finGeo = new THREE.ExtrudeGeometry(finShape, { depth: 0.02, bevelEnabled: false });
+  finGeo.translate(0, 0, -0.01);
+  const fin = new THREE.Mesh(finGeo, aluDS);
+  fin.name = 'fin'; fin.rotation.y = Math.PI / 2; fin.position.set(0, 0.06, -0.56); g.add(fin);
+  g.scale.setScalar(s);
+  return g;
+}
+const flights = PAIRS.map(([a, b], idx) => {
+  const A = ll(...CITIES[a], 1), B = ll(...CITIES[b], 1);
+  const om = Math.acos(THREE.MathUtils.clamp(A.dot(B), -1, 1));
+  const pts = [];
+  for (let i = 0; i <= 48; i++) {
+    const t = i / 48, k1 = Math.sin((1 - t) * om) / Math.sin(om), k2 = Math.sin(t * om) / Math.sin(om);
+    const v = new THREE.Vector3().addScaledVector(A, k1).addScaledVector(B, k2).normalize()
+      .multiplyScalar((GR + 0.05) * (1 + (idx === 0 ? 0.13 : 0.09) * Math.sin(Math.PI * t))); // clears the raised terrain
+    pts.push(v);
+  }
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), idx === 0 ? new THREE.LineBasicMaterial({ color: 0x2f81f7, transparent: true, opacity: 0.8 }) : lineMat);
+  line.name = 'route-' + a + '-' + b; travel.add(line);
+  const plane = makePlane(idx === 0 ? 0.055 : 0.034);
+  plane.name = 'plane-' + a + '-' + b; travel.add(plane);
+  return { pts, plane, period: idx === 0 ? 7 : 4.5 + (idx % 5) * 1.3, phase: idx / PAIRS.length };
+});
+world.add(travel);
+
+// ---- 2. Public Health: Thailand dot map with contact tracing (same data as the hero art)
+const health = new THREE.Group(); health.name = 'public-health'; health.position.set(0, 0, R);
+function linkMesh(a, b, name) {
+  const d = new THREE.Vector3().subVectors(b, a);
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, d.length(), 8), alu);
+  m.name = name; m.position.copy(a).addScaledVector(d, 0.5);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize());
+  return m;
+}
+const thaiDots = [];
+{
+  const bin = atob(THAI_B64), S = 0.8;
+  const pos = [], col = [];
+  for (let i = 0; i + 2 < bin.length; i += 3) {
+    const x = (bin.charCodeAt(i) / 127.5 - 1) * 0.92 * S;
+    const y = -(bin.charCodeAt(i + 1) / 127.5 - 1) * 0.92 * S; // canvas y-down → 3D y-up
+    const tier = bin.charCodeAt(i + 2);
+    thaiDots.push({ x, y });
+    for (let r = 0; r < 3; r++) { // densify like padShape
+      pos.push(x + (Math.random() - 0.5) * 0.02, y + (Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.008);
+      const g = (0.3 + tier * 0.22) * (0.75 + Math.random() * 0.5);
+      col.push(0.184 * g, 0.506 * g, 0.968 * g);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pos), 3));
+  g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(col), 3));
+  const thaiMat = new THREE.PointsMaterial({ size: 0.016, vertexColors: true, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+  pointMats.push(thaiMat);
+  const map = new THREE.Points(g, thaiMat);
+  map.name = 'thailand-map'; health.add(map);
+}
+// trace network: index case nearest Bangkok, contacts linked to nearest predecessor
+const traceNodes = [];
+{
+  const S = 0.8, bkx = -0.11 * S, bky = 0.082 * S;
+  let best = thaiDots[0], bd = 1e9;
+  for (const d of thaiDots) { const q = (d.x - bkx) ** 2 + (d.y - bky) ** 2; if (q < bd) { bd = q; best = d; } }
+  const picked = [best];
+  for (let k = 1; k <= 12; k++) picked.push(thaiDots[(k * 107) % thaiDots.length]);
+  picked.sort((a, b) => ((a.x - bkx) ** 2 + (a.y - bky) ** 2) - ((b.x - bkx) ** 2 + (b.y - bky) ** 2));
+  picked.forEach((d, idx) => {
+    const v = new THREE.Vector3(d.x, d.y, 0.03);
+    const n = new THREE.Mesh(new THREE.SphereGeometry(idx === 0 ? 0.05 : 0.028, 14, 10), idx === 0 ? glow : blue2);
+    n.name = idx === 0 ? 'index-case' : 'contact-' + idx; n.position.copy(v); health.add(n);
+    traceNodes.push({ mesh: n, v, delay: idx * 0.55 });
+  });
+  for (let k = 1; k < traceNodes.length; k++) {
+    let bp = 0; bd = 1e9;
+    for (let m = 0; m < k; m++) {
+      const q = traceNodes[k].v.distanceToSquared(traceNodes[m].v);
+      if (q < bd) { bd = q; bp = m; }
+    }
+    const lm = linkMesh(traceNodes[bp].v, traceNodes[k].v, 'tlink-' + k);
+    lm.material = new THREE.MeshBasicMaterial({ color: 0x2f81f7, transparent: true, opacity: 0.6 });
+    health.add(lm);
+    traceNodes[k].link = lm;
+  }
+}
+const index0 = traceNodes[0].mesh;
+const pulses = [0, 1, 2].map(i => {
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.006, 8, 64),
+    new THREE.MeshBasicMaterial({ color: 0x2f81f7, transparent: true, opacity: 0.5 }));
+  ring.name = 'pulse-' + i; ring.position.copy(traceNodes[0].v); health.add(ring);
+  return { ring, phase: i / 3 };
+});
+world.add(health);
+
+// ---- 3. Data Analyst: observed bars → forecast line with uncertainty cone
+const data = new THREE.Group(); data.name = 'data-analyst'; data.position.set(-R, 0, 0);
+const base = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.06, 0.5), dark); base.name = 'chart-base'; base.position.set(0.12, -0.55, 0); data.add(base);
+const histH = [0.32, 0.52, 0.72, 0.5, 0.3, 0.55, 0.76, 0.52]; // two seasons of history
+const bars = histH.map((h, i) => {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1, 0.1), blue3);
+  b.name = 'obs-' + i; b.userData.h = h; b.position.x = -0.62 + i * 0.15;
+  data.add(b); return b;
+});
+const fGroup = new THREE.Group(); fGroup.name = 'forecast'; data.add(fGroup);
+const fx = [0.15, 0.3, 0.45], fy = [0.66, 0.84, 0.6]; // seasonal projection: rise, peak, turn down
+const lastTop = new THREE.Vector3(-0.62 + 7 * 0.15, -0.52 + histH[7], 0);
+const fPts = fx.map((x, i) => new THREE.Vector3(lastTop.x + x, -0.52 + fy[i], 0));
+const fDots = fPts.map((p, i) => {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(0.035, 14, 10), glow);
+  m.name = 'forecast-' + i; m.position.copy(p); fGroup.add(m); return m;
+});
+const fLinks = [lastTop, ...fPts].slice(0, -1).map((p, i) => {
+  const m = linkMesh(p, [lastTop, ...fPts][i + 1], 'flink-' + i); fGroup.add(m); return m;
+});
+// uncertainty cone (fan widening toward the future)
+const cone = (() => {
+  const g = new THREE.BufferGeometry();
+  const spread = [0.05, 0.14, 0.26];
+  const v = [lastTop.x, lastTop.y, 0];
+  const verts = [];
+  let prevLo = [...v], prevHi = [...v];
+  fPts.forEach((p, i) => {
+    const lo = [p.x, p.y - spread[i], 0], hi = [p.x, p.y + spread[i], 0];
+    verts.push(...prevLo, ...prevHi, ...hi, ...prevLo, ...hi, ...lo);
+    prevLo = lo; prevHi = hi;
+  });
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts), 3));
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: 0x2f81f7, transparent: true, opacity: 0.1, side: THREE.DoubleSide }));
+  m.name = 'uncertainty-cone'; fGroup.add(m); return m;
+})();
+world.add(data);
+
+// ---- 4. AI Engineering: layered MLP (3-6-6-3), rings of nodes per layer,
+// dense inter-layer connections, glowing signals travelling left → right
+const ai = new THREE.Group(); ai.name = 'ai-engineering'; ai.position.set(0, 0, -R);
+const LAYERS = [3, 6, 6, 3];
+const layerX = [-0.66, -0.22, 0.22, 0.66];
+const layerNodes = LAYERS.map((n, li) => {
+  const arr = [];
+  for (let k = 0; k < n; k++) {
+    const a = (k / n) * Math.PI * 2 + li * 0.55;
+    const r = n > 3 ? 0.34 : 0.18;
+    const v = new THREE.Vector3(layerX[li], Math.cos(a) * r, Math.sin(a) * r);
+    const m = new THREE.Mesh(new THREE.SphereGeometry(0.055, 20, 14), blue4);
+    m.name = 'node-' + li + '-' + k; m.position.copy(v); ai.add(m);
+    arr.push({ v, m });
+  }
+  return arr;
+});
+const nodes = layerNodes.flat().map(o => o.m);
+const edgeMat = new THREE.MeshStandardMaterial({ name: 'edge', color: 0x9fc0f5, metalness: 0.4, roughness: 0.45, transparent: true, opacity: 0.5 });
+for (let li = 0; li < LAYERS.length - 1; li++) {
+  layerNodes[li].forEach((a2, ia) => layerNodes[li + 1].forEach((b2, ib) => {
+    const e = linkMesh(a2.v, b2.v, 'edge-' + li + '-' + ia + '-' + ib);
+    e.material = edgeMat;
+    e.scale.x = e.scale.z = 0.5; // thin struts
+    ai.add(e);
+  }));
+}
+const signals = [];
+for (let s = 0; s < 9; s++) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(0.028, 10, 8), glow);
+  m.name = 'signal-' + s; m.scale.setScalar(0.001); ai.add(m);
+  signals.push({ m, t0: s * 0.4, path: null, dur: 1.5 });
+}
+const newPath = () => layerNodes.map(L => L[Math.floor(Math.random() * L.length)].v);
+world.add(ai);
+
+const orbitRing = new THREE.Mesh(new THREE.TorusGeometry(R, 0.007, 8, 200), dark.clone());
+orbitRing.material.color.set(0x585862);
+orbitRing.material.transparent = true;
+orbitRing.name = 'orbit-ring'; orbitRing.rotation.x = Math.PI / 2; world.add(orbitRing);
+
+// per-role unique materials so inactive roles can fade behind the active one
+const roleGroups = [travel, health, data, ai];
+roleGroups.forEach(g => {
+  const mats = [];
+  g.traverse(o => {
+    if (o.material) {
+      o.material = o.material.clone();
+      o.material.transparent = true;
+      mats.push({ m: o.material, base: o.material.opacity });
+    }
+  });
+  g.userData.mats = mats;
+});
+// re-collect point materials for theme switching (cloning replaced the originals)
+pointMats.length = 0;
+scene.traverse(o => { if (o.isPoints) pointMats.push(o.material); });
+
+// ---- Scroll choreography (gentler: farther cameras, dwell on each role)
+const V = THREE.Vector3;
+const keys = [
+  { pos: new V(0, 1.4, 7.6),     look: new V(0, 0, 0) },
+  { pos: new V(4.5, 0.4, 1.6),   look: new V(R, 0.05, 0) },
+  { pos: new V(0.55, 0.35, 4.75), look: new V(0, 0.05, R) },
+  { pos: new V(-4.5, 0.4, 1.6),  look: new V(-R, 0.05, 0) },
+  { pos: new V(-1.6, 0.4, -4.5), look: new V(0, 0.05, -R) },
+  { pos: new V(0, 2.6, 7.8),     look: new V(0, 0, 0) }
+];
+const smooth = x => x * x * (3 - 2 * x);
+const camPos = keys[0].pos.clone(), camLook = keys[0].look.clone();
+const tgtPos = new V(), tgtLook = new V();
+
+const secs = [...document.querySelectorAll('.sec')];
+const copies = secs.map(s => s.querySelector('.copy'));
+const roles = roleGroups;
+const hint = document.getElementById('hint');
+const EMBED = new URLSearchParams(location.search).has('embed');
+let extP = 0;
+function setSceneTheme(mode) {
+  const light = mode === 'light';
+  document.body.classList.toggle('light', light);
+  const bg = light ? 0xf5f1e8 : 0x060609;
+  scene.background.set(bg); scene.fog.color.set(bg);
+  orbitRing.material.color.set(light ? 0xb3ab98 : 0x585862); // visible-but-quiet in both themes
+  pointMats.forEach(m => { m.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending; m.needsUpdate = true; });
+}
+let paused = false;
+if (EMBED) {
+  document.body.classList.add('embed');
+  setSceneTheme('dark'); // matches the parent page's default theme
+  addEventListener('message', e => {
+    if (!e.data) return;
+    if (typeof e.data.rolesProgress === 'number') extP = e.data.rolesProgress;
+    if (e.data.theme) setSceneTheme(e.data.theme === 'dark' ? 'dark' : 'light');
+    // The host pins this stage for ~6 viewport heights and then scrolls past
+    // it. Without this the scene keeps rendering at full rate for the rest of
+    // the page, which is pure battery burn on a canvas nobody can see.
+    if (typeof e.data.paused === 'boolean') paused = e.data.paused;
+  });
+}
+let mx = 0, my = 0;
+addEventListener('mousemove', e => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; });
+
+// continuous section param from real section centers (sections vary in height)
+let centers = [];
+function measure() {
+  centers = secs.map(s => s.offsetTop + s.offsetHeight / 2 - innerHeight / 2);
+}
+measure();
+
+function sectionParam() {
+  if (EMBED) {
+    // non-uniform mapping: roles 04 and the outro get extra scroll length
+    const bp = [0, 0.15, 0.33, 0.51, 0.74, 1];
+    for (let k = 0; k < bp.length - 1; k++) {
+      if (extP < bp[k + 1]) return k + (extP - bp[k]) / (bp[k + 1] - bp[k]);
+    }
+    return bp.length - 2 + 1;
+  }
+  const y = scrollY;
+  if (y <= centers[0]) return 0;
+  for (let k = 0; k < centers.length - 1; k++) {
+    if (y < centers[k + 1]) return k + (y - centers[k]) / (centers[k + 1] - centers[k]);
+  }
+  return centers.length - 1;
+}
+const activation = (p, i) => Math.max(0, 1 - Math.abs(p - i));
+
+const clock = new THREE.Clock();
+function frame() {
+  if (paused) { requestAnimationFrame(frame); return; }
+  const t = clock.getElapsedTime();
+  // magnetic scroll: the param snaps toward each role and holds there,
+  // so nearby scroll positions settle onto the role
+  const raw = sectionParam();
+  const ri = Math.min(keys.length - 2, Math.floor(raw));
+  const p = ri + smooth(THREE.MathUtils.clamp(((raw - ri) - 0.26) / 0.48, 0, 1));
+  const i = Math.min(keys.length - 2, Math.floor(p));
+  const u = p - i;
+  tgtPos.lerpVectors(keys[i].pos, keys[i + 1].pos, u);
+  tgtLook.lerpVectors(keys[i].look, keys[i + 1].look, u);
+  if (p < 1) {
+    const w = 1 - p;
+    tgtPos.x += Math.sin(t * 0.22) * 0.7 * w;
+    tgtPos.z += (Math.cos(t * 0.22) - 1) * 0.4 * w;
+  }
+  tgtPos.x += mx * 0.2; tgtPos.y += -my * 0.15;
+  camPos.lerp(tgtPos, 0.07); camLook.lerp(tgtLook, 0.07);
+  camera.position.copy(camPos); camera.lookAt(camLook);
+
+  const acts = roles.map((g, r) => activation(p, r + 1));
+  const maxAct = Math.max(...acts);
+  const heroA = activation(p, 0);
+  const outroA = activation(p, keys.length - 1);
+  const overlay = Math.max(heroA, outroA);
+  // hero: fade the model under the title; outro: the four roles fly to the corners
+  const fades = acts.map(a => (1 - 0.78 * Math.max(0, maxAct - a)) * (1 - 0.72 * heroA) * (1 - 0.2 * outroA));
+  const basePos = [new V(R, 0, 0), new V(0, 0, R), new V(-R, 0, 0), new V(0, 0, -R)];
+  // corners sized from the actual view frustum so they stay on-screen on mobile
+  const hh = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 7.5;
+  const hw = hh * camera.aspect;
+  const cx = Math.min(2.6, hw * 0.58), cy = Math.min(1.35, hh * 0.42);
+  const cornerPos = [new V(-cx, cy, 0.5), new V(cx, cy, 0.5), new V(-cx, -cy, 0.5), new V(cx, -cy, 0.5)];
+  const cornerScale = Math.min(1, camera.aspect * 0.55 + 0.45);
+  const corner = smooth(outroA);
+  roles.forEach((g, r) => {
+    const a = acts[r], fade = fades[r];
+    g.position.lerpVectors(basePos[r], cornerPos[r], corner);
+    g.scale.setScalar((1 + a * 0.05) * (1 - (1 - 0.82 * cornerScale) * corner));
+    g.userData.mats.forEach(({ m, base }) => {
+      m.opacity = base * fade;
+      if (m.name && m.name.indexOf('accent') === 0) m.emissiveIntensity = 0.12 + a * 0.4;
+      if (m.name === 'glow-white') m.emissiveIntensity = (0.45 + Math.sin(t * 2.2) * 0.12) * fade;
+    });
+  });
+
+  // travel: slow spin + planes tracking their routes
+  travel.rotation.y = t * 0.16;
+  travel.updateMatrixWorld();
+  const tCenter = new THREE.Vector3();
+  travel.getWorldPosition(tCenter);
+  flights.forEach(f => {
+    const k = ((t / f.period + f.phase) % 1) * (f.pts.length - 1);
+    const i0 = Math.floor(k);
+    f.plane.position.lerpVectors(f.pts[i0], f.pts[Math.min(i0 + 1, f.pts.length - 1)], k - i0);
+    const ahead = f.pts[Math.min(i0 + 2, f.pts.length - 1)];
+    const target = travel.localToWorld(ahead.clone());
+    f.plane.up.copy(travel.localToWorld(f.plane.position.clone()).sub(tCenter).normalize());
+    f.plane.lookAt(target);
+  });
+
+  // public health: outbreak replays on the map — contacts + links appear in sequence
+  health.rotation.y = Math.sin(t * 0.3) * 0.07; // near-frontal: the map faces the viewer
+  const ha = activation(p, 2);
+  const cycle = (t % 10);
+  traceNodes.forEach((n, k) => {
+    if (k === 0) return;
+    const on = THREE.MathUtils.clamp((cycle - n.delay) / 0.4, 0, 1);
+    n.mesh.scale.setScalar(Math.max(0.001, on * (1 + Math.sin(t * 2 + k) * 0.12)));
+    if (n.link) { n.link.scale.setScalar(Math.max(0.001, on)); n.link.material.opacity = 0.6 * on * (0.4 + ha * 0.6) * fades[1]; }
+  });
+  pulses.forEach(pl => {
+    const k = (t * 0.35 + pl.phase) % 1;
+    pl.ring.scale.setScalar(0.2 + k * 4.2);
+    pl.ring.material.opacity = 0.45 * (1 - k) * (0.35 + ha * 0.65) * fades[1];
+  });
+  index0.scale.setScalar(1 + Math.sin(t * 2.4) * 0.08);
+
+  // data: faces the camera when focused; gently swings while in the background
+  const da = activation(p, 3);
+  data.rotation.y = -0.95 + Math.sin(t * 0.3) * 0.35 * (1 - da);
+  bars.forEach((b, k) => {
+    const H = Math.max(0.05, b.userData.h * (0.55 + 0.45 * Math.min(1, da * 1.5 + 0.2)) + Math.sin(t * 1.2 + k * 2.3) * 0.018 * (0.3 + da));
+    b.scale.y = H; b.position.y = -0.515 + H / 2;
+  });
+  const reveal = Math.min(1, 0.62 + da * 0.38); // prediction always visible, brightens on focus
+  fGroup.rotation.z = Math.sin(t * 4.7) * 0.014 * da;
+  fGroup.position.y = (Math.sin(t * 3.4) + 0.6 * Math.sin(t * 8.9)) * 0.016 * da;
+  fDots.forEach((m, k) => { const on = THREE.MathUtils.clamp(reveal * 4 - k, 0, 1); m.scale.setScalar(Math.max(0.001, on * (1 + Math.sin(t * 6 + k * 2) * 0.16 * da))); });
+  fLinks.forEach((m, k) => { const on = THREE.MathUtils.clamp(reveal * 4 - k, 0, 1); m.scale.setScalar(Math.max(0.001, on)); });
+  cone.material.opacity = (0.11 + 0.035 * Math.sin(t * 5.1)) * reveal * fades[2];
+
+  ai.rotation.y = -t * 0.2;
+  const aa = activation(p, 4);
+  nodes.forEach((n, k) => n.scale.setScalar(1 + Math.sin(t * 3 + k * 1.7) * 0.08 * (0.3 + aa)));
+  // signals hop layer-to-layer along random paths, then respawn
+  signals.forEach(sg => {
+    const s = (t - sg.t0) / sg.dur;
+    if (s >= 1 || !sg.path) {
+      sg.path = newPath(); sg.t0 = t + Math.random() * 0.9; sg.m.scale.setScalar(0.001);
+      return;
+    }
+    if (s < 0) return;
+    const span = sg.path.length - 1;
+    const seg = Math.min(span - 1, Math.floor(s * span));
+    sg.m.position.lerpVectors(sg.path[seg], sg.path[seg + 1], s * span - seg);
+    sg.m.scale.setScalar(0.8 + 0.6 * aa);
+  });
+  orbitRing.rotation.z = t * 0.04;
+  orbitRing.material.opacity = (1 - 0.92 * maxAct) * (1 - 0.8 * overlay); // fade while a role or overlay text is focused
+
+  copies.forEach((c, k) => {
+    const o = Math.max(0, 1 - Math.abs(p - k) * 1.8);
+    c.style.opacity = o.toFixed(3);
+    c.style.transform = `translateY(${(1 - o) * 24}px)`;
+  });
+  hint.style.opacity = p < 0.05 ? 1 : 0;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+frame();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  measure();
+});
+</script>
+</body>
+</html>

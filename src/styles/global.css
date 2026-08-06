@@ -1,81 +1,11 @@
     /* ═══════════════════════════════════════════════
-       BRAND COLORS — from original site
+       PALETTE
+       Moved to src/styles/tokens.css (Redesign v2). That file is
+       imported site-wide by Layout.astro and defines both the v2 names
+       and the legacy aliases (--bg-card/--text-primary/--border/...)
+       this stylesheet still uses, so everything below inherits the new
+       palette without being rewritten.
        ═══════════════════════════════════════════════ */
-
-    /* ── DARK THEME (Default) ── */
-    :root, [data-theme="dark"] {
-      --bg: #0d1117;
-      --bg-elevated: #0d1117;
-      --bg-card: #161b22;
-      --bg-card-hover: #1c2129;
-      --bg-code: #010409;
-      --text-primary: #e6edf3;
-      --text-secondary: #8b949e;
-      /* tertiary carries real 10-12px text (nav links, stat labels, timeline
-         locations, cert/training meta, form labels) so it must clear WCAG
-         4.5:1 against the *card* background, not just --bg, which is the
-         harder of the two. quaternary is decorative only -- bullet
-         separators, jump-nav numerals, the section-number text stroke -- and
-         is held at ~3:1 so it stays a visibly dimmer tier without pretending
-         to be body text. Anything text-like must use tertiary or above. */
-      --text-tertiary: #7d8590;
-      --text-quaternary: #5e6772;
-      --accent: #2f81f7;
-      --accent-rgb: 47, 129, 247;
-      --accent-heading: #58a6ff;
-      --accent-hover: #58a6ff;
-      --accent-muted: rgba(47, 129, 247, 0.12);
-      --accent-muted-strong: rgba(47, 129, 247, 0.22);
-      --accent-border: rgba(47, 129, 247, 0.4);
-      --border: #30363d;
-      --border-light: #21262d;
-      --rule: #30363d;
-      --dot-color: rgba(230, 237, 243, 0.025);
-      --nav-bg: rgba(13, 17, 23, 0.9);
-      --selection-bg: rgba(47, 129, 247, 0.35);
-      --success: #3fb950;
-      --success-muted: rgba(63, 185, 80, 0.14);
-      --stress: #e3b341;
-      --stress-rgb: 227, 179, 65;
-      --stress-muted: rgba(227, 179, 65, 0.12);
-      --stress-muted-strong: rgba(227, 179, 65, 0.22);
-      --stress-border: rgba(227, 179, 65, 0.4);
-      --shadow-card: 0 1px 3px rgba(0,0,0,0.3);
-    }
-
-    /* ── LIGHT THEME ── */
-    [data-theme="light"] {
-      --bg: #eef3f8;
-      --bg-elevated: #f7f9fc;
-      --bg-card: #fbfcfe;
-      --bg-card-hover: #f0f5fa;
-      --bg-code: #e8eef5;
-      --text-primary: #1f2328;
-      --text-secondary: #3f4a56;
-      --text-tertiary: #636e7c;
-      --text-quaternary: #7e8ea0;
-      --accent: #0757bd;
-      --accent-rgb: 7, 87, 189;
-      --accent-heading: #0757bd;
-      --accent-hover: #064ca8;
-      --accent-muted: rgba(7, 87, 189, 0.1);
-      --accent-muted-strong: rgba(7, 87, 189, 0.18);
-      --accent-border: rgba(7, 87, 189, 0.42);
-      --border: #b8c3cf;
-      --border-light: #d7e0e8;
-      --rule: #b8c3cf;
-      --dot-color: rgba(31, 35, 40, 0.045);
-      --nav-bg: rgba(238, 243, 248, 0.94);
-      --selection-bg: rgba(7, 87, 189, 0.22);
-      --success: #1a7f37;
-      --success-muted: rgba(26, 127, 55, 0.12);
-      --stress: #9a6700;
-      --stress-rgb: 154, 103, 0;
-      --stress-muted: rgba(154, 103, 0, 0.1);
-      --stress-muted-strong: rgba(154, 103, 0, 0.18);
-      --stress-border: rgba(154, 103, 0, 0.42);
-      --shadow-card: 0 1px 4px rgba(31, 35, 40, 0.1);
-    }
 
     /* ═══════════════════════════════════════════════
        BASE

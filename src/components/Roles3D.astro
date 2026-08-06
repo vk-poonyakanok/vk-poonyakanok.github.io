@@ -1,0 +1,95 @@
+---
+// Scroll-driven three.js stage: a 640vh scroll runway pins an iframe and
+// feeds it scroll progress, walking the camera through the four roles
+// (travel medicine → public health → data analysis → AI engineering).
+// The scene itself lives at public/roles3d/ so it can own its importmap and
+// module script without fighting Astro's bundler.
+---
+
+<section class="rd-roles" id="rolesWrap" aria-label="Four roles">
+  <div class="rd-roles-pin">
+    <iframe
+      id="roles3d"
+      src="/roles3d/?embed=1"
+      title="Four roles — travel medicine, public health, data analysis, AI engineering"
+      loading="lazy"
+    ></iframe>
+    <div class="rd-roles-hint">KEEP SCROLLING ↓</div>
+  </div>
+</section>
+
+<script>
+  const wrap = document.getElementById('rolesWrap');
+  const frame = document.getElementById('roles3d') as HTMLIFrameElement | null;
+
+  function currentTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function post(msg: Record<string, unknown>) {
+    frame?.contentWindow?.postMessage(msg, window.location.origin);
+  }
+
+  if (wrap && frame) {
+    // A tall runway with no WebGL behind it is just dead scroll, so collapse
+    // it when the scene can't render — same for reduced-motion visitors.
+    const canRender =
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      (() => {
+        try {
+          return !!document.createElement('canvas').getContext('webgl2');
+        } catch {
+          return false;
+        }
+      })();
+
+    if (!canRender) {
+      wrap.remove();
+    } else {
+      frame.addEventListener('load', () => post({ theme: currentTheme() }));
+
+      const navH = () =>
+        parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'), 10) || 57;
+
+      let paused: boolean | null = null;
+
+      function onScroll() {
+        const rect = wrap!.getBoundingClientRect();
+
+        // Stop the scene rendering once the stage has scrolled out of the
+        // viewport — it stays in the DOM for the rest of a very long page.
+        const offscreen = rect.bottom <= 0 || rect.top >= window.innerHeight;
+        if (offscreen !== paused) {
+          paused = offscreen;
+          post({ paused: offscreen });
+        }
+        if (offscreen) return;
+
+        const span = wrap!.offsetHeight - (window.innerHeight - navH());
+        if (span <= 100) return;
+        const p = Math.max(0, Math.min(1, -rect.top / span));
+        post({ rolesProgress: p, theme: currentTheme() });
+      }
+
+      let ticking = false;
+      const schedule = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          onScroll();
+        });
+      };
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule, { passive: true });
+      onScroll();
+
+      // The toggle lives in the nav and only writes the attribute, so mirror
+      // the change into the scene rather than wiring the two together.
+      new MutationObserver(() => post({ theme: currentTheme() })).observe(
+        document.documentElement,
+        { attributes: true, attributeFilter: ['data-theme'] }
+      );
+    }
+  }
+</script>

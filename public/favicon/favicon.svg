@@ -14,13 +14,13 @@
   </defs>
   <style>
     /* Default dark theme blue colors */
-    .stop-start { stop-color: #58a6ff; }
-    .stop-end { stop-color: #2f81f7; }
+    .stop-start { stop-color: #93a6ff; }
+    .stop-end { stop-color: #6d89ff; }
 
     /* Light theme blue colors */
     @media (prefers-color-scheme: light) {
-      .stop-start { stop-color: #0757bd; }
-      .stop-end { stop-color: #2f81f7; }
+      .stop-start { stop-color: #2244e0; }
+      .stop-end { stop-color: #6d89ff; }
     }
   </style>
   <path d="M 128,218 C 75,153 55,123 55,88 A 73,73 0 1,1 201,88 C 201,123 181,153 128,218 Z" fill="url(#c1-grad)" mask="url(#ma9-pin)" />

@@ -1,194 +1,281 @@
 ---
 interface Props {
   // Minimal single-row bar for content-reading pages (e.g. a blog post):
-  // logo, a "back" link, and the theme toggle only — no section links, no
-  // hamburger menu, same compact height on both mobile and desktop.
+  // brand, a "back" link, and the theme toggle only — no section links.
   compact?: boolean;
   backHref?: string;
   backLabel?: string;
-  // Omit the "Blog" item from the mobile hamburger dropdown — for the /blog
-  // listing page itself, where a link to itself is redundant.
+  // Omit the "Blog" item from the mobile dropdown — for the /blog listing
+  // page itself, where a link to itself is redundant.
   hideBlogLink?: boolean;
-  // Compact-nav only: renders a globe-icon link beside the theme toggle for
-  // switching to a blog post's other-language translation. Omitted (undefined)
-  // on every page except a blog post that has a translationSlug.
+  // Compact-nav only: a globe link to a blog post's other-language
+  // translation. Undefined on every page except a post that has one.
   translationHref?: string;
   translationLabel?: string;
   translationTitle?: string;
 }
 
-const { compact = false, backHref = '/blog', backLabel = 'Blog', hideBlogLink = false, translationHref, translationLabel, translationTitle } = Astro.props;
+const {
+  compact = false,
+  backHref = '/blog',
+  backLabel = 'Blog',
+  hideBlogLink = false,
+  translationHref,
+  translationLabel,
+  translationTitle,
+} = Astro.props;
+
+// Section anchors only mean anything on the homepage -- every other page
+// gets page links instead, so nothing in the bar points at a fragment that
+// doesn't exist on the current document.
+const isHome = Astro.url.pathname === '/';
+
+// Inline bar links: five, so the row still fits without scrolling at laptop
+// widths. The dropdown carries the full section list.
+const barSections = [
+  { id: 'about', label: 'About' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'publications', label: 'Publications' },
+  { id: 'contact', label: 'Contact' },
+];
+
+const menuSections = [
+  ...barSections.slice(0, 4),
+  { id: 'training', label: 'Training' },
+  { id: 'skills', label: 'Capabilities' },
+  { id: 'contact', label: 'Contact' },
+];
+
+// The archive and the blog both live in the fixed tail of the bar, so these
+// are only the page links that vary by context.
+const barLinks = [
+  { href: '/#top', label: 'Home' },
+  { href: '/contact', label: 'Contact' },
+];
 ---
 
-{compact ? (
-  <nav class="nav nav-compact">
-    <div class="nav-inner">
-      <div class="nav-left">
-        <a href="/#top" class="nav-logo" aria-label="Back to homepage">
-          <span class="nav-logo-dot"></span>
-        </a>
-        <a href={backHref} class="nav-action-link">← {backLabel}</a>
-      </div>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="/#top">Home</a></li>
-        <li><a href="/project/">Project Archive</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
-      <div class="nav-actions">
-        {translationHref && (
-          <a href={translationHref} class="lang-switcher" title={translationTitle}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>{translationLabel}
-          </a>
-        )}
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
-  </nav>
-) : (
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="/#top" class="nav-logo" aria-label="Back to top">
-        <span class="nav-logo-dot"></span>
-      </a>
-      <div class="nav-section-indicator" id="navSectionIndicator" aria-label="Section navigation"></div>
-      <ul class="nav-links" id="navLinks">
-        <li class="mobile-only"><a href="/#top">Home</a></li>
-        <li class="desktop-only"><a href="/#about">About</a></li>
-        <li class="desktop-only"><a href="/#experience">Experience</a></li>
-        <li class="desktop-only"><a href="/#projects">Projects</a></li>
-        <li class="desktop-only"><a href="/#publications">Research</a></li>
-        <li class="desktop-only"><a href="/#training">Training</a></li>
-        <li class="desktop-only"><a href="/#skills">Capabilities</a></li>
-        <li class="mobile-only"><a href="/project/">Project Archive</a></li>
-        {!hideBlogLink && <li class="mobile-only"><a href="/blog">Blog</a></li>}
-        <li class="mobile-only"><a href="/contact">Contact</a></li>
-      </ul>
-      <div class="nav-actions">
-        <a href="/blog" class="nav-action-link desktop-only">Blog</a>
-        <a href="/contact" class="nav-action-link desktop-only">Contact</a>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
-  </nav>
-)}
+<nav class:list={['rd-nav', compact && 'is-compact']} id="topNav">
+  <a href="/#top" class="rd-nav-brand" aria-label="Back to top">
+    <span class="rd-nav-dot"></span>
+    <span class="rd-nav-name">VITCHAKORN</span>
+    <span class="rd-nav-nick">&ldquo;Blue&rdquo;</span>
+  </a>
+
+  {compact && <a href={backHref} class="rd-nav-item is-back">← {backLabel}</a>}
+  {!compact && isHome && barSections.map((s) => (
+    <a href={`#${s.id}`} class="rd-nav-item" data-navsec={s.id}>{s.label}</a>
+  ))}
+  {!compact && !isHome && barLinks.map((l) => (
+    <a href={l.href} class="rd-nav-item">{l.label}</a>
+  ))}
+
+  <button id="menuBtn" class="rd-nav-btn rd-nav-menu" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
+    <span id="menuBtnLabel">☰ Menu</span>
+  </button>
+
+  {translationHref && (
+    <a href={translationHref} class="rd-nav-btn rd-nav-lang" title={translationTitle}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>{translationLabel}
+    </a>
+  )}
+
+  <button id="themeToggle" class="rd-nav-btn rd-nav-theme" aria-label="Toggle theme">
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+
+  <a href="/project/" class="rd-nav-cta is-secondary">Archive ↗</a>
+  <a href="/blog" class="rd-nav-cta">Blog ↗</a>
+</nav>
+
+<div class="rd-nav-spacer" id="navSpacer"></div>
+
+<div class="rd-mobile-menu" id="mobileMenu">
+  <a href="/#top">Home</a>
+  {isHome && menuSections.map((s) => <a href={`#${s.id}`}>{s.label}</a>)}
+  <a href="/project/">Project Archive</a>
+  {!hideBlogLink && <a href="/blog">Blog</a>}
+  {!isHome && <a href="/contact">Contact</a>}
+</div>
 
 <style>
-  .desktop-only {
-    display: inline-block;
-  }
-  .mobile-only {
-    display: none;
-  }
-
-  @media (max-width: 1024px) {
-    .desktop-only {
-      display: none;
-    }
-    .mobile-only {
-      display: block;
-    }
-  }
-
-  /* Compact bar stays a single fixed-height row at every viewport width —
-     nothing to wrap since there are no section links. */
-  .nav-compact .nav-inner {
-    height: 52px;
-  }
-
-  .nav-left {
+  /* Fixed single-row bar. It scrolls horizontally rather than wrapping, so
+     the 2px baseline rule under it stays one unbroken line at every width. */
+  .rd-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
     display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* Compact nav always collapses its section links behind the hamburger,
-     regardless of viewport width — unlike the full nav, which shows them
-     inline on desktop. */
-  .nav-compact .nav-links {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 52px; left: 0; right: 0;
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 20px;
-    gap: 2px;
-    box-shadow: var(--shadow-card);
-    opacity: 0;
-    transform: translateY(-8px);
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-                visibility 0.25s ease;
-  }
-  .nav-compact .nav-links.open {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-    pointer-events: auto;
-  }
-  .nav-compact .menu-toggle {
-    display: flex;
-  }
-
-  /* Matches .theme-toggle's box height so the two sit flush beside each
-     other in nav-actions; width is auto (icon + language label) rather
-     than a fixed square. */
-  .lang-switcher {
-    height: 44px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 0 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg-card);
-    color: var(--text-secondary);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    align-items: stretch;
+    border-bottom: 2px solid var(--line);
+    background: var(--bg);
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
     font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    scrollbar-width: none;
   }
-  .lang-switcher:hover {
-    border-color: var(--accent);
-    color: var(--accent-heading);
-    background: var(--accent-muted);
-    text-decoration: none;
+  .rd-nav::-webkit-scrollbar { display: none; }
+  .rd-nav a { color: inherit; text-decoration: none; }
+
+  /* min-width: max-content is load-bearing. The bar is nowrap, so a cell
+     allowed to shrink past its text doesn't wrap -- it lets the text bleed
+     under the next cell. Every cell floors at its content width and the bar
+     scrolls horizontally instead. */
+  .rd-nav-brand {
+    flex: 2 1 auto;
+    min-width: max-content;
+    padding: 14px 20px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
+  .rd-nav-brand:hover { color: var(--accent); }
+  .rd-nav-dot { width: 9px; height: 9px; background: var(--accent); display: inline-block; flex: none; }
+  .rd-nav-name { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .rd-nav-nick { font-style: italic; text-transform: none; font-weight: 400; color: var(--muted); }
+
+  .rd-nav-item {
+    flex: 1 1 auto;
+    min-width: max-content;
+    padding: 14px 16px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+  }
+  .rd-nav-item:hover { color: var(--accent); }
+  .rd-nav-item.is-active { color: var(--accent); }
+  .rd-nav-item.is-back { flex: 2; text-transform: none; }
+
+  .rd-nav-btn {
+    flex: none;
+    padding: 14px 16px;
+    border: none;
+    border-right: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .rd-nav-btn:hover { color: var(--accent); }
+  .rd-nav-theme { background: var(--chip); }
+  .rd-nav-lang { text-transform: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .rd-nav-menu { display: none; }
+
+  .rd-nav-cta {
+    flex: none;
+    padding: 14px 24px;
+    background: var(--accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+  }
+  .rd-nav-cta:hover { color: #ffffff; background: color-mix(in srgb, var(--accent) 85%, var(--ink)); }
+
+  /* Second destination beside Blog. Outlined rather than filled so the bar
+     keeps a single accent block instead of two competing ones. */
+  .rd-nav-cta.is-secondary { background: var(--bg); color: var(--ink); }
+  .rd-nav-cta.is-secondary:hover { background: var(--chip); color: var(--accent); }
+
+  .rd-nav-spacer { height: var(--nav-h); }
+
+  .rd-mobile-menu {
+    position: fixed;
+    top: var(--nav-h); left: 0; right: 0;
+    z-index: 99;
+    display: none;
+    flex-direction: column;
+    background: var(--bg);
+    border-bottom: 2px solid var(--line);
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    max-height: calc(100vh - var(--nav-h));
+    overflow-y: auto;
+  }
+  .rd-mobile-menu.is-open { display: flex; }
+  .rd-mobile-menu a { padding: 14px 24px; border-bottom: 1px solid var(--rule); color: inherit; text-decoration: none; }
+  .rd-mobile-menu a:last-child { border-bottom: none; }
+  .rd-mobile-menu a:hover { color: var(--accent); }
+
+  /* Sun/moon swap is driven by the theme attribute, not JS class toggling. */
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+  :global([data-theme="dark"]) .icon-sun { display: block; }
+  :global([data-theme="dark"]) .icon-moon { display: none; }
+
+  /* The full bar (brand + five section links + Archive + Blog) needs about
+     1080px. Below that the section links collapse into the dropdown rather
+     than letting the bar scroll and push Blog off-screen. */
+  @media (max-width: 1080px) {
+    .rd-nav-item:not(.is-back) { display: none; }
+    .rd-nav-menu { display: flex; }
+  }
+
+  @media (max-width: 860px) {
+    /* Decorative, and the first thing to go when space is tight. */
+    .rd-nav-nick { display: none; }
+  }
+
+  /* The wordmark must never truncate. Once the tail (Menu + theme + two
+     CTAs) stops leaving room for it, drop the Archive button — "Project
+     Archive" is already the third item in the dropdown, so nothing is
+     lost — and stop the brand cell from compressing below its content. */
+  @media (max-width: 700px) {
+    .rd-nav-cta.is-secondary { display: none; }
+  }
+
+  @media (max-width: 400px) {
+    .rd-nav { font-size: 12px; }
+    .rd-nav-brand { padding: 14px 14px; }
+    .rd-nav-cta { padding: 14px 16px; }
+  }
+  .rd-nav.is-compact .rd-nav-menu { display: flex; }
 </style>
 
 <script>
-    // ── Mobile Menu (only present on the full nav variant) ──
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
+  const nav = document.getElementById('topNav');
+  const spacer = document.getElementById('navSpacer');
+  const menuBtn = document.getElementById('menuBtn');
+  const menuBtnLabel = document.getElementById('menuBtnLabel');
+  const mobileMenu = document.getElementById('mobileMenu');
 
-    if (menuToggle && navLinks) {
-      menuToggle.addEventListener('click', function() {
-        const isOpen = navLinks.classList.toggle('open');
-        menuToggle.classList.toggle('open', isOpen);
-        menuToggle.setAttribute('aria-expanded', String(isOpen));
-      });
+  // The bar is fixed, so the spacer below it has to track its real height
+  // (which changes when the font loads or the viewport narrows).
+  function fitNav() {
+    if (!nav) return;
+    const h = nav.offsetHeight;
+    document.documentElement.style.setProperty('--nav-h', h + 'px');
+    if (spacer) spacer.style.height = h + 'px';
+  }
+  fitNav();
+  window.addEventListener('resize', fitNav);
+  window.addEventListener('load', fitNav);
+  if (document.fonts?.ready) document.fonts.ready.then(fitNav);
 
-      navLinks.querySelectorAll('a').forEach(function(link) {
-        link.addEventListener('click', function() {
-          navLinks.classList.remove('open');
-          menuToggle.classList.remove('open');
-          menuToggle.setAttribute('aria-expanded', 'false');
-        });
+  if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      menuBtn.setAttribute('aria-expanded', String(open));
+      if (menuBtnLabel) menuBtnLabel.textContent = open ? '✕ Close' : '☰ Menu';
+    });
+    mobileMenu.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', () => {
+        mobileMenu.classList.remove('is-open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        if (menuBtnLabel) menuBtnLabel.textContent = '☰ Menu';
       });
-    }
+    });
+  }
 </script>
