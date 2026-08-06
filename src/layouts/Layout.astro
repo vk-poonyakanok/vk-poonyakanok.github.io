@@ -161,11 +161,18 @@ const absoluteImage = image.startsWith('http') ? image : `https://vitchakorn.com
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Critical inline script to prevent theme flash (Finding 3 resolved) -->
+  <!-- Blocking on purpose: stamps the theme on <html> before first paint so
+       the page never repaints. An explicit choice (localStorage) wins;
+       otherwise follow the OS. Dark is the fallback when neither is
+       available, which also matches the tokens' bare :root values. -->
   <script is:inline>
-    (function() {
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+    (function () {
+      var theme;
+      try { theme = localStorage.getItem('theme'); } catch (e) { /* storage blocked */ }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
 </head>
@@ -184,15 +191,29 @@ const absoluteImage = image.startsWith('http') ? image : `https://vitchakorn.com
     const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
     bodyEl.setAttribute('data-theme', currentTheme);
 
+    function applyTheme(next) {
+      htmlEl.setAttribute('data-theme', next);
+      bodyEl.setAttribute('data-theme', next);
+    }
+
     if (themeToggle) {
       themeToggle.addEventListener('click', function() {
-        const current = htmlEl.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        htmlEl.setAttribute('data-theme', next);
-        bodyEl.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
+        const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        // Clicking the toggle is an explicit choice: from here on it wins
+        // over the OS setting on this device.
+        try { localStorage.setItem('theme', next); } catch (e) { /* storage blocked */ }
       });
     }
+
+    // Follow the OS if the visitor has never used the toggle, so the page
+    // tracks a system light/dark switch while they're on it.
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function (e) {
+      let saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (err) { /* storage blocked */ }
+      if (saved === 'light' || saved === 'dark') return;
+      applyTheme(e.matches ? 'light' : 'dark');
+    });
   </script>
 </body>
 </html>

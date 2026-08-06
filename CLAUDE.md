@@ -17,7 +17,7 @@ Ported from `design/Website redesign with three directions/Redesign v2.dc.html`;
 - Never import both `redesign.css` and `global.css` on the same page — they carry different base resets.
 - Nav and footer CSS live inside `Navigation.astro` / `Footer.astro` as scoped styles, so the v2 chrome renders on every page regardless of which page stylesheet is loaded.
 - The standalone HTML under `public/` (project archive, case studies, `credentials.html`) carries its own copy of the v2 tokens in a `:root` block and links `/site-chrome.css` for the same nav bar. Palette changes have to be made in both places.
-- Theme: dark by default; the toggle writes `data-theme` to both `<html>` and `<body>` and persists under the `theme` localStorage key.
+- Theme resolution, in order: an explicit choice in `localStorage.theme` → the OS `prefers-color-scheme` → dark. A blocking script in `<head>` stamps `<html>` before first paint; the deferred one mirrors it onto `<body>` and registers the toggle. Clicking the toggle is what writes `localStorage.theme`, and from then on it beats the OS on that device. While no explicit choice exists, a `matchMedia` listener follows live OS switches. All localStorage access is wrapped in try/catch (it throws in some privacy modes). The 14 standalone pages under `public/` carry the same logic inline — change both.
 
 ## Current Visible Section Order
 1. `#about` — 01 About

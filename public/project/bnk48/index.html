@@ -86,8 +86,16 @@
   <script src="/site-chrome.js" defer></script>
   <script>
     /* Blocking: stamp the theme on <html> before first paint. Tokens are
-       keyed on :root only, so <body> inherits and never repaints. */
-    (function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark');})();
+       keyed on :root only, so <body> inherits and never repaints.
+       An explicit choice wins; otherwise follow the OS. */
+    (function () {
+      var t;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
   </script>
 </head>
 <body>
@@ -152,15 +160,25 @@
     const htmlEl = document.documentElement;
     const bodyEl = document.body;
     const themeToggle = document.getElementById('themeToggle');
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    htmlEl.setAttribute('data-theme', savedTheme);
+    const savedTheme = htmlEl.getAttribute('data-theme') || 'dark';
     bodyEl.setAttribute('data-theme', savedTheme);
     themeToggle.addEventListener('click', function () {
       const current = htmlEl.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       htmlEl.setAttribute('data-theme', next);
       bodyEl.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+
+    // Follow the OS if the visitor has never used the toggle, so the page
+    // tracks a system light/dark switch while they're on it.
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function (e) {
+      var saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (err) {}
+      if (saved === 'light' || saved === 'dark') return;
+      var next = e.matches ? 'light' : 'dark';
+      htmlEl.setAttribute('data-theme', next);
+      bodyEl.setAttribute('data-theme', next);
     });
   </script>
 </body>
