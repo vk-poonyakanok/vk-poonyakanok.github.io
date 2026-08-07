@@ -244,7 +244,7 @@ img { max-width: 100%; }
 
 /* ═══ ROLES 3D STAGE ════════════════════════════════════════ */
 .rd-roles {
-  height: 280vh;
+  height: 200vh;
   border-bottom: 2px solid var(--line);
   background: var(--bg);
 }
@@ -358,6 +358,32 @@ img { max-width: 100%; }
 .rd-underline-ink { color: var(--ink); font-weight: 600; border-bottom: 2px solid var(--accent); }
 .rd-underline-ink:hover { color: var(--accent); }
 
+/* Prose under the lede. Narrower measure than the lede's 840px -- this is a
+   paragraph to read, not a statement to scan. */
+.rd-about-body {
+  font-size: clamp(16px, 1.55vw, 18px);
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 720px;
+  margin: 22px 0 0;
+}
+.rd-about-body strong { color: var(--ink); font-weight: 600; }
+
+/* The internship ask. The floating CTA carries it too, but that one has a
+   dismiss button -- this is the copy that survives being closed. */
+.rd-about-ask {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(13px, 1.3vw, 15px);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  max-width: 720px;
+  margin: 26px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--accent);
+}
+
+/* Unused since the "route here" block was replaced by prose. Kept because
+   the block is one paste away if it is ever wanted back. */
 .rd-route { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; max-width: 760px; }
 .rd-route-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: var(--muted); }
 .rd-route-row { display: flex; align-items: baseline; gap: 10px; font-size: clamp(15px, 1.5vw, 18px); color: var(--muted); }

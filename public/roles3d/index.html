@@ -14,8 +14,8 @@
 }
 </script>
 <!-- three.js is vendored under vendor/ rather than pulled from unpkg: the
-     stage is 280vh of scroll runway, so a CDN that is slow or down would
-     leave the visitor scrolling three blank screens. three.module.js imports
+     stage is 200vh of scroll runway, so a CDN that is slow or down would
+     leave the visitor scrolling two blank screens. three.module.js imports
      ./three.core.js relatively, so both files must stay side by side. The
      OrbitControls/OBJExporter/GLTFExporter entries the map used to carry
      were never imported and have been dropped. -->
@@ -483,7 +483,7 @@ if (EMBED) {
     if (!e.data) return;
     if (typeof e.data.rolesProgress === 'number') extP = e.data.rolesProgress;
     if (e.data.theme) setSceneTheme(e.data.theme === 'dark' ? 'dark' : 'light');
-    // The host pins this stage for ~3 viewport heights and then scrolls past
+    // The host pins this stage for ~2 viewport heights and then scrolls past
     // it. Without this the scene keeps rendering at full rate for the rest of
     // the page, which is pure battery burn on a canvas nobody can see.
     if (typeof e.data.paused === 'boolean') paused = e.data.paused;
@@ -522,10 +522,15 @@ function frame() {
   if (paused) { requestAnimationFrame(frame); return; }
   const t = clock.getElapsedTime();
   // magnetic scroll: the param snaps toward each role and holds there,
-  // so nearby scroll positions settle onto the role
+  // so nearby scroll positions settle onto the role. HOLD is the dead zone
+  // at each end of a segment, MOVE the travel between them; they must sum
+  // to 1 (2*HOLD + MOVE === 1). Widening HOLD makes each role settle rather
+  // than drift past, which matters most on a short runway -- at 200vh a
+  // whole segment is only ~100px, about one wheel tick. Was 0.26 / 0.48.
+  const HOLD = 0.34, MOVE = 0.32;
   const raw = sectionParam();
   const ri = Math.min(keys.length - 2, Math.floor(raw));
-  const p = ri + smooth(THREE.MathUtils.clamp(((raw - ri) - 0.26) / 0.48, 0, 1));
+  const p = ri + smooth(THREE.MathUtils.clamp(((raw - ri) - HOLD) / MOVE, 0, 1));
   const i = Math.min(keys.length - 2, Math.floor(p));
   const u = p - i;
   tgtPos.lerpVectors(keys[i].pos, keys[i + 1].pos, u);
