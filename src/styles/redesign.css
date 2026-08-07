@@ -192,6 +192,9 @@ img { max-width: 100%; }
   margin: 34px 0 0;
 }
 .rd-role-word { font-style: italic; font-weight: 500; color: var(--accent); }
+/* The row sits under the lede in the hero copy column, so it keeps the
+   lede's measure rather than running the full width of the hero. */
+.rd-hero-socials { max-width: 540px; margin-top: 26px; }
 
 .rd-hero-portrait { flex: 0 1 auto; position: relative; margin-right: clamp(12px, 6vw, 120px); margin-top: 10px; }
 .rd-hero-portrait img {
@@ -241,7 +244,7 @@ img { max-width: 100%; }
 
 /* ═══ ROLES 3D STAGE ════════════════════════════════════════ */
 .rd-roles {
-  height: 640vh;
+  height: 280vh;
   border-bottom: 2px solid var(--line);
   background: var(--bg);
 }

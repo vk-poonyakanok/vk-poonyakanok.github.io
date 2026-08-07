@@ -1,4 +1,6 @@
 ---
+import SocialLinks from './SocialLinks.astro';
+
 // Stat numbers that age are computed at load from data-years-since rather
 // than hand-edited — update the anchor date, not the visible text.
 // Clinical practice anchors to the Nong Khai Hospital start (2019-09-09);
@@ -27,6 +29,11 @@ const stats = [
       <p class="rd-hero-lede" data-sp="0.09">
         Vitchakorn <span class="rd-italic">&ldquo;Blue&rdquo;</span> Poonyakanok, MD — a physician bridging <span class="rd-role-word" id="roleSwap">travel medicine</span> into intelligent health systems.
       </p>
+
+      {/* Moved up from #about: the profile links and the email address are
+          what the page is asking a visitor to act on, so they sit above the
+          fold rather than one section down. */}
+      <SocialLinks class="rd-hero-socials" />
     </div>
 
     <div class="rd-hero-portrait" data-sp="0.05">

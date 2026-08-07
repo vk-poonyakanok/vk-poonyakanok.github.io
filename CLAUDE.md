@@ -23,15 +23,20 @@ Ported from `design/Website redesign with three directions/Redesign v2.dc.html`;
 1. `#about` — 01 About
 2. `#experience` — 02 Experience
 3. `#projects` — 03 Projects
-4. `#publications` — 04 Publications
+4. `#publications` — 04 Research & Awards (id kept; the section was renamed from "Publications" when the BRIDGE-AI award got its own `AWARDS` sub-group)
 5. `#training` — 05 Training
 6. `#skills` — 06 Capabilities
 7. `#contact` — 07 Contact
 
 Section ids and labels are the originals; the Redesign v2 kicker slot holds
 the section name rather than the source design's italic phrases ("the
-person", "the work", …). `#rolesWrap` (the 3D stage) sits between the hero
-and `#about` and is rail item `00`. The old `#expertise` section was removed.
+person", "the work", …). The old `#expertise` section was removed.
+
+The right-edge rail carries two items above the numbered sections: the hero
+(`#top`) as `00`, then `#rolesWrap` (the 3D stage) as `3D` — it isn't a
+numbered section, so it gets a marker rather than a number that would
+collide with `01`. Both ids must also appear in the `SECTIONS` array in
+`SectionRail.astro`'s script or the scrollspy skips them.
 
 Anchor targets carry `scroll-margin-top: calc(var(--nav-h) + 2px)` (see
 `redesign.css`) because the bar is fixed — without it a jump parks the
@@ -40,9 +45,9 @@ section header underneath it. `--nav-h` is measured and written onto
 
 ## Roles 3D Stage
 - `public/roles3d/` is a self-contained three.js scene (`index.html` + `land-mask.js` + `thailand-dots.js` + `assets/earth-grid.bin`), embedded as an iframe by `src/components/Roles3D.astro` and driven entirely by `postMessage`.
-- Messages the host sends: `{rolesProgress: 0..1}` (scroll position through the 640vh runway), `{theme: 'dark'|'light'}`, `{paused: boolean}`. The pause flag stops the render loop once the stage leaves the viewport — without it the canvas keeps rendering for the whole rest of the page.
-- The host removes the whole section when WebGL2 is unavailable or the visitor prefers reduced motion, so the 640vh of scroll never becomes dead space.
-- three.js is **vendored** at `public/roles3d/vendor/` (`three.module.js` imports `./three.core.js` relatively, so the two must stay side by side). It used to load from unpkg; with 640vh of runway behind it, a slow or unreachable CDN meant six blank screens. Keep the page out of `customPages` in `astro.config.mjs`; it carries `robots: noindex`.
+- Messages the host sends: `{rolesProgress: 0..1}` (scroll position through the 280vh runway), `{theme: 'dark'|'light'}`, `{paused: boolean}`. The pause flag stops the render loop once the stage leaves the viewport — without it the canvas keeps rendering for the whole rest of the page.
+- The host removes the whole section when WebGL2 is unavailable or the visitor prefers reduced motion, so the 280vh of scroll never becomes dead space.
+- three.js is **vendored** at `public/roles3d/vendor/` (`three.module.js` imports `./three.core.js` relatively, so the two must stay side by side). It used to load from unpkg; with 280vh of runway behind it, a slow or unreachable CDN meant three blank screens. Keep the page out of `customPages` in `astro.config.mjs`; it carries `robots: noindex`.
 - A live WebGL surface makes browser-extension screenshots capture stale frames. When doing visual QA, temporarily move `dist/roles3d/index.html` aside, or verify layout through `elementFromPoint` instead of trusting the screenshot.
 
 ## Content Notes
@@ -58,11 +63,11 @@ section header underneath it. `--nav-h` is measured and written onto
 - Nav cells set `min-width: max-content`. The bar is `white-space: nowrap`, so a cell allowed to shrink past its text doesn't wrap — it bleeds under the next cell. Section links collapse into the dropdown at ≤1080px (the full bar needs ~1080px); the nickname goes at ≤860px and the Archive button at ≤700px. Verified clip-free from 320px to 1440px.
 - `badge/certified-in-cybersecurity-cc.1-white.png` is a **full-colour** ISC2 mark — "white" names the intended backdrop, not the artwork. It takes no chip and no inversion; inverting it rotated its hues in light mode.
 - The project and credential archive buttons live in their section headers as `.rd-section-action` (right-aligned, drops to its own line below 620px). There is no separate "Featured systems" sub-heading.
-- Monochrome logos use `data-theme-invert` (flip a black mark on the dark canvas) or `data-light-invert` (flip a white mark on the cream one).
+- Monochrome logos use `data-theme-invert` (flip a black mark on the dark canvas) or `data-light-invert` (flip a white mark on the cream one). Check the artwork, not the filename: `logo/OpenAI-logo-white.svg` and `logo/xAI-logo.svg` carry no `fill` at all, so they render **black** and take `data-theme-invert` — the "white" in the OpenAI filename is wrong. `logo/ThaiLLM-logo-white.svg` really is `fill="white"` and takes `data-light-invert`. In `Capabilities.astro` these are the `themeInvert` / `lightInvert` flags on a stack item.
 - Section names render as `<h2 class="rd-section-kicker">`, not `<div>` — the page otherwise has a single `h1` and no outline for crawlers or screen readers. The hero `h1` uses block `<span>`s with trailing spaces *inside* them, because Astro collapses whitespace between elements and `<br>` produced "ClinicalData,Engineered.".
 - Stack-badge icons are self-hosted at `public/logo/si/` (mirrored from Simple Icons). Don't reintroduce `cdn.simpleicons.org` — that was 23 cross-origin requests on the critical path for decorative 15px marks.
 - The standalone pages load `/site-chrome.css` **and** `/site-chrome.js`; the script measures the fixed bar and writes `--nav-h`, which the spacer and `:target` scroll-margin both read.
-- The social icon row (`SocialLinks.astro`) is all inline SVG on `currentColor` so every mark sits in the same muted grey — including Tableau, which uses the inline path rather than the colour `favicon/tableau.png`.
+- The social icon row (`SocialLinks.astro`) sits in the **hero**, under the lede, not in `#about` — the profile links and the email are what the page asks a visitor to act on. It takes an optional `class` prop (the hero passes `rd-hero-socials`, which caps it to the lede's 540px measure). It is all inline SVG on `currentColor` so every mark sits in the same muted grey — including Tableau, which uses the inline path rather than the colour `favicon/tableau.png`.
 
 ## Important Assets
 - DigiHealth logo: `experience/digihealth-dh.png`

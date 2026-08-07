@@ -32,11 +32,14 @@ const isHome = Astro.url.pathname === '/';
 
 // Inline bar links: five, so the row still fits without scrolling at laptop
 // widths. The dropdown carries the full section list.
+// #publications is headed "Research & Awards" on the page; the bar and the
+// dropdown shorten it to "Research" -- the full label is ~50px wider in the
+// uppercase bar face and would push the collapse breakpoint out for no gain.
 const barSections = [
   { id: 'about', label: 'About' },
   { id: 'experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
-  { id: 'publications', label: 'Publications' },
+  { id: 'publications', label: 'Research' },
   { id: 'contact', label: 'Contact' },
 ];
 

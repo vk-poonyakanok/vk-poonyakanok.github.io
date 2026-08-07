@@ -14,8 +14,8 @@
 }
 </script>
 <!-- three.js is vendored under vendor/ rather than pulled from unpkg: the
-     stage is 640vh of scroll runway, so a CDN that is slow or down would
-     leave the visitor scrolling six blank screens. three.module.js imports
+     stage is 280vh of scroll runway, so a CDN that is slow or down would
+     leave the visitor scrolling three blank screens. three.module.js imports
      ./three.core.js relatively, so both files must stay side by side. The
      OrbitControls/OBJExporter/GLTFExporter entries the map used to carry
      were never imported and have been dropped. -->
@@ -483,7 +483,7 @@ if (EMBED) {
     if (!e.data) return;
     if (typeof e.data.rolesProgress === 'number') extP = e.data.rolesProgress;
     if (e.data.theme) setSceneTheme(e.data.theme === 'dark' ? 'dark' : 'light');
-    // The host pins this stage for ~6 viewport heights and then scrolls past
+    // The host pins this stage for ~3 viewport heights and then scrolls past
     // it. Without this the scene keeps rendering at full rate for the rest of
     // the page, which is pure battery burn on a canvas nobody can see.
     if (typeof e.data.paused === 'boolean') paused = e.data.paused;

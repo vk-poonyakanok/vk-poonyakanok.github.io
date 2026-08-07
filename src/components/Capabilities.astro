@@ -34,11 +34,14 @@ const stacks = [
   {
     title: 'LLM APIs',
     items: [
-      { label: 'GPT', img: '/logo/OpenAI-logo-white.svg', lightInvert: true },
+      // OpenAI's file is misleadingly named and xAI's carries no fill at
+      // all: both render black, so they take the dark-canvas flip, not the
+      // light-canvas one. ThaiLLM's really is fill="white".
+      { label: 'GPT', img: '/logo/OpenAI-logo-white.svg', themeInvert: true },
       { label: 'Claude', icon: '/logo/si/claude.svg' },
       { label: 'Gemini', icon: '/logo/si/googlegemini.svg' },
       { label: 'GLM', img: '/logo/Z.ai-logo.svg' },
-      { label: 'Grok', img: '/logo/xAI-logo.svg', lightInvert: true },
+      { label: 'Grok', img: '/logo/xAI-logo.svg', themeInvert: true },
       { label: 'ThaiLLM', img: '/logo/ThaiLLM-logo-white.svg', lightInvert: true },
     ],
   },
@@ -125,7 +128,7 @@ const credentials = [
             {group.items.map((item) => (
               <span class="rd-badge">
                 {item.icon && <img src={item.icon} alt="" width="15" height="15" loading="lazy">}
-                {item.img && <img src={item.img} alt="" width="15" height="15" loading="lazy" data-light-invert={item.lightInvert ? '1' : undefined}>}
+                {item.img && <img src={item.img} alt="" width="15" height="15" loading="lazy" data-light-invert={item.lightInvert ? '1' : undefined} data-theme-invert={item.themeInvert ? '1' : undefined}>}
                 {item.label}
               </span>
             ))}
