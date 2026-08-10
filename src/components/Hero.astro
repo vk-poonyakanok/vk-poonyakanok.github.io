@@ -3,13 +3,35 @@ import SocialLinks from './SocialLinks.astro';
 
 // Stat numbers that age are computed at load from data-years-since rather
 // than hand-edited — update the anchor date, not the visible text.
-// Clinical practice anchors to the Nong Khai Hospital start (2019-09-09);
-// data analysis to the CMU Diploma in Clinical Statistics start (2022-02-05).
+// Clinical practice anchors to the Nong Khai Hospital start (2019-09-09).
+//
+// These four are the first numbers a visitor sees, so they are the ones most
+// worth remembering, and every tile is plain language — the page has to work
+// for a non-technical screener as well as a hiring manager.
+//
+// Dropped: "4+ Years data analysis". It was self-asserted, unverifiable, and
+// restated the tenure claim in the tile beside it.
+//
+// "02 Publications" is peer-reviewed papers ONLY — the two with DOIs. Do not
+// raise it to 03 or 04 by folding in the syphilis surveillance evaluation
+// (filed under research_evaluations, not publications, in profile.yaml) or
+// the Saraburi manuscript (still a draft in revision with co-authors, not
+// submitted). ~/Github/cv/profile/accomplishments-log.md is explicit: don't
+// count it until accepted. Scholar and ORCID both show two.
+//
+// 157/10,457 are the official AIAT S6 figures (confirmed 2026-08).
+//
+// Every tile links somewhere. They sit in the one part of the page where a
+// visitor is most willing to act, so leaving them inert wasted the slot.
+// "12" is the archive count, matching the "/ 12" on §03's archive button.
 const stats = [
-  { since: '2019-09-09', fallback: '6+', label: 'Years clinical practice' },
-  { since: '2022-02-05', fallback: '4+', label: 'Years data analysis' },
-  { value: '02', label: 'Publications' },
-  { value: '12', label: 'Projects shipped', accent: true },
+  { since: '2019-09-09', fallback: '6+', label: 'Years clinical practice', href: '#experience' },
+  // Label lengths are tuned to the longest of the others ("Years clinical
+  // practice", 23 chars). "Selected of 10,457 · Super AI S6" ran 31 and took
+  // a third line at 390px and 760px while its neighbours took two.
+  { value: '157', label: 'Of 10,457 · Super AI S6', href: '#training' },
+  { value: '02', label: 'Publications', href: '#publications' },
+  { value: '12', label: 'Projects shipped', accent: true, href: '/project/' },
 ];
 ---
 
@@ -29,6 +51,13 @@ const stats = [
       <p class="rd-hero-lede" data-sp="0.09">
         Vitchakorn <span class="rd-italic">&ldquo;Blue&rdquo;</span> Poonyakanok, MD — a physician bridging <span class="rd-role-word" id="roleSwap">travel medicine</span> into intelligent health systems.
       </p>
+
+      {/* One primary action, pointing at the evidence rather than at
+          contact. Contact is already reachable three ways from the top fold
+          (the email below, the floating CTA, §07), and the floating CTA
+          already carries the internship one-pager -- nothing was pushing a
+          recruiter toward the work itself. */}
+      <a href="#projects" class="rd-btn rd-hero-cta">VIEW SELECTED WORK ↓</a>
 
       {/* Moved up from #about: the profile links and the email address are
           what the page is asking a visitor to act on, so they sit above the
@@ -50,14 +79,14 @@ const stats = [
 
   <div class="rd-stats">
     {stats.map((s) => (
-      <div class="rd-stat">
+      <a class="rd-stat" href={s.href}>
         <div class:list={['rd-stat-num', s.accent && 'accent']}>
           {s.since
             ? <span data-years-since={s.since}>{s.fallback}</span>
             : s.value}
         </div>
         <div class="rd-stat-label">{s.label}</div>
-      </div>
+      </a>
     ))}
   </div>
 </header>

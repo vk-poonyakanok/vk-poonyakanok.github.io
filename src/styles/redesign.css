@@ -194,7 +194,10 @@ img { max-width: 100%; }
 .rd-role-word { font-style: italic; font-weight: 500; color: var(--accent); }
 /* The row sits under the lede in the hero copy column, so it keeps the
    lede's measure rather than running the full width of the hero. */
-.rd-hero-socials { max-width: 540px; margin-top: 26px; }
+.rd-hero-socials { max-width: 540px; margin-top: 22px; }
+/* inline-flex, not the block .rd-btn default, so it shrinks to its text
+   instead of spanning the copy column. */
+.rd-hero-cta { display: inline-flex; margin-top: 30px; }
 
 .rd-hero-portrait { flex: 0 1 auto; position: relative; margin-right: clamp(12px, 6vw, 120px); margin-top: 10px; }
 .rd-hero-portrait img {
@@ -225,8 +228,12 @@ img { max-width: 100%; }
   margin-top: clamp(32px, 5vw, 64px);
   background: color-mix(in srgb, var(--bg) 82%, transparent);
 }
-.rd-stat { padding: 20px clamp(20px, 4vw, 28px); border-right: 1px solid var(--line); }
+.rd-stat { display: block; color: inherit; padding: 20px clamp(20px, 4vw, 28px); border-right: 1px solid var(--line); transition: background 0.15s ease; }
 .rd-stat:last-child { border-right: none; }
+/* Each tile is a link now, so it needs a hover state -- without one the
+   whole row reads as inert and nobody discovers it is clickable. */
+.rd-stat:hover { background: var(--chip); color: inherit; }
+.rd-stat:hover .rd-stat-label { color: var(--accent); }
 .rd-stat-num { font-weight: 900; font-size: 40px; line-height: 1.1; }
 .rd-stat-num.accent { color: var(--accent); }
 .rd-stat-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
