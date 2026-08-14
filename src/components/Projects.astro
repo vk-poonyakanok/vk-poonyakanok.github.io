@@ -61,9 +61,15 @@ const projects = [
     <a href="/project/" class="rd-btn rd-section-action">FULL PROJECT ARCHIVE / 12 ↗</a>
   </div>
 
+  {/* Below 720px the grid is a single column, so all six cards cost about
+      three screens of thumb-scrolling — a fifth of the whole page. The last
+      three carry `is-extra` and are hidden there; the section header already
+      links the full archive, so nothing becomes unreachable. Rendered either
+      way rather than sliced, so the markup a crawler sees does not depend on
+      viewport width. */}
   <div class="rd-work-grid">
-    {projects.map((p) => (
-      <a href={`/project/${p.slug}/`} class="rd-work-card">
+    {projects.map((p, i) => (
+      <a href={`/project/${p.slug}/`} class:list={['rd-work-card', i >= 3 && 'is-extra']}>
         <div class="rd-work-meta">
           <span>{p.kicker}</span>
           <span class="arrow">↗</span>

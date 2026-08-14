@@ -29,6 +29,21 @@ const year = new Date().getFullYear();
   .rd-footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
   .rd-footer a { color: inherit; text-decoration: none; }
   .rd-footer a:hover { color: var(--accent); }
+
+  /* Below 460px the auto-fit grid can only fit one 220px column, so the three
+     cells stack. Two things go wrong there: each cell keeps its border-RIGHT,
+     which stacked draws a stray 1px tick down the right edge instead of a rule
+     between rows; and three cells at 20px padding cost 167px — a fifth of a
+     phone screen for a copyright line, a clock and three links. Divide the
+     rows properly and tighten the padding. */
+  @media (max-width: 460px) {
+    .rd-footer > * {
+      padding: 13px clamp(20px, 4vw, 28px);
+      border-right: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .rd-footer > *:last-child { border-bottom: none; }
+  }
 </style>
 
 <script>

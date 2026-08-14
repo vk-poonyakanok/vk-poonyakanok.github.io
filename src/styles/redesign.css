@@ -423,8 +423,25 @@ img { max-width: 100%; }
 }
 .rd-btn-ghost:hover { border-color: var(--accent); }
 
-.rd-socials { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 30px; align-items: center; fill: currentColor; }
-.rd-socials a[title] { display: inline-flex; width: 20px; height: 20px; color: var(--muted); transition: color 0.15s ease; }
+/* The gap is 18px rather than the icons' full spacing because each link now
+   carries 6px of padding as hit area on every side — 12px of that padding
+   sits between any two icons, so they read the same distance apart as before. */
+.rd-socials { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 26px; align-items: center; fill: currentColor; }
+/* The mark stays 20px; the padding takes the tappable box to 32px square.
+   At 20px these failed WCAG 2.2's 24px target minimum on anything but the
+   spacing exception, and in the hero — where the icons are the page's main
+   call to action — a thumb-sized target matters more than the technicality. */
+.rd-socials a[title] {
+  display: inline-flex;
+  box-sizing: content-box;
+  width: 20px; height: 20px;
+  padding: 6px;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+/* Kaggle's glyph is far narrower than the rest; widen its padding so its hit
+   box matches its neighbours instead of being 8px short. */
+.rd-socials a[title].is-narrow { width: 12px; padding-left: 10px; padding-right: 10px; }
 .rd-socials a[title]:hover { color: var(--accent); }
 .rd-socials svg { width: 100%; height: 100%; }
 .rd-socials a[title] img { width: 100%; height: 100%; object-fit: contain; }
@@ -509,6 +526,12 @@ img { max-width: 100%; }
   transition: background 0.2s ease;
 }
 .rd-work-card:hover { background: var(--card); color: inherit; }
+/* One column below 720px (the grid's 340px minmax), where six cards run to
+   about three screens. Show the first three and let the archive button in the
+   section header carry the rest. */
+@media (max-width: 720px) {
+  .rd-work-card.is-extra { display: none; }
+}
 .rd-work-meta {
   display: flex;
   justify-content: space-between;
@@ -651,7 +674,11 @@ img { max-width: 100%; }
   color: var(--ink);
   padding: 12px 14px;
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
+  /* 16px is a hard floor, not a style choice: iOS Safari zooms the page in
+     when a focused field is smaller than this, and does not zoom back out
+     afterwards, so tapping the name field leaves the visitor stranded on a
+     magnified page. It was 15px. */
+  font-size: 16px;
 }
 .rd-form textarea { resize: vertical; }
 .rd-form input:focus,
