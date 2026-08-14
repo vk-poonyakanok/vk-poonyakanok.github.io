@@ -604,6 +604,13 @@ img { max-width: 100%; }
   margin-top: 16px;
 }
 .rd-verify:hover { background: var(--accent); color: var(--accent-ink); }
+/* Two actions side by side: the row owns the top margin so the links don't
+   stack their own, and wraps to a second line on narrow viewports. */
+.rd-verify-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.rd-verify-row .rd-verify { margin-top: 0; }
+/* Secondary action — a team page, subordinate to the issuing-body credential. */
+.rd-verify-alt { color: var(--muted); border-color: var(--rule); }
+.rd-verify-alt:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
 /* ═══ CAPABILITIES ══════════════════════════════════════════ */
 .rd-stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px 40px; }
