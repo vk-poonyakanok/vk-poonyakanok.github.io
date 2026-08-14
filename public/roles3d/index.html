@@ -45,12 +45,71 @@
   .sub { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.55; color: #b9b9c2; font-weight: 400; }
   .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5c5c66; margin-top: 22px; letter-spacing: 0.14em; }
   .scrollhint { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 2; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #5c5c66; text-transform: uppercase; transition: opacity 0.4s; }
-  /* embed mode: parent page scrolls, we just render — sections become fixed overlays */
+  /* ── Embed mode: the whole proposition on one screen ──────────────────────
+     The host gives this stage a single 100vh section with no scroll runway,
+     so there is no beat-by-beat walk through the roles: the camera parks on
+     the last keyframe, where all four sit at the corners, and all four
+     labels show at once. A visitor skimming a portfolio should be able to
+     read the whole span in one glance instead of scrolling two screens for
+     it. The sequential .sec copy blocks below are the standalone page only. */
   body.embed { overflow: hidden; }
-  body.embed .sec, body.embed .sec.role { position: fixed; inset: 0; height: 100vh; }
+  body.embed .sec { display: none; }
   body.embed .scrollhint { display: none; }
-  /* clear the parent page's fixed section rail on the right */
-  body.embed .sec[data-side="right"] .copy { padding-right: 96px; }
+  body.embed .grid { display: grid; }
+
+  /* Four lanes, one role each, in both modes -- only the axis changes. The
+     scene reads these cells back out of the DOM and drops each model into the
+     empty half of its own lane, so the models can never overlap each other or
+     their labels however the lanes end up sized. */
+  .grid {
+    display: none;
+    position: fixed; inset: 0; z-index: 2;
+    pointer-events: none;
+    padding: clamp(16px, 3vw, 44px);
+    /* The host page's fixed section rail sits against the right edge, and its
+       active item shows a text label, not just the number chip. */
+    padding-right: clamp(76px, 9vw, 132px);
+    /* Portrait: four rows, model on the left of each, label on the right. */
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    align-items: center;
+  }
+  .gcell { max-width: none; padding-left: 44%; }
+  .gk { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5ea0ff; }
+  .gt { font-family: 'Inter', sans-serif; font-weight: 900; font-size: clamp(17px, 2vw, 28px); line-height: 1.03; letter-spacing: -0.02em; text-transform: uppercase; margin: 7px 0; }
+  .gs { font-size: clamp(11.5px, 1vw, 14px); line-height: 1.45; color: #b9b9c2; }
+  body.light .gk { color: #2244e0; }
+  body.light .gs { color: #59523f; }
+
+  /* Landscape only — in portrait every row is spoken for. */
+  .gmid {
+    display: none;
+    position: fixed; left: 50%; top: clamp(14px, 3.5vh, 34px);
+    transform: translateX(-50%);
+    z-index: 2; text-align: center; pointer-events: none;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase; color: #5c5c66;
+  }
+  body.embed.cols .gmid { display: block; }
+  /* ── Landscape: four columns, label under each model ───────────────────
+     body.cols is set by the scene, so the model layout and this can never
+     disagree about which mode is in force. */
+  body.embed.cols .grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    align-items: end;
+    gap: clamp(10px, 1.8vw, 26px);
+    padding-bottom: clamp(18px, 3.5vh, 44px);
+  }
+  body.embed.cols .gcell { padding-left: 0; }
+
+  /* Portrait is already narrow; the rail is thinner there and the section
+     links have collapsed into the host's dropdown. */
+  @media (max-width: 700px) {
+    .grid { padding-right: clamp(20px, 5vw, 52px); }
+    .gcell { padding-left: 42%; }
+    .gt { margin: 5px 0; }
+  }
 </style>
 </head>
 <body>
@@ -107,6 +166,35 @@
     <p class="sub" style="margin-top:18px">Clinical data, human outcomes.</p>
   </div></div>
 </section>
+
+<!-- Embed-only overlay. Cell order matches the cornerPos array in the render
+     loop (top-left, top-right, bottom-left, bottom-right), so each label sits
+     in the same quadrant as the role it names. Copy is deliberately shorter
+     than the .sec blocks above: four of these are read at once, not one at a
+     time. -->
+<div class="grid" id="cornerGrid">
+  <div class="gcell">
+    <div class="gk">Role 01</div>
+    <div class="gt">Travel<br>Medicine</div>
+    <div class="gs">Care for people crossing borders — pre-travel risk, post-travel illness.</div>
+  </div>
+  <div class="gcell">
+    <div class="gk">Role 02</div>
+    <div class="gt">Public<br>Health</div>
+    <div class="gs">Surveillance and outbreak response, from index case to national scale.</div>
+  </div>
+  <div class="gcell">
+    <div class="gk">Role 03</div>
+    <div class="gt">Data<br>Analyst</div>
+    <div class="gs">From observed history to forecast, with honest uncertainty.</div>
+  </div>
+  <div class="gcell">
+    <div class="gk">Role 04</div>
+    <div class="gt">AI<br>Engineering</div>
+    <div class="gs">LLMs and prediction models that scale clinical judgment.</div>
+  </div>
+</div>
+<div class="gmid">Where they meet, I work</div>
 
 <div class="scrollhint" id="hint">Scroll ↓</div>
 
@@ -429,6 +517,11 @@ const orbitRing = new THREE.Mesh(new THREE.TorusGeometry(R, 0.007, 8, 200), dark
 orbitRing.material.color.set(0x585862);
 orbitRing.material.transparent = true;
 orbitRing.name = 'orbit-ring'; orbitRing.rotation.x = Math.PI / 2; world.add(orbitRing);
+// The ring reads as an orbit the four roles sit on, which is true of the
+// scroll sequence but not of the embedded composition -- there the roles are
+// laid out in lanes and the ring is just a stray ellipse cutting across all
+// four of them.
+orbitRing.visible = !new URLSearchParams(location.search).has('embed');
 
 // per-role unique materials so inactive roles can fade behind the active one
 const roleGroups = [travel, health, data, ai];
@@ -461,12 +554,40 @@ const smooth = x => x * x * (3 - 2 * x);
 const camPos = keys[0].pos.clone(), camLook = keys[0].look.clone();
 const tgtPos = new V(), tgtLook = new V();
 
+// The four models are nothing like the same size at scale 1 -- the globe with
+// its flight arcs is far bigger than the chart -- so one shared scale either
+// leaves some tiny or lets others collide with their neighbours. Measure each
+// once so every model can be fitted to its own slot.
+//
+// Measured from the vertices rather than from a bounding box, because what is
+// needed is the extent swept as the model spins about its own Y axis. A
+// bounding sphere is the box's half-DIAGONAL, which for a roughly cubic model
+// is about 1.7x its real width and shrinks everything by that much; a box's
+// half-width is the opposite error, too small the moment a wide model turns
+// side-on. This is the exact swept radius: the furthest any vertex gets from
+// the spin axis, and separately the furthest above or below the origin. It
+// walks every vertex once at startup and is never recomputed.
+scene.updateMatrixWorld(true);
+const roleFit = roleGroups.map(g => {
+  const v = new THREE.Vector3();
+  let radial2 = 0, half = 0;
+  g.traverse(o => {
+    const pos = o.geometry?.attributes?.position;
+    if (!pos) return;
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).sub(g.position);
+      radial2 = Math.max(radial2, v.x * v.x + v.z * v.z);
+      half = Math.max(half, Math.abs(v.y));
+    }
+  });
+  return { r: Math.max(0.001, Math.sqrt(radial2)), h: Math.max(0.001, half) };
+});
+
 const secs = [...document.querySelectorAll('.sec')];
 const copies = secs.map(s => s.querySelector('.copy'));
 const roles = roleGroups;
 const hint = document.getElementById('hint');
 const EMBED = new URLSearchParams(location.search).has('embed');
-let extP = 0;
 function setSceneTheme(mode) {
   const light = mode === 'light';
   document.body.classList.toggle('light', light);
@@ -481,10 +602,12 @@ if (EMBED) {
   setSceneTheme('dark'); // matches the parent page's default theme
   addEventListener('message', e => {
     if (!e.data) return;
-    if (typeof e.data.rolesProgress === 'number') extP = e.data.rolesProgress;
+    // rolesProgress is no longer read: the embedded stage is a fixed
+    // composition, not a scroll sequence. A host that still sends it is
+    // harmless.
     if (e.data.theme) setSceneTheme(e.data.theme === 'dark' ? 'dark' : 'light');
-    // The host pins this stage for ~2 viewport heights and then scrolls past
-    // it. Without this the scene keeps rendering at full rate for the rest of
+    // The host shows this stage for one screen and then scrolls past it.
+    // Without this the scene keeps rendering at full rate for the rest of
     // the page, which is pure battery burn on a canvas nobody can see.
     if (typeof e.data.paused === 'boolean') paused = e.data.paused;
   });
@@ -499,15 +622,14 @@ function measure() {
 }
 measure();
 
+// The last keyframe is the one that puts all four roles at the corners.
+const CORNER_P = keys.length - 1;
+
 function sectionParam() {
-  if (EMBED) {
-    // non-uniform mapping: roles 04 and the outro get extra scroll length
-    const bp = [0, 0.15, 0.33, 0.51, 0.74, 1];
-    for (let k = 0; k < bp.length - 1; k++) {
-      if (extP < bp[k + 1]) return k + (extP - bp[k]) / (bp[k + 1] - bp[k]);
-    }
-    return bp.length - 2 + 1;
-  }
+  // Embedded, this is a fixed composition rather than a scroll sequence --
+  // the host section is one screen tall and has no runway to walk through.
+  // The scene stays alive through the idle animation and mouse parallax.
+  if (EMBED) return CORNER_P;
   const y = scrollY;
   if (y <= centers[0]) return 0;
   for (let k = 0; k < centers.length - 1; k++) {
@@ -516,6 +638,109 @@ function sectionParam() {
   return centers.length - 1;
 }
 const activation = (p, i) => Math.max(0, 1 - Math.abs(p - i));
+
+// Landscape shows the four roles as columns, portrait as a 2x2. The <body>
+// class is the single source of truth for which: the label grid is laid out
+// in CSS and the models in WebGL, and if those two disagreed the labels would
+// name the wrong shapes. Threshold is just above square.
+// Driven by resize, NOT by the render loop: the host pauses this scene
+// whenever it scrolls out of view, so anything decided inside frame() simply
+// stops being decided. A viewport that changed while the stage was offscreen
+// -- a phone rotating, a window dragged wider -- would then come back with
+// the previous layout still applied, and with slots measured against it.
+let colsApplied = null;
+function applyLayout() {
+  const cols = EMBED && camera.aspect >= 1.15;
+  if (cols !== colsApplied) {
+    colsApplied = cols;
+    document.body.classList.toggle('cols', cols);
+  }
+  measureLanes();
+}
+
+// Each role gets a slot: the part of its lane the label does not occupy --
+// above the text in column mode, left of it in row mode. Read back off the
+// laid-out DOM rather than recomputing the grid's padding and gap maths here,
+// because two copies of that arithmetic drift apart the first time either is
+// touched. Slots are disjoint by construction, so a model fitted inside its
+// own slot cannot collide with another model or with any label.
+// Cached; re-read on resize, on layout flip, and once the webfont settles.
+let slots = null;
+function measureLanes() {
+  const cells = [...document.querySelectorAll('.gcell')];
+  if (!EMBED || cells.length !== 4) { slots = null; return; }
+  const grid = document.querySelector('.grid');
+
+  // Centre models and labels together as one block. With the labels simply
+  // pinned to the floor, every pixel a model does not use piles up above it
+  // and the composition looks like it is sitting in the bottom of the screen
+  // with a hole over its head. Sizing the block first and splitting the
+  // leftover evenly puts equal air above and below. Measured with the
+  // override cleared, so repeated calls do not compound.
+  grid.style.paddingBottom = '';
+  if (colsApplied) {
+    const r0 = cells[0].getBoundingClientRect(), r1 = cells[1].getBoundingClientRect();
+    const pitch = Math.abs((r1.left + r1.width / 2) - (r0.left + r0.width / 2));
+    const labelH = Math.max(...cells.map(c => c.getBoundingClientRect().height));
+    const block = pitch * 0.94 + 26 + labelH;
+    grid.style.paddingBottom = Math.max(18, (innerHeight - block) / 2) + 'px';
+  }
+
+  const mid = document.querySelector('.gmid');
+  const midBottom = colsApplied && mid && getComputedStyle(mid).display !== 'none'
+    ? mid.getBoundingClientRect().bottom + 14
+    : 0;
+  const rects = cells.map(c => c.getBoundingClientRect());
+  // The lane a model may use is the full pitch between neighbours, not the
+  // cell box: the grid gap belongs to the text, and spending it there too
+  // would shrink every model for no reason.
+  const pitch = colsApplied
+    ? Math.abs((rects[1].left + rects[1].width / 2) - (rects[0].left + rects[0].width / 2))
+    : Math.abs((rects[1].top + rects[1].height / 2) - (rects[0].top + rects[0].height / 2));
+
+  slots = cells.map((c, i) => {
+    const cell = rects[i];
+    // The kicker's left/top edge is where the text block actually begins.
+    const text = c.querySelector('.gk').getBoundingClientRect();
+    if (colsApplied) {
+      // The band is the model's own height sitting just above the label, not
+      // all the room there happens to be: a model centred in the leftover
+      // space drifts away from the text it belongs to, and the gap reopens
+      // wherever the block does not fill the screen.
+      const bottom = text.top - 12;
+      const h = Math.max(0, Math.min(pitch, bottom - midBottom));
+      return { cx: (cell.left + cell.width / 2) / innerWidth,
+               cy: (bottom - h / 2) / innerHeight,
+               w: pitch / innerWidth,
+               h: h / innerHeight };
+    }
+    const right = text.left - 10;
+    return { cx: (right / 2) / innerWidth,
+             cy: (cell.top + cell.height / 2) / innerHeight,
+             w: Math.max(0, right) / innerWidth,
+             h: pitch / innerHeight };
+  });
+}
+
+// The outbreak pulses expand outward from the index case, and they are the one
+// thing the fit measurement cannot see: they are measured at rest and then
+// animated well past that, which let them spill into the neighbouring lanes.
+// Cap the expansion at the model's own measured radius so a pulse dies at the
+// edge of the map it belongs to. The torus is authored at radius 0.2, so the
+// scale needed to reach radius r is r / 0.2.
+const RING_SPAN = EMBED ? Math.max(0.8, (roleFit[1].r * 0.95) / 0.2 - 0.2) : 4.2;
+
+// Exact screen-fraction -> world position on the plane the models sit in.
+// Casts a ray through the camera and intersects it with z = MODEL_Z, so it
+// respects the camera's tilt and its perspective divide.
+const MODEL_Z = 0.5;
+const _ndc = new V(), _dir = new V();
+function planePoint(fx, fy) {
+  _ndc.set(fx * 2 - 1, -(fy * 2 - 1), 0.5).unproject(camera);
+  _dir.copy(_ndc).sub(camera.position).normalize();
+  const t = (MODEL_Z - camera.position.z) / _dir.z;
+  return camera.position.clone().add(_dir.multiplyScalar(t));
+}
 
 const clock = new THREE.Clock();
 function frame() {
@@ -540,7 +765,11 @@ function frame() {
     tgtPos.x += Math.sin(t * 0.22) * 0.7 * w;
     tgtPos.z += (Math.cos(t * 0.22) - 1) * 0.4 * w;
   }
-  tgtPos.x += mx * 0.2; tgtPos.y += -my * 0.15;
+  // Skipped when embedded: the models are pinned to DOM labels, so they
+  // recompute against the camera every frame and would simply cancel any
+  // camera drift -- work that buys a parallax nobody can see, and risks
+  // the models jittering against text that does not move.
+  if (!EMBED) { tgtPos.x += mx * 0.2; tgtPos.y += -my * 0.15; }
   camPos.lerp(tgtPos, 0.07); camLook.lerp(tgtLook, 0.07);
   camera.position.copy(camPos); camera.lookAt(camLook);
 
@@ -548,24 +777,65 @@ function frame() {
   const maxAct = Math.max(...acts);
   const heroA = activation(p, 0);
   const outroA = activation(p, keys.length - 1);
-  const overlay = Math.max(heroA, outroA);
+  // Both dimmers exist to let big centred overlay text read through the
+  // scene. Embedded there is no such text -- the labels sit out at the four
+  // corners -- so the models and the ring stay at full strength instead of
+  // permanently dimmed to the outro's 80%.
+  // 0.55 rather than 0: with nothing to read through, the ring would sit at
+  // full strength, and in light mode that is a hard dark ellipse across the
+  // middle of the composition.
+  const overlay = EMBED ? 0.55 : Math.max(heroA, outroA);
+  const outroDim = EMBED ? 1 : 1 - 0.2 * outroA;
   // hero: fade the model under the title; outro: the four roles fly to the corners
-  const fades = acts.map(a => (1 - 0.78 * Math.max(0, maxAct - a)) * (1 - 0.72 * heroA) * (1 - 0.2 * outroA));
+  const fades = acts.map(a => (1 - 0.78 * Math.max(0, maxAct - a)) * (1 - 0.72 * heroA) * outroDim);
   const basePos = [new V(R, 0, 0), new V(0, 0, R), new V(-R, 0, 0), new V(0, 0, -R)];
-  // corners sized from the actual view frustum so they stay on-screen on mobile
+  // Everything below is sized off the real view frustum rather than fixed
+  // world units, so the composition holds from a phone to a wide monitor.
   const hh = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 7.5;
   const hw = hh * camera.aspect;
+
+  // The standalone page's closing beat: a modest 2x2, unchanged.
   const cx = Math.min(2.6, hw * 0.58), cy = Math.min(1.35, hh * 0.42);
-  const cornerPos = [new V(-cx, cy, 0.5), new V(cx, cy, 0.5), new V(-cx, -cy, 0.5), new V(cx, -cy, 0.5)];
-  const cornerScale = Math.min(1, camera.aspect * 0.55 + 0.45);
+  let spread = [new V(-cx, cy, 0.5), new V(cx, cy, 0.5), new V(-cx, -cy, 0.5), new V(cx, -cy, 0.5)];
+  let spreadScale = 0.82 * Math.min(1, camera.aspect * 0.55 + 0.45);
+
+  if (EMBED && slots) {
+    // Embedded this is the whole composition rather than a closing flourish,
+    // so each model is grown to fill its own slot rather than sharing one
+    // scale. 0.94 pushes them as large as they can go while still leaving a
+    // hair of air, so neighbours never quite touch.
+    //
+    // Slots are measured in screen fractions and converted by unprojecting
+    // through the camera onto the models' plane. Doing that arithmetically
+    // from the frustum half-width instead looks equivalent and is not: this
+    // camera sits above its target and tilts down, so world Y and screen Y
+    // are not proportional and every model lands low.
+    spread = slots.map(s => planePoint(s.cx, s.cy));
+    spreadScale = slots.map((s, r) => {
+      const wide = planePoint(s.cx - s.w / 2, s.cy).distanceTo(planePoint(s.cx + s.w / 2, s.cy));
+      const tall = planePoint(s.cx, s.cy - s.h / 2).distanceTo(planePoint(s.cx, s.cy + s.h / 2));
+      const f = roleFit[r];
+      // Every model's longest dimension is fitted to the same target, rather
+      // than each being grown until it touches its own slot. Fitting per-axis
+      // looks fairer and is not: the lanes are tall and narrow, so a tall
+      // model like the Thailand map fills the height while a round one fills
+      // only the width, and they end up looking wildly different sizes even
+      // though each is "filling its lane". One target keeps them a family.
+      return Math.min(wide, tall) * 0.94 / Math.max(2 * f.r, 2 * f.h);
+    });
+  }
+
   const corner = smooth(outroA);
   roles.forEach((g, r) => {
     const a = acts[r], fade = fades[r];
-    g.position.lerpVectors(basePos[r], cornerPos[r], corner);
-    g.scale.setScalar((1 + a * 0.05) * (1 - (1 - 0.82 * cornerScale) * corner));
+    g.position.lerpVectors(basePos[r], spread[r], corner);
+    const sc = Array.isArray(spreadScale) ? spreadScale[r] : spreadScale;
+    g.scale.setScalar((1 + a * 0.05) * THREE.MathUtils.lerp(1, sc, corner));
     g.userData.mats.forEach(({ m, base }) => {
       m.opacity = base * fade;
-      if (m.name && m.name.indexOf('accent') === 0) m.emissiveIntensity = 0.12 + a * 0.4;
+      // No role is "the focused one" in the embedded composition, so give
+      // them all the mid-range glow rather than the unfocused 0.12.
+      if (m.name && m.name.indexOf('accent') === 0) m.emissiveIntensity = EMBED ? 0.3 : 0.12 + a * 0.4;
       if (m.name === 'glow-white') m.emissiveIntensity = (0.45 + Math.sin(t * 2.2) * 0.12) * fade;
     });
   });
@@ -587,7 +857,10 @@ function frame() {
 
   // public health: outbreak replays on the map — contacts + links appear in sequence
   health.rotation.y = Math.sin(t * 0.3) * 0.07; // near-frontal: the map faces the viewer
-  const ha = activation(p, 2);
+  // Same reason as the chart below: with every role on screen at once none
+  // is the focused one, so they would all animate at their dimmed
+  // background intensity. Embedded, each reads at full presence.
+  const ha = EMBED ? 1 : activation(p, 2);
   const cycle = (t % 10);
   traceNodes.forEach((n, k) => {
     if (k === 0) return;
@@ -597,14 +870,27 @@ function frame() {
   });
   pulses.forEach(pl => {
     const k = (t * 0.35 + pl.phase) % 1;
-    pl.ring.scale.setScalar(0.2 + k * 4.2);
+    pl.ring.scale.setScalar(0.2 + k * RING_SPAN);
     pl.ring.material.opacity = 0.45 * (1 - k) * (0.35 + ha * 0.65) * fades[1];
   });
   index0.scale.setScalar(1 + Math.sin(t * 2.4) * 0.08);
 
-  // data: faces the camera when focused; gently swings while in the background
-  const da = activation(p, 3);
-  data.rotation.y = -0.95 + Math.sin(t * 0.3) * 0.35 * (1 - da);
+  // data: faces the camera when focused; gently swings while in the background.
+  //
+  // Embedded there is no "focused" role, so this used to sit permanently at
+  // the background angle -- swinging ~20 degrees off a 54-degree yaw, which
+  // reads as a jiggle and hides the forecast. It also stayed at the
+  // background's partial reveal, so the third projected point and most of the
+  // uncertainty cone never appeared. Both are wrong here: this is the one
+  // model whose whole point is legible, and a chart is planar, so any large
+  // rotation puts it edge-on for half of every turn. It now yaws to face the
+  // camera in whichever lane it has been placed, keeps a slight sway for
+  // life, and renders fully: whole bars, all three forecast points, and the
+  // full uncertainty cone.
+  const da = EMBED ? 1 : activation(p, 3);
+  data.rotation.y = EMBED
+    ? Math.atan2(data.position.x - camera.position.x, camera.position.z - data.position.z) + Math.sin(t * 0.25) * 0.1
+    : -0.95 + Math.sin(t * 0.3) * 0.35 * (1 - da);
   bars.forEach((b, k) => {
     const H = Math.max(0.05, b.userData.h * (0.55 + 0.45 * Math.min(1, da * 1.5 + 0.2)) + Math.sin(t * 1.2 + k * 2.3) * 0.018 * (0.3 + da));
     b.scale.y = H; b.position.y = -0.515 + H / 2;
@@ -617,7 +903,7 @@ function frame() {
   cone.material.opacity = (0.11 + 0.035 * Math.sin(t * 5.1)) * reveal * fades[2];
 
   ai.rotation.y = -t * 0.2;
-  const aa = activation(p, 4);
+  const aa = EMBED ? 1 : activation(p, 4);
   nodes.forEach((n, k) => n.scale.setScalar(1 + Math.sin(t * 3 + k * 1.7) * 0.08 * (0.3 + aa)));
   // signals hop layer-to-layer along random paths, then respawn
   signals.forEach(sg => {
@@ -652,7 +938,12 @@ addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
   measure();
+  applyLayout();
 });
+// Lane centres shift once the webfont swaps in; without this the models stay
+// aligned to the fallback metrics.
+document.fonts?.ready.then(applyLayout);
+applyLayout();
 </script>
 </body>
 </html>

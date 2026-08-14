@@ -146,6 +146,19 @@ img { max-width: 100%; }
   justify-content: center;
 }
 .rd-float-cta.is-dismissed { display: none; }
+
+/* The 3D stage puts a role label in each of the four corners, and this card
+   sits on top of the bottom-right one. Roles3D.astro adds this class while
+   the stage covers the viewport, so the card steps aside for that one screen
+   rather than the composition being laid out around it. */
+.rd-float-cta {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.rd-float-cta.is-behind {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
 @media (max-width: 700px) {
   .rd-float-cta { max-width: 220px; padding: 10px 14px; }
   .rd-float-cta .cta-title { font-size: 14px; }
@@ -251,7 +264,7 @@ img { max-width: 100%; }
 
 /* ═══ ROLES 3D STAGE ════════════════════════════════════════ */
 .rd-roles {
-  height: 200vh;
+  height: 100vh;
   border-bottom: 2px solid var(--line);
   background: var(--bg);
 }
@@ -262,17 +275,11 @@ img { max-width: 100%; }
   overflow: hidden;
 }
 .rd-roles-pin iframe { width: 100%; height: 100%; border: none; display: block; pointer-events: none; }
-.rd-roles-hint {
-  position: absolute;
-  right: clamp(20px, 5vw, 64px);
-  bottom: 26px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: #5c5c66;
-  opacity: 0.8;
-}
-/* Reduced motion / no-WebGL fallback: collapse the tall scroll stage. */
+/* .rd-roles-hint ("KEEP SCROLLING ↓") is gone: the stage is one screen with
+   no runway, so there was nothing left to scroll through and the hint was
+   telling the visitor to do something pointless. */
+
+/* Reduced motion / no-WebGL fallback: collapse the stage. */
 .rd-roles.is-static { height: auto; }
 .rd-roles.is-static .rd-roles-pin { position: static; height: auto; }
 

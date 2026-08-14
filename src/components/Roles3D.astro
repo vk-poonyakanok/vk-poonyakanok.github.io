@@ -1,20 +1,32 @@
 ---
-// Scroll-driven three.js stage: a 200vh scroll runway pins an iframe and
-// feeds it scroll progress, walking the camera through the four roles
-// (travel medicine → public health → data analysis → AI engineering).
-// The scene itself lives at public/roles3d/ so it can own its importmap and
-// module script without fighting Astro's bundler.
+// One-screen three.js stage showing all four roles at once, each in its own
+// corner (travel medicine → public health → data analysis → AI engineering).
+//
+// This used to be a 640vh scroll runway that walked the camera through the
+// roles one at a time; a visitor skimming a portfolio does not have six
+// screens of scrolling to spend before reaching a single credential. The
+// scene already computed a four-corner arrangement as its closing keyframe,
+// so the embedded view now parks there and the runway is gone. The scene
+// keeps itself alive with idle animation and mouse parallax instead of
+// scroll. public/roles3d/ still walks the sequence when opened directly.
+//
+// The scene lives at public/roles3d/ so it can own its importmap and module
+// script without fighting Astro's bundler.
 ---
 
 <section class="rd-roles" id="rolesWrap" aria-label="Four roles">
   <div class="rd-roles-pin">
+    {/* index.html is spelled out rather than relying on the directory to
+        resolve: `astro dev` serves public/ files at their exact path and does
+        not fall back to index.html for a directory, so `/roles3d/?embed=1`
+        renders the site's own 404 page inside this frame during local
+        development. The built site resolves either form. */}
     <iframe
       id="roles3d"
-      src="/roles3d/?embed=1"
+      src="/roles3d/index.html?embed=1"
       title="Four roles — travel medicine, public health, data analysis, AI engineering"
       loading="lazy"
     ></iframe>
-    <div class="rd-roles-hint">KEEP SCROLLING ↓</div>
   </div>
 </section>
 
@@ -48,27 +60,35 @@
     } else {
       frame.addEventListener('load', () => post({ theme: currentTheme() }));
 
-      const navH = () =>
-        parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'), 10) || 57;
+      // The floating CTA is pinned bottom-right, which is exactly where the
+      // stage puts its fourth role label. Rather than lay the composition out
+      // around it, hide it for the one screen the stage owns.
+      const cta = document.getElementById('floatCta');
 
       let paused: boolean | null = null;
+      let behind: boolean | null = null;
 
       function onScroll() {
         const rect = wrap!.getBoundingClientRect();
 
         // Stop the scene rendering once the stage has scrolled out of the
-        // viewport — it stays in the DOM for the rest of a very long page.
+        // viewport — it stays in the DOM for the rest of the page. This is
+        // the only thing scroll still drives here; the composition itself is
+        // fixed, so there is no progress to report.
         const offscreen = rect.bottom <= 0 || rect.top >= window.innerHeight;
         if (offscreen !== paused) {
           paused = offscreen;
           post({ paused: offscreen });
         }
-        if (offscreen) return;
 
-        const span = wrap!.offsetHeight - (window.innerHeight - navH());
-        if (span <= 100) return;
-        const p = Math.max(0, Math.min(1, -rect.top / span));
-        post({ rolesProgress: p, theme: currentTheme() });
+        // Half the viewport, not "visible at all" — otherwise the card blinks
+        // out while the stage is still only a sliver at the edge.
+        const shown = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+        const covering = shown / window.innerHeight > 0.5;
+        if (covering !== behind) {
+          behind = covering;
+          cta?.classList.toggle('is-behind', covering);
+        }
       }
 
       let ticking = false;
