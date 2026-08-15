@@ -512,10 +512,18 @@ img { max-width: 100%; }
 }
 
 /* ═══ WORK ══════════════════════════════════════════════════ */
-.rd-work { border-bottom: 2px solid var(--line); overflow: hidden; }
+/* inline-size containment so the grid's own width, not the viewport's, drives
+   the four-column card reveal below. */
+.rd-work { border-bottom: 2px solid var(--line); overflow: hidden; container-type: inline-size; }
 .rd-work-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  /* Four columns maximum. Below 1360px the 340px term wins and the track count
+     is the plain auto-fit one (1 / 2 / 3); past it the 25% term takes over, so
+     more width makes the cards wider instead of opening a fifth column the
+     eight-card list could not fill. auto-fit only collapses tracks that are
+     empty in every row, so an under-filled last row shows as holes — the card
+     count has to match the column count, and this caps what it must match. */
+  grid-template-columns: repeat(auto-fit, minmax(max(340px, 25%), 1fr));
   margin: 0 -1px -1px 0;
 }
 .rd-work-card {
@@ -526,11 +534,25 @@ img { max-width: 100%; }
   transition: background 0.2s ease;
 }
 .rd-work-card:hover { background: var(--card); color: inherit; }
-/* One column below 720px (the grid's 340px minmax), where six cards run to
-   about three screens. Show the first three and let the archive button in the
-   section header carry the rest. */
-@media (max-width: 720px) {
+/* Cards 4-6 are dropped only in the single-column layout, where six of them
+   run to about three screens; the archive button in the section header carries
+   the rest. The threshold is 678px, not 720px: two columns open at a 680px
+   grid (679px viewport, since the -1px right margin makes the grid 1px wider),
+   and hiding them anywhere above that left three cards in a two-column row. */
+@media (max-width: 678px) {
   .rd-work-card.is-extra { display: none; }
+}
+
+/* Cards 7-8 exist to fill the second row once the grid reaches four columns,
+   which happens at a 1360px grid — 1359px of container, the grid being 1px
+   wider via its negative right margin. The switch is a container query rather
+   than a media query on purpose: it then measures the same width auto-fit
+   does, so a classic scrollbar cannot reveal eight cards into a grid that only
+   had room for three columns. Browsers without container queries keep them
+   hidden and show the six-card layout. */
+.rd-work-card.is-wide-extra { display: none; }
+@container (min-width: 1359px) {
+  .rd-work-card.is-wide-extra { display: block; }
 }
 .rd-work-meta {
   display: flex;

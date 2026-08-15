@@ -1,7 +1,12 @@
 ---
-// Top six of the twelve case studies under public/project/. Slugs, thumbs
+// Top eight of the twelve case studies under public/project/. Slugs, thumbs
 // and hrefs must stay in sync with public/project/index.html (the archive
 // listing) and the customPages list in astro.config.mjs.
+//
+// The count is tied to the grid: the last two only render once the grid runs
+// four columns, where six cards would leave two holes in the second row. Keep
+// the total at eight — the grid is capped at four columns precisely so no
+// width can open a fifth one that the list cannot fill.
 const projects = [
   {
     slug: 'ddschatbot',
@@ -51,6 +56,22 @@ const projects = [
     alt: 'Cirrhosis survival prediction notebook',
     desc: 'Multi-class ensemble prediction (XGBoost/LightGBM) with engineered clinical features.',
   },
+  {
+    slug: 'hajjmens',
+    kicker: 'P.07 — CLINICAL PLANNING TOOL',
+    title: 'Hajj Menstrual Delay Planner',
+    thumb: '/project/hajjmens/hajjmens-thumb.webp',
+    alt: 'Hajj menstrual delay planner calendar view',
+    desc: 'Counseling tool overlaying predicted cycles, Hajj ritual days and medication lead time on one Hijri/Gregorian calendar — entirely client-side, no health data leaves the browser.',
+  },
+  {
+    slug: 'cda2558',
+    kicker: 'P.08 — LEGAL REFERENCE',
+    title: 'CDA 2558 App',
+    thumb: '/project/cda2558/cda2558-thumb.webp',
+    alt: "Communicable Disease Act B.E. 2558 interactive reader",
+    desc: "Searchable reader for Thailand's Communicable Disease Act B.E. 2558, with Thai and Arabic numerals interchangeable so a section reference resolves either way. Unofficial, educational.",
+  },
 ];
 ---
 
@@ -61,15 +82,17 @@ const projects = [
     <a href="/project/" class="rd-btn rd-section-action">FULL PROJECT ARCHIVE / 12 ↗</a>
   </div>
 
-  {/* Below 720px the grid is a single column, so all six cards cost about
-      three screens of thumb-scrolling — a fifth of the whole page. The last
-      three carry `is-extra` and are hidden there; the section header already
-      links the full archive, so nothing becomes unreachable. Rendered either
-      way rather than sliced, so the markup a crawler sees does not depend on
-      viewport width. */}
+  {/* Two visibility tiers, both driven by how many columns the grid can open,
+      so a row is never left with holes:
+        `is-extra`      — cards 4-6, dropped in the single-column layout where
+                          six cards cost about three screens of thumb-scrolling.
+        `is-wide-extra` — cards 7-8, added only at four columns.
+      The section header links the full archive, so nothing hidden becomes
+      unreachable. All eight are rendered and hidden in CSS rather than sliced
+      out, so the markup a crawler sees does not depend on viewport width. */}
   <div class="rd-work-grid">
     {projects.map((p, i) => (
-      <a href={`/project/${p.slug}/`} class:list={['rd-work-card', i >= 3 && 'is-extra']}>
+      <a href={`/project/${p.slug}/`} class:list={['rd-work-card', i >= 3 && i < 6 && 'is-extra', i >= 6 && 'is-wide-extra']}>
         <div class="rd-work-meta">
           <span>{p.kicker}</span>
           <span class="arrow">↗</span>
