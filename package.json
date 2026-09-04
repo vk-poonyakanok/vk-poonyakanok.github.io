@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "thai:apply-word-joins": "node scripts/apply-thai-word-joins.mjs",
+    "roles3d:earth-grid": "node scripts/roles3d-earth-grid.mjs",
     "thai:audit": "node scripts/thai-word-audit.mjs",
     "preview": "astro preview",
     "astro": "astro"

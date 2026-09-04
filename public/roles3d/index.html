@@ -5,7 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Four Roles — Scroll 3D</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- The label overlay is the only thing that wants these faces, and the
+     canvas behind it is what a visitor is actually waiting on -- but a
+     stylesheet <link> blocks script execution, so loading it normally held
+     the whole scene behind two round trips to Google. media="print" makes it
+     non-blocking; the onload promotes it the moment it lands. Weights are
+     only those actually used: 900 for the headings, 400 for everything else.
+     No italic. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <script type="importmap">
 {
   "imports": {
@@ -13,12 +21,35 @@
   }
 }
 </script>
-<!-- three.js is vendored under vendor/ rather than pulled from unpkg: the
-     stage is 200vh of scroll runway, so a CDN that is slow or down would
-     leave the visitor scrolling two blank screens. three.module.js imports
+<!-- three.js is vendored under vendor/ rather than pulled from unpkg: a CDN
+     that is slow or down would leave the stage blank. three.module.js imports
      ./three.core.js relatively, so both files must stay side by side. The
      OrbitControls/OBJExporter/GLTFExporter entries the map used to carry
-     were never imported and have been dropped. -->
+     were never imported and have been dropped.
+
+     Both files are the r184 release builds run through esbuild --minify:
+     2.07 MB / 418 KB gzipped as shipped by three, 752 KB / 194 KB after. To
+     re-vendor, copy build/three.module.js and build/three.core.js out of the
+     three npm package and run, for each:
+
+       npx esbuild <file> --minify --format=esm --legal-comments=none \
+         --banner:js='/*! three.js r184 | ... | MIT */' --outfile=<file>
+
+     Nothing here imports a specifier three's own build does not resolve, so
+     minifying does not change what has to sit beside what. -->
+<!-- The grid is the one dependency the browser would otherwise not hear about
+     until the module had downloaded, parsed and run, so it is announced here
+     instead. as="image" because that is how loadEarthGrid() asks for it; a
+     mismatch there downloads the file twice.
+
+     Do NOT add rel="modulepreload" for the vendored three files. It looks
+     like the obvious next step -- it would collapse the index.html -> module
+     -> three.module.js -> three.core.js chain into one round trip -- but
+     inside this frame it stops the inline module from ever executing, with no
+     error logged anywhere: the stage stays blank. Any one of the four hints
+     is enough to trigger it, and the frame is lazy-loaded, which appears to
+     be the ingredient a bare test page is missing. -->
+<link rel="preload" as="image" href="/roles3d/assets/earth-grid.png">
 <style>
   * { box-sizing: border-box; margin: 0; }
   body { background: #060609; color: #f5f5f7; font-family: 'Inter', 'Helvetica Neue', sans-serif; }
@@ -82,9 +113,12 @@
   body.light .gs { color: #59523f; }
 
   /* Landscape only — in portrait every row is spoken for. */
+  /* Inset scales with width, not height: the host sizes its section to the
+     height this composition reports, so anything here measured in vh would
+     change the answer the moment the answer was applied. */
   .gmid {
     display: none;
-    position: fixed; left: 50%; top: clamp(14px, 3.5vh, 34px);
+    position: fixed; left: 50%; top: clamp(14px, 2.4vw, 34px);
     transform: translateX(-50%);
     z-index: 2; text-align: center; pointer-events: none;
     font-family: 'JetBrains Mono', monospace; font-size: 11px;
@@ -99,7 +133,7 @@
     grid-template-rows: 1fr;
     align-items: end;
     gap: clamp(10px, 1.8vw, 26px);
-    padding-bottom: clamp(18px, 3.5vh, 44px);
+    padding-bottom: clamp(18px, 3vw, 44px);
   }
   body.embed.cols .gcell { padding-left: 0; }
 
@@ -243,14 +277,21 @@ const ll = (lat, lon, r) => { const la = lat * Math.PI / 180, lo = lon * Math.PI
 // ---- 1. Travel Medicine: globe with major cities + live flight tracking
 const travel = new THREE.Group(); travel.name = 'travel-medicine'; travel.position.set(R, 0, 0);
 const GR = 0.58;
-// real Earth: sampled from the user's living_earth GLB into a compact 512×256
-// grid (radius + vertex color). Land relief is exaggerated; the ocean is gated
-// by the land mask and stays a perfectly smooth sphere.
+// real Earth: sampled from the user's living_earth GLB into a compact grid
+// (radius + vertex color), shipped as assets/earth-grid.png -- see
+// scripts/roles3d-earth-grid.mjs for the layout and why it is a PNG. Land
+// relief is exaggerated; the ocean is gated by the land mask and stays a
+// perfectly smooth sphere.
+//
+// The globe is built twice: once immediately as a smooth sea-coloured sphere,
+// and again with relief and colour once the grid arrives. This used to be a
+// top-level await, which meant the entire stage -- all four models, not just
+// the globe -- waited on the single heaviest download on the page before it
+// drew anything at all.
+let shadeGlobe = null;
 {
-  let grid = null;
-  try { grid = new Uint8Array(await (await fetch('assets/earth-grid.bin')).arrayBuffer()); } catch (e) { console.warn('earth grid missing', e); }
-  const GW = 512, GH = 256;
-  const sample = (lat, lon) => {
+  const GW = 256, GH = 128;
+  const sample = (grid, lat, lon) => {
     const fx = ((lon + 180) / 360) * GW - 0.5;
     const fy = (1 - (lat + 90) / 180) * GH - 0.5;
     const x0 = Math.floor(fx), y0 = Math.floor(fy), tx = fx - x0, ty = fy - y0;
@@ -273,30 +314,68 @@ const GR = 0.58;
   const geo = new THREE.SphereGeometry(GR, 256, 128);
   const pos = geo.attributes.position;
   const col = new Float32Array(pos.count * 3);
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   const v = new THREE.Vector3(), c = new THREE.Color();
   const seaC = new THREE.Color(0x16344f);
-  for (let i = 0; i < pos.count; i++) {
-    v.fromBufferAttribute(pos, i);
-    const r = v.length();
-    const lat = Math.asin(v.y / r) * 180 / Math.PI;
-    const lon = Math.atan2(v.x, v.z) * 180 / Math.PI;
-    const k = smoothstep(0.3, 0.7, landFrac(lat, lon)); // ocean gate: 0 at sea
-    if (grid) {
-      const [rN, r8, g8, b8] = sample(-lat, 90 - lon); // model frame: lat flipped, lon mirrored +90° (verified against the land mask)
-      const elev = Math.max(0, rN / 255 - 0.42) / 0.58;
-      v.setLength(GR + k * (0.006 + 0.055 * elev)); // land only; ocean stays spherical
-      c.setRGB(Math.min(1, r8 / 255 * 1.2), Math.min(1, g8 / 255 * 1.2), Math.min(1, b8 / 255 * 1.2));
-      c.lerp(seaC, (1 - k) * 0.88); // hide mid-ocean ridge markings — calm uniform deep blue
-    } else {
-      c.copy(seaC);
+
+  // Safe to run twice because the no-grid pass writes each vertex back at the
+  // radius it already had: the second pass still reads an undisplaced sphere.
+  shadeGlobe = (grid) => {
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i);
+      const r = v.length();
+      const lat = Math.asin(v.y / r) * 180 / Math.PI;
+      const lon = Math.atan2(v.x, v.z) * 180 / Math.PI;
+      const k = smoothstep(0.3, 0.7, landFrac(lat, lon)); // ocean gate: 0 at sea
+      if (grid) {
+        const [rN, r8, g8, b8] = sample(grid, -lat, 90 - lon); // model frame: lat flipped, lon mirrored +90° (verified against the land mask)
+        const elev = Math.max(0, rN / 255 - 0.42) / 0.58;
+        v.setLength(GR + k * (0.006 + 0.055 * elev)); // land only; ocean stays spherical
+        c.setRGB(Math.min(1, r8 / 255 * 1.2), Math.min(1, g8 / 255 * 1.2), Math.min(1, b8 / 255 * 1.2));
+        c.lerp(seaC, (1 - k) * 0.88); // hide mid-ocean ridge markings — calm uniform deep blue
+      } else {
+        c.copy(seaC);
+      }
+      pos.setXYZ(i, v.x, v.y, v.z);
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
     }
-    pos.setXYZ(i, v.x, v.y, v.z);
-    col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
-  }
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  geo.computeVertexNormals();
+    pos.needsUpdate = true;
+    geo.attributes.color.needsUpdate = true;
+    geo.computeVertexNormals();
+  };
+  shadeGlobe(null);
+
   const globe = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ name: 'earth-relief', vertexColors: true, roughness: 0.55, metalness: 0.1 }));
   globe.name = 'globe'; travel.add(globe);
+}
+
+// Pulls the two stacked planes back out of earth-grid.png into the RGBA-ish
+// byte layout sample() reads: [relief, r, g, b] per texel. Decoding through a
+// canvas is a few milliseconds on a 256x256 image, and it happens off the
+// critical path either way.
+async function loadEarthGrid() {
+  // Loaded as an <img>, not fetch(): the <link rel="preload" as="image"> in
+  // the head only satisfies an image request, and a fetch() would go and
+  // download the whole thing a second time.
+  const img = new Image();
+  img.src = 'assets/earth-grid.png';
+  await img.decode();
+  const bmp = await createImageBitmap(img);
+  const GW = bmp.width, GH = bmp.height / 2;
+  const cv = document.createElement('canvas');
+  cv.width = bmp.width; cv.height = bmp.height;
+  const ctx = cv.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(bmp, 0, 0);
+  const src = ctx.getImageData(0, 0, bmp.width, bmp.height).data;
+  bmp.close?.();
+  const grid = new Uint8Array(GW * GH * 4);
+  for (let i = 0; i < GW * GH; i++) {
+    grid[i * 4] = src[(GW * GH + i) * 4];       // relief, from the lower half
+    grid[i * 4 + 1] = src[i * 4];               // colour, from the upper half
+    grid[i * 4 + 2] = src[i * 4 + 1];
+    grid[i * 4 + 3] = src[i * 4 + 2];
+  }
+  return grid;
 }
 // same major cities as the site's hero art
 const CITIES = {
@@ -568,7 +647,7 @@ const tgtPos = new V(), tgtLook = new V();
 // the spin axis, and separately the furthest above or below the origin. It
 // walks every vertex once at startup and is never recomputed.
 scene.updateMatrixWorld(true);
-const roleFit = roleGroups.map(g => {
+function fitOf(g) {
   const v = new THREE.Vector3();
   let radial2 = 0, half = 0;
   g.traverse(o => {
@@ -581,7 +660,21 @@ const roleFit = roleGroups.map(g => {
     }
   });
   return { r: Math.max(0.001, Math.sqrt(radial2)), h: Math.max(0.001, half) };
-});
+}
+const roleFit = roleGroups.map(fitOf);
+
+// Everything above is on the critical path; the earth grid is not. Relief and
+// surface colour land a moment later and the globe is re-shaded in place --
+// and re-fitted, because relief pushes its mountains past the smooth radius
+// the slot was measured against. The render loop reads roleFit every frame,
+// so nothing has to be told about the new numbers.
+if (shadeGlobe) {
+  loadEarthGrid().then(grid => {
+    shadeGlobe(grid);
+    travel.updateMatrixWorld(true);
+    Object.assign(roleFit[0], fitOf(travel));
+  }).catch(e => console.warn('earth grid missing', e));
+}
 
 const secs = [...document.querySelectorAll('.sec')];
 const copies = secs.map(s => s.querySelector('.copy'));
@@ -658,6 +751,16 @@ function applyLayout() {
   measureLanes();
 }
 
+// Reported to the host so it can size its section to the composition instead
+// of to the viewport. Only on a change: applying it resizes this frame, which
+// re-measures, which would otherwise post the same number back forever.
+let reportedHeight = null;
+function reportHeight(h) {
+  if (!EMBED || parent === window || h === reportedHeight) return;
+  reportedHeight = h;
+  parent.postMessage({ rolesHeight: h }, location.origin);
+}
+
 // Each role gets a slot: the part of its lane the label does not occupy --
 // above the text in column mode, left of it in row mode. Read back off the
 // laid-out DOM rather than recomputing the grid's padding and gap maths here,
@@ -678,11 +781,12 @@ function measureLanes() {
   // leftover evenly puts equal air above and below. Measured with the
   // override cleared, so repeated calls do not compound.
   grid.style.paddingBottom = '';
+  let block = 0;
   if (colsApplied) {
     const r0 = cells[0].getBoundingClientRect(), r1 = cells[1].getBoundingClientRect();
     const pitch = Math.abs((r1.left + r1.width / 2) - (r0.left + r0.width / 2));
     const labelH = Math.max(...cells.map(c => c.getBoundingClientRect().height));
-    const block = pitch * 0.94 + 26 + labelH;
+    block = pitch * 0.94 + 26 + labelH;
     grid.style.paddingBottom = Math.max(18, (innerHeight - block) / 2) + 'px';
   }
 
@@ -690,6 +794,19 @@ function measureLanes() {
   const midBottom = colsApplied && mid && getComputedStyle(mid).display !== 'none'
     ? mid.getBoundingClientRect().bottom + 14
     : 0;
+
+  // Tell the host how tall the composition actually is. In column mode the
+  // models are as wide as a lane and no wider, so their height is capped by
+  // the lane width too -- which on a landscape screen is far less than the
+  // viewport. A full-height section therefore parked the whole thing in the
+  // middle of a screen of empty background, with the leftover split evenly
+  // above and below it. The host clamps this to the space it has, so a value
+  // larger than the viewport just fills it.
+  //
+  // Portrait mode wants every row it can get, so it reports nothing and the
+  // host goes back to filling the screen.
+  reportHeight(colsApplied ? Math.max(320, Math.ceil(midBottom + block + 18)) : 0);
+
   const rects = cells.map(c => c.getBoundingClientRect());
   // The lane a model may use is the full pitch between neighbours, not the
   // cell box: the grid gap belongs to the text, and spending it there too

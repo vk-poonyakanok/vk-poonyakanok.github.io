@@ -263,15 +263,33 @@ img { max-width: 100%; }
 }
 
 /* ═══ ROLES 3D STAGE ════════════════════════════════════════ */
+/* --roles-h is written by Roles3D.astro from a height the stage measures and
+   posts back: in its landscape layout the four models are lane-width wide and
+   therefore lane-width tall, which is well short of a screen, and a full-height
+   section left the composition floating in a band of empty background. Until
+   that message lands -- and in the stage's portrait layout, which does want
+   every row it can get -- this falls back to filling the viewport. Never taller
+   than the viewport either way. */
 .rd-roles {
-  height: 100vh;
+  --roles-fill: calc(100vh - var(--nav-h, 57px));
+  height: min(var(--roles-h, 100vh), var(--roles-fill));
   border-bottom: 2px solid var(--line);
   background: var(--bg);
+}
+/* Starting estimate for the landscape case, so the section does not paint a
+   full screen tall and then jump ~330px shorter the moment the real
+   measurement arrives. Fitted against the stage's own numbers from 1100px to
+   1920px wide, and deliberately a touch over; the measured value replaces it
+   as an inline style as soon as the frame reports in. The threshold is the
+   one the stage itself switches layout on. Portrait wants the whole screen
+   and does not match here. */
+@media (min-aspect-ratio: 23 / 20) {
+  .rd-roles { --roles-h: calc(24vw + 190px); }
 }
 .rd-roles-pin {
   position: sticky;
   top: var(--nav-h);
-  height: calc(100vh - var(--nav-h));
+  height: min(var(--roles-h, 100vh), var(--roles-fill));
   overflow: hidden;
 }
 .rd-roles-pin iframe { width: 100%; height: 100%; border: none; display: block; pointer-events: none; }
