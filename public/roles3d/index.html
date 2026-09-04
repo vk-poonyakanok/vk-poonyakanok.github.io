@@ -647,14 +647,22 @@ const tgtPos = new V(), tgtLook = new V();
 // the spin axis, and separately the furthest above or below the origin. It
 // walks every vertex once at startup and is never recomputed.
 scene.updateMatrixWorld(true);
+// Measured in the group's OWN space, not the world's. Reaching the vertices
+// means going through o.matrixWorld, which carries the group's transform as
+// well as the child's -- including the scale the render loop writes every
+// frame -- so mapping back through the inverse is what makes this the model's
+// authored size rather than its size on screen right now. Subtracting
+// g.position instead only cancels the translation, which is enough at startup
+// (scale is still 1) and silently wrong at any later moment.
 function fitOf(g) {
   const v = new THREE.Vector3();
+  const toLocal = new THREE.Matrix4().copy(g.matrixWorld).invert();
   let radial2 = 0, half = 0;
   g.traverse(o => {
     const pos = o.geometry?.attributes?.position;
     if (!pos) return;
     for (let i = 0; i < pos.count; i++) {
-      v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).sub(g.position);
+      v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).applyMatrix4(toLocal);
       radial2 = Math.max(radial2, v.x * v.x + v.z * v.z);
       half = Math.max(half, Math.abs(v.y));
     }
@@ -663,17 +671,21 @@ function fitOf(g) {
 }
 const roleFit = roleGroups.map(fitOf);
 
-// Everything above is on the critical path; the earth grid is not. Relief and
-// surface colour land a moment later and the globe is re-shaded in place --
-// and re-fitted, because relief pushes its mountains past the smooth radius
-// the slot was measured against. The render loop reads roleFit every frame,
-// so nothing has to be told about the new numbers.
+// The globe is NOT re-fitted when its relief arrives, and must not be: the
+// flight arcs are what set this model's extent, not its surface. The arcs
+// reach 0.680 from the spin axis; relief tops out at GR + 0.006 + 0.055 =
+// 0.641, comfortably inside them, and re-measuring after the grid lands
+// returns 0.6804 against the smooth sphere's 0.6803. Raising the relief
+// exaggeration past ~0.10 is what would change that.
+//
+// A refit here also has to fight two things that have started moving by the
+// time the grid arrives: the scale above, and the planes tracking their
+// routes, which alone shift the measurement about 2% depending on where in
+// its loop each one happens to be.
 if (shadeGlobe) {
-  loadEarthGrid().then(grid => {
-    shadeGlobe(grid);
-    travel.updateMatrixWorld(true);
-    Object.assign(roleFit[0], fitOf(travel));
-  }).catch(e => console.warn('earth grid missing', e));
+  loadEarthGrid()
+    .then(shadeGlobe)
+    .catch(e => console.warn('earth grid missing', e));
 }
 
 const secs = [...document.querySelectorAll('.sec')];
