@@ -15,8 +15,8 @@ const stacks = [
       { label: 'R', icon: '/logo/si/r.svg' },
       { label: 'SQL', icon: '/logo/si/postgresql.svg' },
       { label: 'Stata' },
-      { label: 'Pandas', icon: '/logo/si/pandas.svg' },
-      { label: 'NumPy', icon: '/logo/si/numpy.svg' },
+      { label: 'Pandas', icon: '/logo/si/pandas.svg', darkFlip: true },
+      { label: 'NumPy', icon: '/logo/si/numpy.svg', darkFlip: true },
     ],
   },
   {
@@ -27,7 +27,7 @@ const stacks = [
       { label: 'Scikit-Learn', icon: '/logo/si/scikitlearn.svg' },
       { label: 'XGBoost' },
       { label: 'LightGBM' },
-      { label: 'YOLO', icon: '/logo/si/ultralytics.svg' },
+      { label: 'YOLO', icon: '/logo/si/ultralytics.svg', darkFlip: true },
       { label: 'OpenCV', icon: '/logo/si/opencv.svg' },
     ],
   },
@@ -70,7 +70,7 @@ const stacks = [
     title: 'Computing',
     items: [
       { label: 'LANTA HPC' },
-      { label: 'Linux', icon: '/logo/si/linux.svg' },
+      { label: 'Linux', icon: '/logo/si/linux.svg', lightFlip: true },
       { label: 'Anaconda', icon: '/logo/si/anaconda.svg' },
       { label: 'Jupyter', icon: '/logo/si/jupyter.svg' },
       { label: 'Arduino', icon: '/logo/si/arduino.svg' },
@@ -127,7 +127,7 @@ const credentials = [
           <div class="rd-badges">
             {group.items.map((item) => (
               <span class="rd-badge">
-                {item.icon && <img src={item.icon} alt="" width="15" height="15" loading="lazy">}
+                {item.icon && <img src={item.icon} alt="" width="15" height="15" loading="lazy" data-dark-flip={item.darkFlip ? '1' : undefined} data-light-flip={item.lightFlip ? '1' : undefined}>}
                 {item.img && <img src={item.img} alt="" width="15" height="15" loading="lazy" data-light-invert={item.lightInvert ? '1' : undefined} data-theme-invert={item.themeInvert ? '1' : undefined}>}
                 {item.label}
               </span>

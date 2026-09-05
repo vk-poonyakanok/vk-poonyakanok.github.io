@@ -29,6 +29,23 @@ img { max-width: 100%; }
 :root[data-theme="dark"] img[data-theme-invert] { filter: invert(1); }
 :root:not([data-theme="dark"]) img[data-light-invert] { filter: invert(1); }
 
+/* A few brand marks sit at almost exactly the canvas luminance on one theme
+   and disappear into it: pandas is #150458 against a #262217 chip, which
+   measures 1.01:1. invert(1) on its own fixes the contrast but lands on the
+   COMPLEMENT -- pandas comes back pale yellow -- so following it with
+   hue-rotate(180deg) brings the hue home and the mark reads as a light (or
+   dark) tint of its own colour. Measured, before -> after:
+     dark chip   pandas 1.01 -> 13.60 (#150458 -> #f9e8ff)
+                 NumPy  1.16 -> 11.04 (#013243 -> #aedff0)
+                 YOLO   1.07 -> 11.46 (#111f68 -> #cddbff)
+     cream chip  Linux  1.23 ->  7.26 (#fcc624 -> #6e3800)
+   Only for marks that are a SINGLE colour. Matplotlib and Power BI also fail
+   on the cream canvas, but they are multi-colour artwork whose white regions
+   are the part that vanishes; inverting them would recolour the rest, which
+   is already correct. */
+:root[data-theme="dark"] img[data-dark-flip] { filter: invert(1) hue-rotate(180deg); }
+:root:not([data-theme="dark"]) img[data-light-flip] { filter: invert(1) hue-rotate(180deg); }
+
 @keyframes rd-floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
 .skip-link {
