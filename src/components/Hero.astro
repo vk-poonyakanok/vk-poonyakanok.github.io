@@ -37,7 +37,15 @@ const stats = [
 
 <header class="rd-hero" id="top">
   <div class="rd-hero-top">
-    <div class="rd-hero-copy">
+    {/* data-sp sits on the column, not on its children. translate is
+        (elementCentre - viewportCentre) * -factor, so two elements with the
+        SAME factor keep a constant offset however far the page scrolls (the
+        scroll term cancels), while any difference in factor opens or closes
+        the gap between them. The lede used to carry 0.09 against a CTA and a
+        social row carrying none, which closed a 30px gap and then overlapped
+        them by 24px by 700px of scroll. The portrait keeps the same 0.05, so
+        the whole hero drifts against the sections below as one piece. */}
+    <div class="rd-hero-copy" data-sp="0.05">
       {/* Line breaks are block spans, not <br>: with <br> the accessible
           name and the text a crawler extracts came out as
           "ClinicalData,Engineered." with no word boundaries. */}
@@ -45,10 +53,10 @@ const stats = [
           whitespace between elements, so without them the accessible name
           and the extracted text read "ClinicalData,Engineered.". The spans
           are display:block, so a trailing space costs nothing visually. */}
-      <h1 class="rd-hero-title" data-sp="0.05">
+      <h1 class="rd-hero-title">
         <span class="line">Clinical </span><span class="line">Data, </span><span class="line accent">Engineered.</span>
       </h1>
-      <p class="rd-hero-lede" data-sp="0.09">
+      <p class="rd-hero-lede">
         Vitchakorn <span class="rd-italic">&ldquo;Blue&rdquo;</span> Poonyakanok, MD — a physician bridging <span class="rd-role-word" id="roleSwap">travel medicine</span> into intelligent health systems.
       </p>
 

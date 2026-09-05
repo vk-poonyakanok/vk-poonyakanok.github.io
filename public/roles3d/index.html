@@ -256,6 +256,29 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x060609);
 scene.fog = new THREE.Fog(0x060609, 9, 17);
 const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 60);
+// A sphere off the camera's axis projects as an ellipse stretched along the
+// line from the centre of frame, and the stretch grows with the field of
+// view. PerspectiveCamera's fov is the VERTICAL one, so a short, wide frame
+// widens the horizontal field on its own: fitting the embedded stage to its
+// composition took a 1656px-wide frame to 587px tall, i.e. 92 degrees across,
+// and the globe -- which sits in the outermost lane, furthest off-axis --
+// rendered 25% wider than tall. Measured against frame height: 92deg -> 1.245,
+// 81 -> 1.151, 71 -> 1.104, 62 -> 1.068. Holding the horizontal field at 62
+// keeps it at the ~6% it has always had, and the same globe moved to the
+// centre of frame measures 0.983, so the geometry was never the problem.
+//
+// Embedded only: the standalone page is authored at a plain 40deg and its
+// composition is framed around that.
+const HFOV_MAX = 62 * Math.PI / 180;
+const EMBEDDED = new URLSearchParams(location.search).has('embed');
+function fitCamera() {
+  camera.aspect = innerWidth / innerHeight;
+  camera.fov = EMBEDDED
+    ? Math.min(40, 2 * Math.atan(Math.tan(HFOV_MAX / 2) / camera.aspect) * 180 / Math.PI)
+    : 40;
+  camera.updateProjectionMatrix();
+}
+fitCamera();
 
 scene.add(new THREE.AmbientLight(0x404050, 1.2));
 const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(4, 6, 3); scene.add(key);
@@ -1063,8 +1086,7 @@ function frame() {
 frame();
 
 addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
+  fitCamera();
   renderer.setSize(innerWidth, innerHeight);
   measure();
   applyLayout();
