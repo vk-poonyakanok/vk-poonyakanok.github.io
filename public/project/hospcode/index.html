@@ -146,16 +146,26 @@
     <section class="case-section">
       <div class="case-section-title">Approach</div>
       <p>Facility, school, and village codes are pulled from their respective Ministry of Public Health sources and normalized against a standard province/amphoe/tambon reference dataset, so every record resolves cleanly through the full hierarchy: region &rarr; province &rarr; district &rarr; subdistrict &rarr; facility. Direct lookup by raw area code is also supported.</p>
-      <p>The geospatial layer is a Leaflet.js drill-down map across four polygon layers (health regions, provinces, districts, subdistricts) — clicking a region loads its child polygons, with code and name tooltips on hover. The whole thing runs serverless: all source data is preprocessed into a single SQLite database at build time and queried entirely client-side in-browser via a WebAssembly SQLite engine, with no backend server involved.</p>
+      <p>The geospatial layer is a Leaflet.js drill-down map across four polygon layers (health regions, provinces, districts, subdistricts) — clicking a region loads its child polygons, with code and name tooltips on hover. The whole thing runs serverless: all source data is preprocessed into a single ~50&nbsp;MB SQLite database at build time and queried entirely client-side through a WebAssembly build of SQLite, with FTS5 trigram indexes carrying name search. There is no backend server and no query ever leaves the browser.</p>
+    </section>
+
+    <section class="case-section">
+      <div class="case-section-title">Making the map work outside Thailand</div>
+      <p>Hospital markers used to be fetched from the Ministry's GIS API directly by the visitor's browser, on every province or district click. That host turns out to be unreachable from outside Thailand, so the map failed for a whole class of visitors while looking perfectly healthy from inside the country.</p>
+      <p>The cause was a block on where the request came from, not the datacenter-IP filtering already known from the build pipeline. A commercial VPS in Bangkok reached the endpoint normally; a US residential connection and two commercial proxy providers with Thailand-targeted exit addresses were all refused — both providers classify the host as &ldquo;Government&rdquo; and decline it outright, including on a tier marketed as having no domain restrictions.</p>
+      <p>The fix removed the dependency rather than working around it. The points are now fetched once and baked into 77 static per-province GeoJSON files (~4.5&nbsp;MB) served from the CDN, keeping the same lazy, click-triggered loading the map had before.</p>
+      <p>Rolling that out exposed a second defect that had been failing silently. Drilling into a district returned no markers at all while the province view looked correct, because the fetch script matched the Ministry's facility code against a nine-digit registry key when that code is only five digits — 0 of 11,347 points matched, and nothing raised an error. Reviewing the repair then showed the Ministry's own response already carries province and district codes on every point, so the lookup had been solving a problem that did not exist. Deriving the district code straight from the response resolves 11,347 of 11,347, including two facilities the registry could never have matched.</p>
+      <div class="case-note">Bangkok returns a single point, and that is the data source's boundary rather than a bug: the registry covers facilities in the Ministry's own network, while the capital's public hospitals run under the Bangkok Metropolitan Administration, the military or universities. Verified against the raw API response.</div>
     </section>
 
     <section class="case-section">
       <div class="case-section-title">Outcome</div>
-      <p>A live, publicly deployed personal utility rather than a one-off demo, covering tens of thousands of facility, school, and village records across all of Thailand's provinces and districts. The underlying dataset refreshes on a recurring schedule to stay current with source registries.</p>
+      <p>A live, publicly deployed utility rather than a one-off demo. Roughly 174,000 records resolve through the full hierarchy — 44,211 health facilities across 17 facility types (42,842 active, 1,369 cancelled, including 5,410 subdistrict health-promoting hospitals and 770 community hospitals), 42,255 schools and 77,316 villages, mapped to 13 health regions, 77 provinces, 929 districts and 7,436 subdistricts.</p>
+      <p>Refreshing that data is manual by necessity. The weekly build job was retired in September 2026 once it emerged that it had been rebuilding an unchanged database since June: the same origin block that broke the map also refuses the build runners, so every &ldquo;successful&rdquo; run had quietly fetched nothing. Updates now run from a Thailand-origin network when access allows, and the app's own footer was reworded to stop implying a cadence the pipeline cannot deliver.</p>
       <div class="case-stat-grid">
-        <div class="case-stat"><div class="case-stat-num">~44,000</div><div class="case-stat-label">Health facility / office records</div></div>
-        <div class="case-stat"><div class="case-stat-num">~9,000</div><div class="case-stat-label">Subdistricts covered</div></div>
-        <div class="case-stat"><div class="case-stat-num">~1,000</div><div class="case-stat-label">Districts covered</div></div>
+        <div class="case-stat"><div class="case-stat-num">~174,000</div><div class="case-stat-label">Searchable coded records</div></div>
+        <div class="case-stat"><div class="case-stat-num">44,211</div><div class="case-stat-label">Health facilities &middot; 17 types</div></div>
+        <div class="case-stat"><div class="case-stat-num">11,347</div><div class="case-stat-label">Mapped GIS points &middot; 77/77 provinces</div></div>
       </div>
     </section>
 
@@ -163,7 +173,8 @@
       <div class="case-section-title">Tech Stack</div>
       <div class="case-stack">
         <span class="case-stack-item">Leaflet.js</span>
-        <span class="case-stack-item">SQLite (client-side, WASM)</span>
+        <span class="case-stack-item">SQLite + FTS5 (client-side, WASM)</span>
+        <span class="case-stack-item">GeoJSON</span>
         <span class="case-stack-item">Python (pandas)</span>
         <span class="case-stack-item">HTML / CSS / JavaScript</span>
         <span class="case-stack-item">Vercel</span>
